@@ -66,6 +66,8 @@ exports.updateUser = async (req, res, next) => {
   try {
     let userId = req.params.id;
     let body = req.body;
+    const salt = await bcrypt.genSalt(10);
+    body.password = await bcrypt.hash(body.password, salt);
     // 1. 查找用户
     const data = await User.findByIdAndUpdate(userId, body);
     // 2. 如果用户不存在，返回错误信息

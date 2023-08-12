@@ -80,7 +80,6 @@ function userValidator(data) {
         "string.min": "密码长度不能小于6位",
         "string.max": "密码长度不能大于18位",
       }),
-    avatar: Joi.string(),
     _id: Joi.objectId(),
   });
   return schema.validate(data);

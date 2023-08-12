@@ -4,8 +4,8 @@ const { userValidator } = require("../model/user");
 const validator = require("../middleware/validate");
 
 const auth = require("../middleware/auth");
-
 const user = require("../controller/user");
+
 // 注册用户
 router.post("/", validator(userValidator), user.register);
 

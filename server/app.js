@@ -14,6 +14,9 @@ app.use(cors());
 // 处理日志的中间件
 app.use(morgan("dev"));
 
+// 静态资源托管
+app.use(express.static("public"));
+
 // 连接mongodb
 require("./model");
 
