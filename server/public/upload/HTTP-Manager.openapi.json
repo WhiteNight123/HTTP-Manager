@@ -1,0 +1,217 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "HTTP-Manager",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "接口"
+    }
+  ],
+  "paths": {
+    "/api/interface/{interfaceId}": {
+      "patch": {
+        "summary": "更改接口",
+        "x-apifox-folder": "接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "修改接口说明",
+        "tags": [
+          "接口"
+        ],
+        "parameters": [
+          {
+            "name": "interfaceId",
+            "in": "path",
+            "description": "接口Id",
+            "required": true,
+            "example": "64d782b65239aaa91333922f",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "my",
+            "in": "query",
+            "description": "my说明",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "必选token",
+            "required": true,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "www",
+                    "title": "22"
+                  },
+                  "array": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "projects": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "school": {
+                                "type": "string",
+                                "description": "哈哈"
+                              }
+                            },
+                            "x-apifox-orders": [
+                              "school"
+                            ],
+                            "required": [
+                              "school"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
+                        }
+                      },
+                      "description": "1",
+                      "x-apifox-orders": [
+                        "projects"
+                      ],
+                      "required": [
+                        "projects"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "age": {
+                        "type": "integer"
+                      }
+                    },
+                    "x-apifox-orders": [
+                      "age"
+                    ],
+                    "required": [
+                      "age"
+                    ],
+                    "x-apifox-ignore-properties": []
+                  }
+                },
+                "x-apifox-orders": [
+                  "name",
+                  "array",
+                  "user"
+                ],
+                "required": [
+                  "name",
+                  "array",
+                  "user"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "{\n”a“:1\n}"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "x-apifox-orders": [
+                        "_id",
+                        "name"
+                      ],
+                      "required": [
+                        "_id",
+                        "name"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "required": [
+                    "code",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 200,
+                      "msg": "更新接口成功!",
+                      "data": {
+                        "_id": "64d782b65239aaa91333922f",
+                        "name": "查询派蒙88",
+                        "description": "22222222222222222222米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游。",
+                        "method": "POST",
+                        "url": "http://fvvs.ru/zxhrmkovy",
+                        "headers": "nisi eiusmod eu veniam consectetur",
+                        "params": "occaecat laborum incididunt est et",
+                        "body": "Ut deserunt",
+                        "response": "dolor exercitation",
+                        "projectId": "64d74390ec1c47299894966b"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102438233-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "servers": []
+}

@@ -1,4 +1,3 @@
-const { User } = require("../model/user");
 const { Project } = require("../model/project");
 const { UserProject } = require("../model/user-project");
 

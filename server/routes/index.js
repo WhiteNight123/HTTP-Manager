@@ -12,4 +12,7 @@ router.use("/upload", require("./upload"));
 // 项目接口
 router.use("/project", require("./project"));
 
+// 接口接口
+router.use("/interface", require("./interface"));
+
 module.exports = router;

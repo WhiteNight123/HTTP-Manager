@@ -28,6 +28,11 @@ const userProjectSchema = new mongoose.Schema({
     enums: ["read", "write", "admin"],
     default: "read",
   },
+  // 隐藏版本信息
+  __v: {
+    type: Number,
+    select: false,
+  },
 });
 
 // 创建Model
