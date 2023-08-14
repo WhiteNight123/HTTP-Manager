@@ -8,7 +8,7 @@ const { userProjectValidator } = require("../model/user-project");
 const validator = require("../middleware/validate");
 
 const auth = require("../middleware/auth");
-const checkPermission = require("../middleware/checkpermission");
+const { checkPermission } = require("../middleware/checkpermission");
 const project = require("../controller/project");
 
 // 获取该用户的所有项目
@@ -33,18 +33,22 @@ router.delete("/:id", auth, project.deleteProject);
 // 项目添加成员
 router.post(
   "/member",
-  [auth, validator(userProjectValidator), checkPermission],
+  [auth, validator(userProjectValidator), checkPermission("project")],
   project.addMember
 );
 
 // 项目修改成员权限
 router.put(
   "/member",
-  [auth, validator(userProjectValidator), checkPermission],
+  [auth, validator(userProjectValidator), checkPermission("project")],
   project.updateMember
 );
 
 // 项目删除成员
-router.delete("/member", [auth, checkPermission], project.deleteMember);
+router.delete(
+  "/member",
+  [auth, checkPermission("project")],
+  project.deleteMember
+);
 
 module.exports = router;

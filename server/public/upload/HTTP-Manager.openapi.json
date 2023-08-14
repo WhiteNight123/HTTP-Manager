@@ -7,10 +7,51 @@
   },
   "tags": [
     {
+      "name": "用户"
+    },
+    {
       "name": "接口"
     }
   ],
   "paths": {
+    "/api/user": {
+      "post": {
+        "summary": "注册用户",
+        "x-apifox-folder": "用户",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102255556-run"
+      }
+    },
     "/api/interface/{interfaceId}": {
       "patch": {
         "summary": "更改接口",
@@ -33,24 +74,21 @@
             }
           },
           {
-            "name": "my",
-            "in": "query",
-            "description": "my说明",
-            "required": false,
-            "example": "",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
             "name": "Authorization",
             "in": "header",
             "description": "必选token",
             "required": true,
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "========",
             "schema": {
               "type": "string"
             }
@@ -130,7 +168,9 @@
                 ],
                 "x-apifox-ignore-properties": []
               },
-              "example": "{\n”a“:1\n}"
+              "example": {
+                "name": "hello"
+              }
             }
           }
         },
@@ -156,15 +196,35 @@
                         },
                         "name": {
                           "type": "string"
+                        },
+                        "historys": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "historyname": {
+                                "type": "string"
+                              }
+                            },
+                            "x-apifox-orders": [
+                              "historyname"
+                            ],
+                            "required": [
+                              "historyname"
+                            ],
+                            "x-apifox-ignore-properties": []
+                          }
                         }
                       },
                       "x-apifox-orders": [
                         "_id",
-                        "name"
+                        "name",
+                        "historys"
                       ],
                       "required": [
                         "_id",
-                        "name"
+                        "name",
+                        "historys"
                       ],
                       "x-apifox-ignore-properties": []
                     }
@@ -207,11 +267,94 @@
           }
         },
         "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102438233-run"
+      },
+      "delete": {
+        "summary": "删除接口",
+        "x-apifox-folder": "接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "接口"
+        ],
+        "parameters": [
+          {
+            "name": "interfaceId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "64d7882efd08c6258c3e79c0",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102438373-run"
       }
     }
   },
   "components": {
-    "schemas": {}
+    "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "用户ID"
+          },
+          "email": {
+            "type": "string",
+            "title": "邮箱"
+          },
+          "name": {
+            "type": "string",
+            "title": "用户名"
+          },
+          "password": {
+            "type": "string",
+            "title": "密码"
+          }
+        },
+        "x-apifox-orders": [
+          "id",
+          "email",
+          "name",
+          "password"
+        ],
+        "required": [
+          "name",
+          "password",
+          "email"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      }
+    }
   },
   "servers": []
 }
