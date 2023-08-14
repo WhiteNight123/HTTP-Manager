@@ -33,7 +33,7 @@ exports.register = async (req, res, next) => {
     res.status(200).json({
       code: 200,
       msg: "注册成功!",
-      data: user,
+      data: { email, name, _id: user._id },
     });
   } catch (err) {
     next(err);
@@ -92,10 +92,20 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   try {
     let userId = req.params.id;
+    // 如果id格式不正确，返回错误信息
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        code: 400,
+        msg: "用户id格式不正确!",
+        value: {
+          _id: userId,
+        },
+      });
+    }
     // 1. 查找用户并删除
-    const data = await User.findByIdAndDelete(userId);
+    const user = await User.findByIdAndDelete(userId);
     // 2. 如果用户不存在，返回错误信息
-    if (!data) {
+    if (!user) {
       return res.status(400).json({
         code: 400,
         msg: "用户不存在!",
@@ -105,11 +115,10 @@ exports.deleteUser = async (req, res, next) => {
       });
     }
     // 3. 删除成功
-    const body = req.body;
     res.status(200).json({
       code: 200,
       msg: "删除用户成功!",
-      data: { body },
+      data: user,
     });
   } catch (err) {
     next(err);

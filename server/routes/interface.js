@@ -5,13 +5,13 @@ const { interfaceValidator } = require("../model/interface");
 const validator = require("../middleware/validate");
 
 const auth = require("../middleware/auth");
-const { checkPermission } = require("../middleware/checkpermission");
+const checkPermission = require("../middleware/checkpermission");
 const interface = require("../controller/interface");
 
 // 新建接口
 router.post(
   "/",
-  [auth, validator(interfaceValidator)],
+  [auth, validator(interfaceValidator), checkPermission("interface")],
   interface.createInterface
 );
 

@@ -132,6 +132,7 @@ exports.updateProject = async (req, res, next) => {
 exports.deleteProject = async (req, res, next) => {
   try {
     let projectId = req.params.id;
+    console.log(req.body)
     const data = await Project.findByIdAndDelete(projectId);
     if (!data) {
       return res.status(400).json({
@@ -205,6 +206,7 @@ exports.updateMember = async (req, res, next) => {
 // 项目删除成员
 exports.deleteMember = async (req, res, next) => {
   try {
+    console.log(req.body);
     let { userId, projectId } = req.body;
     // 判断用户是否存在
     let data = await Project.findOne({ _id: projectId, members: userId });

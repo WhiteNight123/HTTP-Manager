@@ -16,6 +16,6 @@ router.get("/:id", user.getUser);
 router.put("/:id", [auth, validator(userValidator)], user.updateUser);
 
 // 删除指定用户
-router.delete("/:id", [auth, validator(userValidator)], user.deleteUser);
+router.delete("/:id", auth, user.deleteUser);
 
 module.exports = router;
