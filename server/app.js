@@ -6,7 +6,6 @@ const morgan = require("morgan");
 
 const app = express();
 
-// 处理中间件
 // 处理json的中间件
 app.use(express.json());
 // 处理跨域的中间件
@@ -22,6 +21,7 @@ require("./model");
 
 // 引入路由中间件
 app.use("/api", require("./routes"));
+app.use("/mock", require("./routes/mock"));
 
 // 处理错误的中间件,必须放在路由后面
 app.use(require("./middleware/error"));
