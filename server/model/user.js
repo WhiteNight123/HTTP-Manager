@@ -1,6 +1,9 @@
+// 引入配置文件
+const config = require("../config");
+const jwt = require("jsonwebtoken");
+
 const mongoose = require("mongoose");
 
-// 引入Joi
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 
@@ -24,7 +27,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6,
-    maxlength: 18,
+    maxlength: 100,
     select: false,
   },
   // _v隐藏
@@ -33,6 +36,11 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
+
+// 生成token
+userSchema.methods.generateToken = function () {
+  return jwt.sign({ _id: this._id }, config.secret, { expiresIn: "10d" });
+};
 
 // 创建Model
 const User = mongoose.model("User", userSchema);
@@ -70,7 +78,6 @@ function userValidator(data) {
         "string.min": "密码长度不能小于6位",
         "string.max": "密码长度不能大于18位",
       }),
-    avatar: Joi.string(),
     _id: Joi.objectId(),
   });
   return schema.validate(data);
