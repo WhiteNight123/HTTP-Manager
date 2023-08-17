@@ -1,9 +1,6 @@
 const { Interface } = require("../model/interface");
-const { UserProject } = require("../model/user-project");
 const { Project } = require("../model/project");
 const jsondiffpatch = require("jsondiffpatch").create();
-
-
 
 // 创建接口
 exports.createInterface = async (req, res, next) => {
@@ -25,9 +22,24 @@ exports.createInterface = async (req, res, next) => {
     const interface = await Interface.create({
       ...req.validValue,
       project: projectId,
+      history: [
+        {
+          version: 1,
+          updatedAt: Date.now(),
+          updatedBy: userId,
+          data: JSON.stringify(req.validValue),
+        },
+      ],
     });
     // 3.2 进行数据存储
     await interface.save();
+    // 存到项目中，项目接口数量加1
+    await Project.findByIdAndUpdate(projectId, {
+      interfaceCount: project.interfaceCount + 1,
+      $push: { interfaces: interface._id },
+    });
+    // 项目接口数量加1
+
     // 3.3 返回响应
     res.status(200).json({
       code: 200,
@@ -74,9 +86,11 @@ exports.getInterface = async (req, res, next) => {
     let { interfaceId } = req.params;
     let userId = req.userData._id;
     // 1. 判断接口是否存在
-    let interface = await Interface.findOne({ _id: interfaceId }).select(
-      "+description +headers +params +body +response +history"
-    );
+    let interface = await Interface.findOne({ _id: interfaceId })
+      .select(
+        "+description +requestHeaders +requestParams +requestBody +response +history"
+      )
+      .populate("history.updatedBy projectId", "name");
     // 2. 如果接口不存在，返回错误信息
     if (!interface) {
       return res.status(400).json({
@@ -106,7 +120,7 @@ exports.updateInterface = async (req, res, next) => {
       { _id: interfaceId },
       req.validValue,
       { new: true }
-    ).select("+description +headers +params +body +response +history");
+    ).select("+history");
     // 2. 如果接口不存在，返回错误信息
     if (!interface) {
       return res.status(400).json({
@@ -118,7 +132,7 @@ exports.updateInterface = async (req, res, next) => {
     // 3. 将 req.body 转换为 JSON，然后将其转换为字符串并存储在 interface.history 中
     let data = JSON.stringify(req.validValue);
     let historyVersion = {
-      version: interface.history ? interface.history.length + 1 : 0,
+      version: interface.history.length + 1,
       updatedAt: Date.now(),
       updatedBy: userId,
       data: data,
@@ -129,7 +143,9 @@ exports.updateInterface = async (req, res, next) => {
         $push: { history: historyVersion },
       },
       { new: true }
-    ).select("+description +headers +params +body +response");
+    ).select(
+      "+description +requestHeaders +requestParams +requestBody +response"
+    );
     // 3 返回响应
     res.status(200).json({
       code: 200,
@@ -156,6 +172,12 @@ exports.deleteInterface = async (req, res, next) => {
         data: { interfaceId },
       });
     }
+    // 从项目中删除
+    let project = await Project.findOne({ _id: interface.projectId });
+    await Project.findByIdAndUpdate(interface.projectId, {
+      interfaceCount: project.interfaceCount - 1,
+      $pull: { interfaces: interfaceId },
+    });
     // 3. 返回响应
     res.status(200).json({
       code: 200,
@@ -184,8 +206,11 @@ exports.getInterfaceHistory = async (req, res, next) => {
         data: { interfaceId },
       });
     }
-    const diffResult = jsondiffpatch.diff(JSON.parse(interface.history[0].data), JSON.parse(interface.history[1].data));
-    console.log(diffResult)
+    const diffResult = jsondiffpatch.diff(
+      JSON.parse(interface.history[0].data),
+      JSON.parse(interface.history[1].data)
+    );
+    console.log(diffResult);
     // 3 返回响应
     res.status(200).json({
       code: 200,
@@ -233,11 +258,15 @@ exports.rollbackInterface = async (req, res, next) => {
       updatedBy: userId,
       data: history.data,
     };
+    console.log(data);
+    // 5.2 更新接口
     interface = await Interface.findByIdAndUpdate(
       interfaceId,
       { $push: { history: historyVersion }, ...data },
       { new: true }
-    ).select("+description +headers +params +body +response");
+    ).select(
+      "+description +requestHeaders +requestParams +requestBody +response +history"
+    );
     // 5.2 返回响应
     res.status(200).json({
       code: 200,

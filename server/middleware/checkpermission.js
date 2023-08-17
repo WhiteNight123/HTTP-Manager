@@ -1,8 +1,28 @@
 const { UserProject } = require("../model/user-project");
+const { Interface } = require("../model/interface");
 
+// 验证权限
 module.exports = (type) => {
-  return (req, res, next) => {
-    const { projectId } = req.body;
+  return async (req, res, next) => {
+    let { projectId } = req.body;
+    let interfaceId = req.params.interfaceId;
+    // 如果有interfaceId，根据interfaceId的projectId进行判断
+    try {
+      if (interfaceId) {
+        const interface = await Interface.findById(interfaceId).select(
+          "projectId"
+        );
+        if (!interface) {
+          return res.status(400).json({
+            code: 400,
+            msg: "接口不存在",
+          });
+        }
+        projectId = interface.projectId._id;
+      }
+    } catch (err) {
+      next(err);
+    }
     const userId = req.userData._id;
     UserProject.findOne({ projectId, userId })
       .then((userProject) => {

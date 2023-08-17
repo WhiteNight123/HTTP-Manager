@@ -1,3 +1,4 @@
+// 服务器错误处理中间件
 module.exports = (err, req, res, next) => {
   res.status(500).json({
     code: 500,

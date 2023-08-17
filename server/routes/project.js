@@ -5,8 +5,8 @@ const {
   updateProjectValidator,
 } = require("../model/project");
 const { userProjectValidator } = require("../model/user-project");
-const validator = require("../middleware/validate");
 
+const validator = require("../middleware/validate");
 const auth = require("../middleware/auth");
 const checkPermission = require("../middleware/checkpermission");
 const project = require("../controller/project");

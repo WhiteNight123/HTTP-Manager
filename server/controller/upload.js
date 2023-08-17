@@ -39,6 +39,7 @@ function extractResponse(response) {
   return result;
 }
 
+// 上传并解析文件
 exports.upload = (req, res, next) => {
   try {
     SwaggerParser.parse(req.file.path)

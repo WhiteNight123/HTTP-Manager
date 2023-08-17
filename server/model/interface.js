@@ -1,6 +1,3 @@
-// 引入配置文件
-const config = require("../config");
-
 const mongoose = require("mongoose");
 
 // 引入Joi
@@ -127,7 +124,7 @@ function interfaceValidator(data) {
         "any.only":
           "请求方法必须是GET、POST、PUT、DELETE、PATCH、HEAD、OPTIONS中的一个",
       }),
-      requestPath: Joi.string().min(1).max(100).required().messages({
+    requestPath: Joi.string().min(1).max(100).required().messages({
       "any.required": "请求路径不能为空",
       "string.base": "请求路径必须是字符串",
       "string.min": "请求路径长度不能小于1位",

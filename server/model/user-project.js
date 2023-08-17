@@ -1,6 +1,3 @@
-// 引入配置文件
-const config = require("../config");
-
 const mongoose = require("mongoose");
 
 // 引入Joi

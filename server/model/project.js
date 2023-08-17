@@ -1,6 +1,3 @@
-// 引入配置文件
-const config = require("../config");
-
 const mongoose = require("mongoose"); // 连接mongodb
 
 // 引入Joi
@@ -43,6 +40,21 @@ const projectSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // 接口数量
+  interfaceCount: {
+    type: Number,
+    default: 0,
+  },
+  // 项目接口
+  interfaces: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Interface",
+      },
+    ],
+    select: false,
+  },
   // 隐藏版本信息
   __v: {
     type: Number,
@@ -75,6 +87,7 @@ function projectValidator(data) {
   });
   return schema.validate(data);
 }
+
 // 修改项目规则校验规则
 function updateProjectValidator(data) {
   const schema = Joi.object({
@@ -95,5 +108,5 @@ function updateProjectValidator(data) {
 module.exports = {
   Project,
   projectValidator,
-  updateProjectValidator
+  updateProjectValidator,
 };

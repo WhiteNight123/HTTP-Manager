@@ -4,6 +4,7 @@ const { User } = require("../model/user");
 // 引入bcrypt
 const bcrypt = require("bcrypt");
 
+// 登录
 exports.login = async (req, res, next) => {
   try {
     // 获取到校验后的数据

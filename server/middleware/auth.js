@@ -2,6 +2,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 
+// 验证token
 module.exports = function (req, res, next) {
   // 获取请求头中的token
   const token = req.headers["authorization"];

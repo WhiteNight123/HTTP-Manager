@@ -1,5 +1,6 @@
 const { Project } = require("../model/project");
 const { UserProject } = require("../model/user-project");
+const { Interface } = require("../model/interface");
 
 // 创建项目
 exports.createProject = async (req, res, next) => {
@@ -67,7 +68,9 @@ exports.getProjects = async (req, res, next) => {
 exports.getProject = async (req, res, next) => {
   try {
     let projectId = req.params.id;
-    let project = await Project.findById(projectId).populate("creator members");
+    let project = await Project.findById(projectId).populate(
+      "creator members interfaces"
+    );
     if (!project) {
       return res.status(400).json({
         code: 400,
@@ -80,7 +83,6 @@ exports.getProject = async (req, res, next) => {
     let tmp = [];
     for (let i = 0; i < members.length; i++) {
       let member = { ...members[i]._doc };
-      console.log(member);
       let userProject = await UserProject.findOne({
         userId: member._id,
         projectId: projectId,
@@ -132,7 +134,6 @@ exports.updateProject = async (req, res, next) => {
 exports.deleteProject = async (req, res, next) => {
   try {
     let projectId = req.params.id;
-    console.log(req.body)
     const data = await Project.findByIdAndDelete(projectId);
     if (!data) {
       return res.status(400).json({
@@ -140,7 +141,16 @@ exports.deleteProject = async (req, res, next) => {
         msg: "删除失败",
       });
     }
-    await UserProject.deleteMany({ projectId });
+    // 删除项目下的所有接口
+    const interfaces = await Interface.find({ projectId });
+    for (let i = 0; i < interfaces.length; i++) {
+      await Interface.findByIdAndDelete(interfaces[i]._id);
+    }
+    // 删除项目下的所有用户权限
+    const userProjects = await UserProject.find({ projectId });
+    for (let i = 0; i < userProjects.length; i++) {
+      await UserProject.findByIdAndDelete(userProjects[i]._id);
+    }
     res.status(200).json({
       code: 200,
       msg: "删除项目成功!",
@@ -155,7 +165,6 @@ exports.deleteProject = async (req, res, next) => {
 exports.addMember = async (req, res, next) => {
   try {
     let { userId, projectId, auth } = req.body;
-    console.log(userId, projectId, auth);
     // 判断用户是否存在
     let data = await Project.findOne({ _id: projectId, members: userId });
     if (data) {
@@ -206,7 +215,6 @@ exports.updateMember = async (req, res, next) => {
 // 项目删除成员
 exports.deleteMember = async (req, res, next) => {
   try {
-    console.log(req.body);
     let { userId, projectId } = req.body;
     // 判断用户是否存在
     let data = await Project.findOne({ _id: projectId, members: userId });

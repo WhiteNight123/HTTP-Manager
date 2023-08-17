@@ -1,11 +1,9 @@
 // 引入配置文件
 const config = require("../config");
-// 引入jwt
 const jwt = require("jsonwebtoken");
 
 const mongoose = require("mongoose");
 
-// 引入Joi
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 

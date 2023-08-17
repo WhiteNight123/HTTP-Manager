@@ -3,7 +3,6 @@ const router = require("express").Router();
 const { interfaceValidator } = require("../model/interface");
 
 const validator = require("../middleware/validate");
-
 const auth = require("../middleware/auth");
 const checkPermission = require("../middleware/checkpermission");
 const interface = require("../controller/interface");
