@@ -20,7 +20,12 @@ service.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    return Promise.reject(error);
+    
+    if (error.response && error.response.data) {
+      return Promise.reject(error.response.data);
+    } else {
+      return Promise.reject(error);
+    }
   }
 );
 
