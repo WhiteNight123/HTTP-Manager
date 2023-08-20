@@ -47,7 +47,7 @@ exports.createProject = async (req, res, next) => {
 exports.getProjects = async (req, res, next) => {
   try {
     let userId = req.userData._id;
-    let projects = await Project.find({ members: userId });
+    let projects = await Project.find({ members: userId }).populate("creator");
     if (!projects) {
       return res.status(400).json({
         code: 400,

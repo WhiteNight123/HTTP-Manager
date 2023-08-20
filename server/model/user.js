@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema({
     maxlength: 100,
     select: false,
   },
+  // 个人简介
+  bio: {
+    type: String,
+    maxlength: 100,
+    default: "这是一段很神秘的个人简介~",
+  },
   // _v隐藏
   __v: {
     type: Number,
@@ -79,6 +85,9 @@ function userValidator(data) {
         "string.max": "密码长度不能大于18位",
       }),
     _id: Joi.objectId(),
+    bio: Joi.string().max(100).allow("").messages({
+      "string.max": "个人简介长度不能大于100位",
+    }),
   });
   return schema.validate(data);
 }

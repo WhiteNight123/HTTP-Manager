@@ -33,7 +33,7 @@ exports.login = async (req, res, next) => {
     res.status(200).json({
       code: 200,
       msg: "登录成功!",
-      authoruzation: {
+      data: {
         id: user._id,
         name: user.name,
         token: user.generateToken(),

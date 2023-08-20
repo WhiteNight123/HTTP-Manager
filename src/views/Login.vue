@@ -37,9 +37,9 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useStore } from "../store/index";
+import { useStore } from "../store/user";
 import { userLogin } from "../api/user";
-import { ElForm, ElFormItem, ElInput, ElButton } from "element-plus";
+import { ElForm, ElFormItem, ElInput, ElButton, ElMessage } from "element-plus";
 import request from "../api/request";
 import { onMounted } from "vue";
 
@@ -68,20 +68,30 @@ const store = useStore();
 
 const login = async () => {
   try {
-    // 验证表单，如果不通过则返回
-    const valid = await loginFormRef.value.validate();
-    if (!valid) return;
+    // 验证表单，如果成功继续，失败则返回
+    await loginFormRef.value.validate().catch((error) => {
+      console.log("Validate error:", error);
+      if (error.email) throw error.email[0].message;
+      if (error.password) throw error.password[0].message;
+      throw error;
+    });
     console.log("Login form:", loginForm.value);
     const response = await userLogin(loginForm.value);
     console.log("Login response:", response);
-    store.setToken(response.authoruzation.token);
-    console.log(response.authoruzation.token);
-    request.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${response.authoruzation.token}`;
-    router.push("/home");
+    store.setToken(response.data);
+    localStorage.setItem("token", response.data.token);
+    console.log(response.data.token);
+    request.defaults.headers.common["Authorization"] = response.data.token;
+    ElMessage({
+      message: "Login success",
+      type: "success",
+    });
+    router.push("/project");
   } catch (error) {
-    console.error("Login error:", error);
+    ElMessage({
+      message: error,
+      type: "error",
+    });
   }
 };
 
