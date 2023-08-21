@@ -3,13 +3,13 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import My from "../views/My.vue";
 import Welcome from "../views/Welcome.vue";
-import Project from "../views/Project.vue";
+import Projects from "../views/Projects.vue";
 import Nopage from "../views/404.vue";
 import Interface from "../views/Interface.vue";
-import Dialog from "../views/Dialog.vue";
-import ProjectDetail from "../views/ProjectDetail.vue";
 import Dashboard from "../views/Dashboard.vue";
-import Users from "../components/Users.vue";
+import Members from "../views/Members.vue";
+import Home from "../components/Home.vue";
+import Dialog from "../components/Dialog.vue";
 
 const routes = [
   {
@@ -33,15 +33,14 @@ const routes = [
     component: My,
   },
   {
-    path: "/project",
-    name: "Project",
-    component: Project,
+    path: "/projects",
+    name: "Projects",
+    component: Projects,
   },
   {
-    path: "/project/:projectId",
-    name: "ProjectDetail",
-    component: ProjectDetail,
-    props: true,
+    path: "/home/",
+    name: "Home",
+    component: Home,
     children: [
       {
         path: "/dashboard",
@@ -49,9 +48,9 @@ const routes = [
         component: Dashboard,
       },
       {
-        path: "/users",
-        name: "Users",
-        component: Users,
+        path: "/members",
+        name: "Members",
+        component: Members,
       },
       {
         path: "/interfaces",

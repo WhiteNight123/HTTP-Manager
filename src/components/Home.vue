@@ -5,21 +5,17 @@
       <el-aside width="150px">
         <!-- 侧边栏内容 -->
         <el-menu
-          :default-active="activeMenu"
           class="el-menu-vertical"
+          default-active="Dashboard"
           @select="handleMenuSelect"
         >
-          <el-menu-item index="dashboard">仪表盘</el-menu-item>
-          <el-menu-item index="interfaces">接口管理</el-menu-item>
-          <el-menu-item index="users">用户管理</el-menu-item>
+          <el-menu-item index="Dashboard">仪表盘</el-menu-item>
+          <el-menu-item index="Interfaces">接口管理</el-menu-item>
+          <el-menu-item index="Members">用户管理</el-menu-item>
         </el-menu>
       </el-aside>
 
       <el-container>
-        <el-header>
-          <!-- 头部内容 -->
-          <h1>后台管理系统</h1>
-        </el-header>
         <el-main>
           <!-- 主要内容区域 -->
           <router-view></router-view>
@@ -32,17 +28,31 @@
 <script setup>
 import { ref } from "vue";
 import Header from "../components/Header.vue";
-import router from "../router";
-import { useStore } from "../store/user";
-import { storeToRefs } from "pinia";
-const store = useStore();
-const activeMenu = ref("dashboard");
 import { ElMessage } from "element-plus";
+import router from "../router";
+import { projectStore } from "../store/project";
+const store = projectStore();
+const activeMenu = ref("dashboard");
+
 
 const handleMenuSelect = (index) => {
   activeMenu.value = index;
   console.log(index);
-  router.push(`/${index}`);
+  router.push(index);
 };
+
+onMounted(() => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    ElMessage.error("Please log in first.");
+    router.push("/login");
+  }
+  const id = store.getProjectId;
+  if (!id) {
+    ElMessage.info("Please select a project first.");
+    router.push("/projects");
+  }
+});
 </script>
+
 <style></style>

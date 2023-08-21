@@ -22,7 +22,6 @@ export function getProject(id) {
   return request({
     url: `/api/project/${id}`,
     method: "get",
-    data,
   });
 }
 

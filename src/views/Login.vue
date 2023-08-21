@@ -86,7 +86,7 @@ const login = async () => {
       message: "Login success",
       type: "success",
     });
-    router.push("/project");
+    router.push("/projects");
   } catch (error) {
     ElMessage({
       message: error,

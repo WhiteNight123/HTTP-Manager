@@ -1,6 +1,7 @@
 const { Project } = require("../model/project");
 const { UserProject } = require("../model/user-project");
 const { Interface } = require("../model/interface");
+const { User } = require("../model/user");
 
 // 创建项目
 exports.createProject = async (req, res, next) => {
@@ -164,7 +165,16 @@ exports.deleteProject = async (req, res, next) => {
 // 项目添加成员
 exports.addMember = async (req, res, next) => {
   try {
-    let { userId, projectId, auth } = req.body;
+    let { email, projectId, auth } = req.body;
+    // 根据用户email查找用户id
+    const userId = await User.findOne({ email });
+    console.log(userId);
+    if (!userId) {
+      return res.status(400).json({
+        code: 400,
+        msg: "用户不存在!",
+      });
+    }
     // 判断用户是否存在
     let data = await Project.findOne({ _id: projectId, members: userId });
     if (data) {

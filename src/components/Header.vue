@@ -1,15 +1,21 @@
 <template>
   <el-header class="header">
     <span class="header-left">
-      <img class="logo" src="../assets/img/vue.svg" alt="Logo" />
+      <img
+        class="logo"
+        src="../assets/img/bytedance.svg"
+        alt="Logo"
+        @click="clickLogo"
+      />
+      <el-button class="button" text @click="goProjects">api 文档</el-button>
     </span>
+    <span> </span>
     <span class="header-right">
       <el-switch
         v-model="darkMode"
-        size="medium"
         :active-action-icon="Moon"
         :inactive-action-icon="Sunny"
-        @change="toggleDark"
+        @change="toggleDarkMode"
       >
       </el-switch>
       <el-dropdown trigger="click" @command="handleDropdownCommand">
@@ -35,16 +41,15 @@ import { useStore } from "../store/user";
 import { storeToRefs } from "pinia";
 const store = useStore();
 let { userName } = storeToRefs(store);
-const activeMenu = ref("dashboard");
-const darkMode = ref(false);
+
 const nickname = ref(userName);
 import request from "../api/request";
 import { ElMessage } from "element-plus";
 import router from "../router";
-
 import { useDark, useToggle } from "@vueuse/core";
 
 const isDark = useDark();
+const darkMode = ref(isDark.value);
 const toggleDark = useToggle(isDark);
 
 const toggleDarkMode = () => {
@@ -55,14 +60,12 @@ const toggleDarkMode = () => {
   toggleDark();
 };
 
+const clickLogo = () => {
+  ElMessage.success("ByteDance");
+};
 const handleDropdownCommand = (command) => {
   if (command === "profile") {
-    // 处理个人资料的点击事件
-    ElMessage({
-      message: "个人资料",
-      type: "success",
-    });
-    // 你可以在这里跳转到个人资料页面
+    // 跳转到个人资料页面
     router.push("/my");
   } else if (command === "logout") {
     // 处理退出登录的点击事件
@@ -73,22 +76,31 @@ const handleDropdownCommand = (command) => {
     ElMessage.warning("退出登录");
   }
 };
+const goProjects = () => {
+  router.push("/projects");
+};
 </script>
 
 <style>
-/* 为了简单起见，您可以根据需要自行调整样式 */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  border-bottom: 1px solid #ebeef5;
+  border-bottom: 1px solid #bfbfbf;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+}
+.button {
+  margin-left: 32px;
 }
 
 .logo {
-  width: 40px;
-  height: 40px;
-  margin-right: 20px;
+  width: 36px;
+  height: 36px;
+  margin-right: auto;
 }
 
 .nickname {

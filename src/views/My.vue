@@ -76,7 +76,6 @@ const getUserInfo1 = async () => {
     console.log("id:", userId.value);
     const response = await getUserInfo(userId.value);
     userInfo.value = response.data;
-    console.log("userInfo:", userInfo.value);
     ElMessage({
       message: "获取 success",
       type: "success",
@@ -89,7 +88,7 @@ const getUserInfo1 = async () => {
   }
 };
 
-getUserInfo1(); // 获取用户信息
+getUserInfo1();
 
 function startEditing() {
   editing.value = true;

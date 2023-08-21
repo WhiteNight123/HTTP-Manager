@@ -137,12 +137,7 @@ const register = async () => {
 };
 
 const goToLogin = () => {
-  router.push({
-    name: "Login",
-    query: {
-      email: "111@qq.com",
-    },
-  });
+  router.push("Login");
 };
 </script>
 

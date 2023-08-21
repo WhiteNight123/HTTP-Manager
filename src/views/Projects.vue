@@ -1,6 +1,13 @@
 <template>
   <Header></Header>
-  <el-button @click="dialogFormVisible = true"> 创建项目 </el-button>
+  <el-button
+    class="create-button"
+    type="primary"
+    :icon="Plus"
+    @click="dialogFormVisible = true"
+  >
+    创建项目
+  </el-button>
   <el-dialog v-model="dialogFormVisible" title="创建项目">
     <el-form :model="newProject" :rules="rules" ref="projectFormRef">
       <el-form-item label="项目名称" prop="name">
@@ -33,13 +40,15 @@
 <script setup>
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
+import { Plus } from "@element-plus/icons-vue";
 import router from "../router";
 import { createProject, getProjects } from "../api/project";
-import request from "../api/request";
-import { useStore } from "../store/user";
-const store = useStore();
-let { userName } = storeToRefs(store);
 import { storeToRefs } from "pinia";
+import { useStore } from "../store/user";
+import { projectStore } from "../store/project";
+const store = useStore();
+const projectStore1 = projectStore();
+let { userName } = storeToRefs(store);
 
 const projectFormRef = ref();
 const dialogFormVisible = ref(false);
@@ -82,7 +91,6 @@ const createProject1 = async () => {
       if (error.description) throw error.description[0].message;
       throw error;
     });
-    console.log(request.defaults.headers.common["Authorization"]);
     console.log("Project form:", newProject.value);
     console.log(userName.value);
     await createProject(newProject.value);
@@ -106,15 +114,16 @@ const createProject1 = async () => {
 const handleRowClick = (row) => {
   console.log(row);
   // 跳转到项目详情页面
-  router.push({ name: "Dashboard", params: { projectId: row._id } });
+  projectStore1.setProjectId(row._id);
+  router.push("/Dashboard");
 };
 
 getProjectList();
 </script>
 
 <style scoped>
-.el-button--text {
-  margin-right: 15px;
+.el-button.create-button {
+  margin-left: 15px;
 }
 .el-select {
   width: 300px;
