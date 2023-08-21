@@ -1,14 +1,8 @@
-import { defineStore } from "pinia";
+import { createPinia } from "pinia";
+// 引入持久化插件
+import piniaPluginPersist from "pinia-plugin-persist";
 
-export const useStore = defineStore({
-  id: "user",
-  state: () => ({
-    token: "",
-  }),
-  getters: {},
-  actions: {
-    setToken(token) {
-      this.token = token;
-    },
-  },
-});
+const store = createPinia();
+store.use(piniaPluginPersist);
+
+export default store;

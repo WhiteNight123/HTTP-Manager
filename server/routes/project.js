@@ -4,7 +4,10 @@ const {
   projectValidator,
   updateProjectValidator,
 } = require("../model/project");
-const { userProjectValidator } = require("../model/user-project");
+const {
+  userProjectUpdateValidator,
+  userProjectAddValidator,
+} = require("../model/user-project");
 
 const validator = require("../middleware/validate");
 const auth = require("../middleware/auth");
@@ -33,14 +36,14 @@ router.delete("/:id", auth, project.deleteProject);
 // 项目添加成员
 router.post(
   "/member",
-  [auth, validator(userProjectValidator), checkPermission("project")],
+  [auth, validator(userProjectAddValidator), checkPermission("project")],
   project.addMember
 );
 
 // 项目修改成员权限
 router.put(
   "/member",
-  [auth, validator(userProjectValidator), checkPermission("project")],
+  [auth, validator(userProjectUpdateValidator), checkPermission("project")],
   project.updateMember
 );
 

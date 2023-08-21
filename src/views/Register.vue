@@ -69,7 +69,7 @@ const registerRules = ref({
     {
       min: 2,
       max: 20,
-      message: "Username length should be between 2 and 20 characters",
+      message: "用户名长度应该在 2 到 20 个字符之间",
       trigger: "blur",
     },
   ],
@@ -78,12 +78,12 @@ const registerRules = ref({
     {
       min: 6,
       max: 18,
-      message: "Password length should be between 6 and 18 characters",
+      message: "密码长度应该在 6 到 18 个字符之间",
       trigger: "blur",
     },
     {
       pattern: /^[a-zA-Z0-9]+$/,
-      message: "Password should only contain letters and numbers",
+      message: "密码应该由数字和字母组成",
       trigger: "blur",
     },
   ],
@@ -96,7 +96,7 @@ const registerRules = ref({
     {
       validator: (rule, value, callback) => {
         if (value !== registerForm.value.password) {
-          callback(new Error("The two passwords do not match"));
+          callback(new Error("两次输入密码不一致"));
         } else {
           callback();
         }
@@ -109,8 +109,14 @@ const router = useRouter();
 const registerFormRef = ref();
 const register = async () => {
   try {
-    const valid = await registerFormRef.value.validate();
-    if (!valid) return;
+    await registerFormRef.value.validate().catch((error) => {
+      console.log("error:", error);
+      if (error.email) throw error.email[0].message;
+      if (error.name) throw error.name[0].message;
+      if (error.password) throw error.password[0].message;
+      if (error.confirmPassword) throw error.confirmPassword[0].message;
+      throw error;
+    });
     console.log("注册 form:", registerForm.value);
     const { email, name, password } = registerForm.value;
     const newUser = { email, name, password };
@@ -123,17 +129,15 @@ const register = async () => {
       },
     });
   } catch (error) {
-    console.error("注册 error:", error);
+    ElMessage({
+      message: error,
+      type: "error",
+    });
   }
 };
 
 const goToLogin = () => {
-  router.push({
-    name: "Login",
-    query: {
-      email: "111@qq.com",
-    },
-  });
+  router.push("Login");
 };
 </script>
 

@@ -4,8 +4,8 @@ import request from "./request";
 export function userLogin(data) {
   return request({
     url: "/api/auth",
-    method:"post",
-    data
+    method: "post",
+    data,
   });
 }
 
@@ -19,9 +19,9 @@ export function userRegister(data) {
 }
 
 // 获取用户信息
-export function getUserInfo() {
+export function getUserInfo(id) {
   return request({
-    url: "/api/user",
+    url: "/api/user/" + id,
     method: "get",
   });
 }
@@ -42,4 +42,3 @@ export function deleteUser(id) {
     method: "delete",
   });
 }
-

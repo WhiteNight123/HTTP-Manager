@@ -1,4 +1,6 @@
 import axios from "axios";
+import { ElMessage } from "element-plus";
+import router from "../router";
 
 //1. 创建axios对象
 const service = axios.create();
@@ -17,16 +19,30 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => {
     //判断code码
-    return response.data;
+    if (response.status === 200) {
+      console.log(response.data);
+      return response.data;
+    } else {
+      ElMessage.error(response.data.msg);
+    }
   },
   (error) => {
-    
-    if (error.response && error.response.data) {
-      return Promise.reject(error.response.data);
-    } else {
-      return Promise.reject(error);
+    console.log(error.response);
+    if (error.response) {
+      if (error.response.status === 401) {
+        localStorage.removeItem("token");
+        router.push("/login");
+        return Promise.reject(error.response.data.msg);
+      } else if (error.response.data && error.response.data.msg) {
+        return Promise.reject(error.response.data.msg);
+      }
     }
+    return Promise.reject(error);
   }
 );
+
+// 从localStorage中获取token
+service.defaults.headers.common["Authorization"] =
+  localStorage.getItem("token");
 
 export default service;
