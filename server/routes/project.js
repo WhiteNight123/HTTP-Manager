@@ -26,12 +26,16 @@ router.post("/", [auth, validator(projectValidator)], project.createProject);
 // 修改指定项目
 router.patch(
   "/:id",
-  [auth, validator(updateProjectValidator)],
+  [auth, validator(updateProjectValidator), checkPermission("project")],
   project.updateProject
 );
 
 // 删除指定项目
-router.delete("/:id", auth, project.deleteProject);
+router.delete(
+  "/:id",
+  [auth, checkPermission("project")],
+  project.deleteProject
+);
 
 // 项目添加成员
 router.post(

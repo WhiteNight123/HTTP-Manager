@@ -19,6 +19,11 @@ const interfaceSchema = new mongoose.Schema({
     maxlength: 200,
     select: false,
   },
+  // 接口标签
+  tag: {
+    type: String,
+    maxlength: 20,
+  },
   // 请求方法
   requestMethod: {
     type: String,
@@ -114,6 +119,10 @@ function interfaceValidator(data) {
     description: Joi.string().max(200).messages({
       "string.base": "接口描述必须是字符串",
       "string.max": "接口描述长度不能大于200位",
+    }),
+    tag: Joi.string().max(20).messages({
+      "string.base": "接口标签必须是字符串",
+      "string.max": "接口标签长度不能大于20位",
     }),
     requestMethod: Joi.string()
       .valid("GET", "POST", "PUT", "DELETE", "PATCH")

@@ -7,15 +7,11 @@
       <el-table-column prop="auth" label="角色"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <div class="button-group">
-            <el-button type="primary" @click="handleEdit(scope.row)"
-              >编辑</el-button
-            >
-            <el-button type="danger" @click="handleDelete(scope.row)"
-              >删除</el-button
-            >
-          </div>
-        </template>
+  <div class="button-group">
+    <el-button type="primary" :disabled="scope.$index === 0" @click="handleEdit(scope.row)">编辑</el-button>
+    <el-button type="danger" :disabled="scope.$index === 0" @click="handleDelete(scope.row)">删除</el-button>
+  </div>
+</template>
       </el-table-column>
     </el-table>
     <el-button class="addButton" text @click="addMember1">邀请用户</el-button>
@@ -42,7 +38,6 @@
         <el-form-item label="邮箱" prop="email">
           <el-input
             v-model="editForm.email"
-            :style="{ width: '73%' }"
           ></el-input>
         </el-form-item>
         <el-form-item label="权限" prop="auth">
