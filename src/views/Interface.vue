@@ -351,14 +351,18 @@ const sendRequest = () => {
   console.log("请求头：", reqHeader.value)
 }
 
-
+const InterfaceId = defineProps({
+  InterfaceId: String,
+})
+console.log(InterfaceId)
 </script>
 
 <style scoped>
 .main {
-  margin: 100px auto;
-  width: 1200px;
-  height: 600px;
-
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 5px;
 }
 </style>

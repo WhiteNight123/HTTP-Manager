@@ -5,11 +5,11 @@ import My from "../views/My.vue";
 import Welcome from "../views/Welcome.vue";
 import Projects from "../views/Projects.vue";
 import Nopage from "../views/404.vue";
-import Interface from "../views/Interface.vue";
+import InterfaceTree from "../components/InterfaceTree.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Members from "../views/Members.vue";
 import Home from "../components/Home.vue";
-import Dialog from "../components/Dialog.vue";
+
 
 const routes = [
   {
@@ -54,8 +54,8 @@ const routes = [
       },
       {
         path: "/interfaces",
-        name: "Interface",
-        component: Interface,
+        name: "Interfaces",
+        component: InterfaceTree,
       },
     ],
   },
@@ -64,11 +64,7 @@ const routes = [
     name: "404",
     component: Nopage,
   },
-  {
-    path: "/dialog",
-    name: "Dialog",
-    component: Dialog,
-  },
+
 ];
 
 const router = createRouter({

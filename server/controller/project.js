@@ -168,7 +168,6 @@ exports.addMember = async (req, res, next) => {
     let { email, projectId, auth } = req.body;
     // 根据用户email查找用户id
     const userId = await User.findOne({ email });
-    console.log(userId);
     if (!userId) {
       return res.status(400).json({
         code: 400,

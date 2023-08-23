@@ -2,12 +2,22 @@
   <Header></Header>
   <el-button
     class="create-button"
-    type="primary"
     :icon="Plus"
     @click="dialogFormVisible = true"
   >
     创建项目
   </el-button>
+  <el-table
+    :data="projectList"
+    class="project-list"
+    @row-click="handleRowClick"
+  >
+    <el-table-column prop="name" label="项目名称"></el-table-column>
+    <el-table-column prop="description" label="项目描述"></el-table-column>
+    <el-table-column prop="creator" label="创建者"></el-table-column>
+    <el-table-column prop="createTime" label="创建时间"></el-table-column>
+    <el-table-column prop="interfaceCount" label="接口数量"></el-table-column>
+  </el-table>
   <el-dialog v-model="dialogFormVisible" title="创建项目">
     <el-form :model="newProject" :rules="rules" ref="projectFormRef">
       <el-form-item label="项目名称" prop="name">
@@ -24,17 +34,6 @@
       </span>
     </template>
   </el-dialog>
-  <el-table
-    :data="projectList"
-    class="project-list"
-    @row-click="handleRowClick"
-  >
-    <el-table-column prop="name" label="项目名称"></el-table-column>
-    <el-table-column prop="description" label="项目描述"></el-table-column>
-    <el-table-column prop="creator" label="创建者"></el-table-column>
-    <el-table-column prop="createTime" label="创建时间"></el-table-column>
-    <el-table-column prop="interfaceCount" label="接口数量"></el-table-column>
-  </el-table>
 </template>
 
 <script setup>
@@ -123,7 +122,7 @@ getProjectList();
 
 <style scoped>
 .el-button.create-button {
-  margin-left: 15px;
+  margin-left: 30px;
 }
 .el-select {
   width: 300px;

@@ -55,7 +55,6 @@ exports.createInterface = async (req, res, next) => {
 exports.getInterfaces = async (req, res, next) => {
   try {
     let { projectId } = req.params;
-    let userId = req.userData._id;
     // 1. 判断项目是否存在
     let project = await Project.findOne({ _id: projectId });
     // 2. 如果项目不存在，返回错误信息
@@ -69,11 +68,21 @@ exports.getInterfaces = async (req, res, next) => {
     // 3. 如果项目存在，获取所有接口
     // 3.1 获取所有接口
     const interfaces = await Interface.find({ projectId: projectId });
+    // 提取接口的tag，去重后生成一个数组，添加到interfaces中
+    let tags = [];
+    interfaces.forEach((item) => {
+      if (item.tag) {
+        tags.push(item.tag);
+      }
+    });
     // 3.2 返回响应
     res.status(200).json({
       code: 200,
       msg: "获取接口成功!",
-      data: interfaces,
+      data: {
+        tag: [...new Set(tags)],
+        interfaces: interfaces,
+      },
     });
   } catch (err) {
     next(err);

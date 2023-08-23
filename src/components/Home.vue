@@ -1,8 +1,9 @@
 <template>
   <div>
-    <Header></Header>
+    <el-container style="height: 100vh;">
+    <el-header><Header></Header></el-header>
     <el-container>
-      <el-aside width="150px">
+      <el-aside width="120px">
         <!-- 侧边栏内容 -->
         <el-menu
           class="el-menu-vertical"
@@ -14,9 +15,7 @@
           <el-menu-item index="Members">用户管理</el-menu-item>
         </el-menu>
       </el-aside>
-
-      <el-container>
-        <el-main>
+        <el-main style="padding: 5px; width: 100%;">
           <!-- 主要内容区域 -->
           <router-view></router-view>
         </el-main>
@@ -33,7 +32,6 @@ import router from "../router";
 import { projectStore } from "../store/project";
 const store = projectStore();
 const activeMenu = ref("dashboard");
-
 
 const handleMenuSelect = (index) => {
   activeMenu.value = index;
@@ -55,4 +53,5 @@ onMounted(() => {
 });
 </script>
 
-<style></style>
+<style>
+</style>

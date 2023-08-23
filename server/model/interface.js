@@ -120,7 +120,7 @@ function interfaceValidator(data) {
       "string.base": "接口描述必须是字符串",
       "string.max": "接口描述长度不能大于200位",
     }),
-    tag: Joi.string().max(20).messages({
+    tag: Joi.string().allow('').max(20).messages({
       "string.base": "接口标签必须是字符串",
       "string.max": "接口标签长度不能大于20位",
     }),
