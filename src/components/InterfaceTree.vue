@@ -1,13 +1,16 @@
 <template>
   <el-container style="width: 100%; height: 100%">
     <el-aside>
-      <p style="margin-left: 10px">树形控件</p>
+      <span style="margin-left: 10px">树形控件</span>
+     
       <el-tree
         :data="dataSource"
         node-key="id"
         default-expand-all
         :expand-on-click-node="false"
         class="custom-tree"
+        :highlight-current="true"
+        ref="treeRef"
       >
         <template #default="{ node, data }">
           <span class="custom-tree-node">
@@ -52,12 +55,13 @@
               </el-dropdown>
             </span>
             <div v-else class="other-node" @click="handleClick(data)">
-              <el-text :style="{ color: textColor(data) }"
-                >{{ data.data.requestMethod }} &nbsp;
-              </el-text>
-              <el-text> {{ node.label }}</el-text>
               <el-dropdown trigger="contextmenu" class="node-dropdown">
-                <span class="el-dropdown-link"></span>
+                <el-row class="el-dropdown-link">
+                  <el-text :style="{ color: textColor(data) }"
+                    >{{ data.data.requestMethod }} &nbsp;
+                  </el-text>
+                  <el-text> {{ node.label }}</el-text>
+                </el-row>
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item @click="remove(node, data)"
@@ -72,7 +76,7 @@
       </el-tree>
     </el-aside>
     <el-main>
-      <InterfaceDetail :InterfaceId="InterfaceId" :key="detailKey" />
+      <InterfaceDetail :interfaceData="InterfaceData" :key="detailKey" />
     </el-main>
   </el-container>
   <el-dialog v-model="addFolderVisible" title="新建文件夹" width="30%">
@@ -81,7 +85,7 @@
         <el-text style="white-space: nowrap; margin-right: 10px">
           文件夹名称
         </el-text>
-        <el-input v-model="newFoldername"></el-input>
+        <el-input v-model="newFoldername" :maxlength="10"></el-input>
       </div>
     </el-row>
     <span slot="footer" class="dialog-footer">
@@ -95,7 +99,7 @@
         <el-text style="white-space: nowrap; margin-right: 10px">
           接口名称
         </el-text>
-        <el-input v-model="newInterfacename"></el-input>
+        <el-input v-model="newInterfacename" :maxlength="10"></el-input>
       </div>
     </el-row>
     <span slot="footer" class="dialog-footer">
@@ -106,15 +110,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import InterfaceDetail from "../views/Interface.vue";
 import { Files, Folder } from "@element-plus/icons-vue";
-import { getInterfaces } from "../api/interface";
+import { getInterfaces, deleteInterface, getHistory } from "../api/interface";
 import { ElMessage } from "element-plus";
 import { projectStore } from "../store/project";
 let detailKey = 0;
-const InterfaceId = ref();
-let id = 1000;
+// type = normal 为普通接口， type = new 为新建接口， type = none 为未选择接口
+const InterfaceData = ref({ type: "none" });
+const treeRef = ref();
+let id = 1;
 let addFolderVisible = ref(false);
 const addInterfaceVisible = ref(false);
 const newFoldername = ref("");
@@ -131,17 +137,14 @@ const dataSource = ref([
 
 function appendContents(data) {
   addFolderVisible.value = true;
-  console.log(data);
   tmpData = data;
 }
 
 function appendInterface(data) {
   addInterfaceVisible.value = true;
-  console.log(data);
   tmpData = data;
 }
 function textColor(data) {
-  console.log(data.data.requestMethod);
   switch (data.data.requestMethod) {
     case "GET":
       return "#67C23Ac0";
@@ -170,7 +173,7 @@ const getInterfaces1 = async () => {
       res.data.tag.forEach((tag, index) => {
         tagMap[tag] = index + 2;
         result.children.push({
-          id: index + 2,
+          id: id++,
           label: tag,
           type: "contents",
           children: [],
@@ -180,14 +183,14 @@ const getInterfaces1 = async () => {
         const tagIndex = tagMap[interfaceData.tag];
         const contents = tagIndex ? result.children[tagIndex - 2] : result;
         contents.children.push({
-          id: contents.children.length + 1,
+          id: id++,
           label: interfaceData.name,
           type: "interface",
           data: interfaceData,
         });
       });
       dataSource.value = [result];
-      console.log([result]);
+
     }
   } catch (err) {
     console.log(err);
@@ -195,7 +198,8 @@ const getInterfaces1 = async () => {
   }
 };
 const handleClick = (data) => {
-  InterfaceId.value = data.data._id;
+  console.log(data);
+  InterfaceData.value = { InterfaceId: data.data._id, type: "normal" };
   // 为了强制渲染
   detailKey++;
 };
@@ -235,14 +239,32 @@ const handleAddInterface = () => {
   tmpData.children.push(newChild);
   dataSource.value = [...dataSource.value];
   addInterfaceVisible.value = false;
+  InterfaceData.value = {
+    type: "new",
+    data: { tag: tmpData.label, name: newInterfacename.value },
+  };
+  // 为了强制渲染
+  detailKey++;
+  nextTick(() => {
+    treeRef.value.setCurrentNode(newChild);
+  });
 };
 
-const remove = (node, data) => {
-  const parent = node.parent;
-  const children = parent.data.children || parent.data;
-  const index = children.findIndex((d) => d.id === data.id);
-  children.splice(index, 1);
-  dataSource.value = [...dataSource.value];
+const remove = async (node, data) => {
+  try {
+    if (data.data._id) {
+      console.log(data.data._id);
+      //await deleteInterface(data.data._id);
+    }
+    const parent = node.parent;
+    const children = parent.data.children || parent.data;
+    const index = children.findIndex((d) => d.id === data.id);
+    children.splice(index, 1);
+    dataSource.value = [...dataSource.value];
+  } catch (err) {
+    console.log(err);
+    ElMessage.error(err);
+  }
 };
 
 // 处理右键菜单
@@ -267,6 +289,8 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener("contextmenu", handleContextMenu);
 });
+
+
 </script>
 
 <style scoped>
@@ -274,7 +298,7 @@ onUnmounted(() => {
   border-right: 1px solid #a9a9a97a;
   box-sizing: border-box;
   height: 100%;
-  width: 200px;
+  width: 250px;
   margin-left: -10px;
 }
 

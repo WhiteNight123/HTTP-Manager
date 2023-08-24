@@ -1,6 +1,5 @@
 const { Interface } = require("../model/interface");
 const { Project } = require("../model/project");
-const jsondiffpatch = require("jsondiffpatch").create();
 
 // 创建接口
 exports.createInterface = async (req, res, next) => {
@@ -27,7 +26,7 @@ exports.createInterface = async (req, res, next) => {
           version: 1,
           updatedAt: Date.now(),
           updatedBy: userId,
-          data: JSON.stringify(req.validValue),
+          data: JSON.stringify(req.validValue, null, 2),
         },
       ],
     });
@@ -139,7 +138,7 @@ exports.updateInterface = async (req, res, next) => {
       });
     }
     // 3. 将 req.body 转换为 JSON，然后将其转换为字符串并存储在 interface.history 中
-    let data = JSON.stringify(req.validValue);
+    let data = JSON.stringify(req.validValue, null, 2);
     let historyVersion = {
       version: interface.history.length + 1,
       updatedAt: Date.now(),
@@ -206,7 +205,7 @@ exports.getInterfaceHistory = async (req, res, next) => {
     // 1. 判断接口是否存在
     let interface = await Interface.findOne({ _id: interfaceId }).select(
       "history"
-    );
+    ).populate("history.updatedBy");
     // 2. 如果接口不存在，返回错误信息
     if (!interface) {
       return res.status(400).json({
@@ -215,11 +214,10 @@ exports.getInterfaceHistory = async (req, res, next) => {
         data: { interfaceId },
       });
     }
-    const diffResult = jsondiffpatch.diff(
-      JSON.parse(interface.history[0].data),
-      JSON.parse(interface.history[1].data)
-    );
-    console.log(diffResult);
+    // 将接口的历史版本按照更新时间倒序排列
+    interface.history.sort((a, b) => {
+      return b.updatedAt - a.updatedAt;
+    });
     // 3 返回响应
     res.status(200).json({
       code: 200,

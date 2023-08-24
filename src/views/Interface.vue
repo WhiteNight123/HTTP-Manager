@@ -1,4 +1,9 @@
 <template>
+  <div>
+    <div v-if="parentData.interfaceData.type === 'none'">
+      <img src="../assets/img/welcome.svg" alt="No data available" />
+    </div>
+    <div v-else>
   <div class="main">
     <div class="header">
       <el-row>
@@ -191,6 +196,8 @@
       <div v-else >点击"发送请求"按钮获取返回结果</div>
     </div>
   </div>
+</div>
+  </div>
 </template>
 
 <script setup>
@@ -351,10 +358,10 @@ const sendRequest = () => {
   console.log("请求头：", reqHeader.value)
 }
 
-const InterfaceId = defineProps({
-  InterfaceId: String,
+const parentData= defineProps({
+interfaceData: Object
 })
-console.log(InterfaceId)
+console.log(parentData.interfaceData)
 </script>
 
 <style scoped>

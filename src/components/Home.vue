@@ -3,7 +3,7 @@
     <el-container style="height: 100vh;">
     <el-header><Header></Header></el-header>
     <el-container>
-      <el-aside width="120px">
+      <el-aside width="100px">
         <!-- 侧边栏内容 -->
         <el-menu
           class="el-menu-vertical"

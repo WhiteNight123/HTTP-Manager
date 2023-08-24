@@ -51,11 +51,10 @@ export function getHistory(interfaceId) {
 }
 
 // 回滚历史版本
-export function rollbackHistory(interfaceId, historyId, data) {
+export function rollbackHistory(interfaceId, historyId) {
   return request({
     url: `/api/interface/${interfaceId}/history/${historyId}`,
-    method: "post",
-    data,
+    method: "put",
   });
 }
 

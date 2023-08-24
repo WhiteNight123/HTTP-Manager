@@ -9,13 +9,13 @@ import InterfaceTree from "../components/InterfaceTree.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Members from "../views/Members.vue";
 import Home from "../components/Home.vue";
-
+import Test from "../components/History.vue"
 
 const routes = [
   {
     path: "/",
     name: "Welcom",
-    component: Welcome,
+    component: Test,
   },
   {
     path: "/login",
