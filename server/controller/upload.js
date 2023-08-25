@@ -42,6 +42,7 @@ function extractResponse(response) {
 // 上传并解析文件
 exports.upload = (req, res, next) => {
   try {
+    console.log(req.file);
     SwaggerParser.parse(req.file.path)
       .then((api) => {
         const swagger = [];
@@ -59,6 +60,10 @@ exports.upload = (req, res, next) => {
             // 提取接口信息
             const name = operation.summary;
             const description = operation.description;
+            let tag = "";
+            if (operation.tags && operation.tags.length > 0) {
+              tag = operation.tags[0];
+            }
             const requestMethod = method.toUpperCase();
             // 将路径参数格式转换为路由参数格式
             const requestPath = path.replace(/\{(\w+)\}/g, ":$1");
@@ -156,6 +161,7 @@ exports.upload = (req, res, next) => {
             swagger.push({
               name,
               description,
+              tag,
               requestMethod,
               requestPath,
               requestHeaders,
@@ -165,7 +171,7 @@ exports.upload = (req, res, next) => {
             });
           }
         }
-        console.log(util.inspect(swagger, false, null, true));
+        //console.log(util.inspect(swagger, false, null, true));
         res.status(200).json({
           code: 200,
           msg: "解析文件成功!",

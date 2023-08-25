@@ -3,11 +3,8 @@
     src="../assets/img/history.svg"
     alt="历史记录"
     @click="showHistory"
-    style="width: 18px; height: 18px"
+    style="width: 24px; height: 24px"
   />
-  <el-button type="primary" style="margin-left: 16px" @click="drawer = true">
-    open
-  </el-button>
 
   <el-drawer v-model="drawer" title="历史记录" size="350">
     <el-table :data="historyData" @row-click="showData">
@@ -18,10 +15,10 @@
   <el-dialog v-model="dialogDiffVisible" title="差异对比">
     <el-row>
       <el-col :span="12">
-        <el-text size="large">历史数据</el-text>
+        <el-text size="large" type="danger">历史数据</el-text>
       </el-col>
       <el-col :span="12">
-        <el-text size="large">当前数据</el-text>
+        <el-text size="large" type="success">当前数据</el-text>
       </el-col>
     </el-row>
     <code-diff

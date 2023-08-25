@@ -10,7 +10,10 @@
       "name": "用户"
     },
     {
-      "name": "项目"
+      "name": "接口"
+    },
+    {
+      "name": "接口/1"
     }
   ],
   "paths": {
@@ -31,8 +34,7 @@
               "schema": {
                 "$ref": "#/components/schemas/user",
                 "x-apifox-overrides": {
-                  "password": null,
-                  "projects": null
+                  "password": null
                 }
               },
               "example": {
@@ -197,23 +199,23 @@
         "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102385639-run"
       }
     },
-    "/api/project/{id}": {
+    "/api/interface/{interfaceId}": {
       "patch": {
-        "summary": "修改项目",
-        "x-apifox-folder": "项目",
+        "summary": "更改接口",
+        "x-apifox-folder": "接口",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "",
+        "description": "修改接口说明",
         "tags": [
-          "项目"
+          "接口"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "interfaceId",
             "in": "path",
-            "description": "",
+            "description": "接口Id",
             "required": true,
-            "example": "64d72ffc9d1e92800db33d28",
+            "example": "64d782b65239aaa91333922f",
             "schema": {
               "type": "string"
             }
@@ -221,8 +223,8 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "",
-            "required": false,
+            "description": "必选token",
+            "required": true,
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4",
             "schema": {
               "type": "string"
@@ -234,44 +236,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "x-apifox-refs": {
-                  "01H7MB8CGW6AMQ8H9PWQGWWDMB": {
-                    "$ref": "#/components/schemas/project",
-                    "x-apifox-overrides": {
-                      "createTime": null,
-                      "id": null,
-                      "creator": null,
-                      "members": null,
-                      "interface-num": null,
-                      "interfaces": null
-                    }
-                  }
-                },
-                "x-apifox-orders": [
-                  "01H7MB8CGW6AMQ8H9PWQGWWDMB"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "title": "项目名称"
-                  },
-                  "description": {
-                    "type": "string",
-                    "title": "项目描述"
-                  },
-                  "interfaceCount": {
-                    "type": "integer",
-                    "title": "接口数量"
-                  }
-                },
-                "required": [
-                  "name"
-                ],
-                "x-apifox-ignore-properties": [
-                  "name",
-                  "description",
-                  "interfaceCount"
-                ]
+                "properties": {},
+                "x-apifox-orders": [],
+                "x-apifox-ignore-properties": []
               },
               "example": ""
             }
@@ -284,23 +251,116 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {},
-                  "x-apifox-ignore-properties": [],
-                  "x-apifox-orders": []
+                  "x-apifox-refs": {
+                    "01H80K35G758VR13TH7TS664WT": {
+                      "$ref": "#/components/schemas/interface",
+                      "x-apifox-overrides": {
+                        "historys": null
+                      }
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "01H80K35G758VR13TH7TS664WT"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "title": "接口ID"
+                    },
+                    "name": {
+                      "type": "string",
+                      "title": "接口名称"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "requestMethod": {
+                      "type": "string",
+                      "title": "请求方法"
+                    },
+                    "requestPath": {
+                      "type": "string",
+                      "title": "接口地址"
+                    },
+                    "requestHeaders": {
+                      "type": "string",
+                      "title": "header参数",
+                      "description": "JSON.stringify(parameter)"
+                    },
+                    "requestParams": {
+                      "type": "string",
+                      "title": "query参数",
+                      "description": "JSON.stringify(parameter)"
+                    },
+                    "requestBody": {
+                      "type": "string",
+                      "title": "body参数",
+                      "description": "JSON.stringify(requestBody)"
+                    },
+                    "response": {
+                      "type": "string",
+                      "title": "返回数据",
+                      "description": "JSON.stringify(response)"
+                    },
+                    "projectId": {
+                      "type": "string",
+                      "title": "所属项目ID"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "requestMethod",
+                    "requestPath"
+                  ],
+                  "x-apifox-ignore-properties": [
+                    "id",
+                    "name",
+                    "description",
+                    "requestMethod",
+                    "requestPath",
+                    "requestHeaders",
+                    "requestParams",
+                    "requestBody",
+                    "response",
+                    "projectId"
+                  ]
                 },
                 "examples": {
                   "1": {
                     "summary": "成功示例",
                     "value": {
                       "code": 200,
-                      "msg": "修改成功!",
+                      "msg": "更新接口成功!",
                       "data": {
-                        "_id": "64dd7be412844cc36edc60cb",
-                        "name": "修改后的项目2",
-                        "description": "声易约月二论取领装半程统影。为北强己所记改山象增称关已共志。连长于组广选层求直更声装何共完度。以合难以水声线深较很。众难政思记发方广个体然清节节。",
-                        "creator": "64dd7ae412844cc36edc60b4",
-                        "createTime": "2023-08-17T01:46:12.261Z",
-                        "interfaceCount": 0
+                        "_id": "64d782b65239aaa91333922f",
+                        "name": "查询派蒙88",
+                        "description": "22222222222222222222米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游。",
+                        "method": "POST",
+                        "url": "http://fvvs.ru/zxhrmkovy",
+                        "headers": "nisi eiusmod eu veniam consectetur",
+                        "params": "occaecat laborum incididunt est et",
+                        "body": "Ut deserunt",
+                        "response": "dolor exercitation",
+                        "projectId": "64d74390ec1c47299894966b"
+                      }
+                    }
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": {
+                      "code": 200,
+                      "msg": "更新接口成功!",
+                      "data": {
+                        "_id": "64dd7ca612844cc36edc60ec",
+                        "name": "米哈游33",
+                        "description": "米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。",
+                        "requestMethod": "POST",
+                        "requestPath": "/afjsvglp.se/eksey",
+                        "requestHeaders": "esse sunt officia occaecat",
+                        "requestParams": "exercitation sint proident commodo",
+                        "requestBody": "ea dolor",
+                        "response": "Ut",
+                        "projectId": "64dd7bd112844cc36edc60c4"
                       }
                     }
                   }
@@ -309,7 +369,7 @@
             }
           }
         },
-        "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102438066-run"
+        "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102438233-run"
       }
     },
     "/mock/add": {
@@ -359,188 +419,39 @@
         },
         "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-103271849-run"
       }
+    },
+    "/111": {
+      "get": {
+        "summary": "111",
+        "x-apifox-folder": "接口/1",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "接口/1"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-104827051-run"
+      }
     }
   },
   "components": {
     "schemas": {
-      "project": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "项目ID"
-          },
-          "name": {
-            "type": "string",
-            "title": "项目名称"
-          },
-          "description": {
-            "type": "string",
-            "title": "项目描述"
-          },
-          "creator": {
-            "type": "string",
-            "title": "项目创建者ID"
-          },
-          "members": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "x-apifox-refs": {
-                "01H7J3RQRF2QEXJHBPRJ0SYJB4": {
-                  "$ref": "#/components/schemas/user",
-                  "x-apifox-overrides": {
-                    "password": null,
-                    "projects": null
-                  }
-                }
-              },
-              "x-apifox-orders": [
-                "01H7J3RQRF2QEXJHBPRJ0SYJB4"
-              ],
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "title": "用户ID"
-                },
-                "email": {
-                  "type": "string",
-                  "title": "邮箱"
-                },
-                "name": {
-                  "type": "string",
-                  "title": "用户名"
-                },
-                "bio": {
-                  "type": "string",
-                  "title": "个人简介"
-                }
-              },
-              "required": [
-                "email",
-                "name"
-              ],
-              "x-apifox-ignore-properties": [
-                "id",
-                "email",
-                "name",
-                "bio"
-              ]
-            },
-            "title": "项目成员",
-            "description": "该项目含有的用户"
-          },
-          "createTime": {
-            "type": "string",
-            "title": "创建时间"
-          },
-          "interfaceCount": {
-            "type": "integer",
-            "title": "接口数量"
-          },
-          "interfaces": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "x-apifox-refs": {
-                "01H7J3SB1HMTXB71BDRFSF9E69": {
-                  "$ref": "#/components/schemas/interface",
-                  "x-apifox-overrides": {
-                    "query-parameters": null,
-                    "body-parameters": null,
-                    "header-parameters": null,
-                    "return-data": null,
-                    "project": null,
-                    "historys": null
-                  }
-                }
-              },
-              "x-apifox-orders": [
-                "01H7J3SB1HMTXB71BDRFSF9E69"
-              ],
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "title": "接口ID"
-                },
-                "name": {
-                  "type": "string",
-                  "title": "接口名称"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "requestMethod": {
-                  "type": "string",
-                  "title": "请求方法"
-                },
-                "requestPath": {
-                  "type": "string",
-                  "title": "接口地址"
-                },
-                "requestHeaders": {
-                  "type": "string",
-                  "title": "header参数",
-                  "description": "JSON.stringify(parameter)"
-                },
-                "requestParams": {
-                  "type": "string",
-                  "title": "query参数",
-                  "description": "JSON.stringify(parameter)"
-                },
-                "requestBody": {
-                  "type": "string",
-                  "title": "body参数",
-                  "description": "JSON.stringify(requestBody)"
-                },
-                "response": {
-                  "type": "string",
-                  "title": "返回数据",
-                  "description": "JSON.stringify(response)"
-                },
-                "projectId": {
-                  "type": "string",
-                  "title": "所属项目ID"
-                }
-              },
-              "required": [
-                "name",
-                "requestMethod",
-                "requestPath"
-              ],
-              "x-apifox-ignore-properties": [
-                "id",
-                "name",
-                "description",
-                "requestMethod",
-                "requestPath",
-                "requestHeaders",
-                "requestParams",
-                "requestBody",
-                "response",
-                "projectId"
-              ]
-            },
-            "title": "接口列表",
-            "description": "该项目含有的接口"
-          }
-        },
-        "x-apifox-orders": [
-          "id",
-          "name",
-          "description",
-          "creator",
-          "members",
-          "createTime",
-          "interfaceCount",
-          "interfaces"
-        ],
-        "required": [
-          "name"
-        ],
-        "x-apifox-ignore-properties": [],
-        "x-apifox-folder": ""
-      },
       "interface": {
         "type": "object",
         "properties": {
@@ -604,8 +515,7 @@
                     "01H7PCAM6PKP8MZQR1YX1GSYDJ": {
                       "$ref": "#/components/schemas/user",
                       "x-apifox-overrides": {
-                        "password": null,
-                        "projects": null
+                        "password": null
                       }
                     }
                   },

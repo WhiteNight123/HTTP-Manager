@@ -265,7 +265,6 @@ exports.rollbackInterface = async (req, res, next) => {
       updatedBy: userId,
       data: history.data,
     };
-    console.log(data);
     // 5.2 更新接口
     interface = await Interface.findByIdAndUpdate(
       interfaceId,

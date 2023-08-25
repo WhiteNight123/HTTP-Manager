@@ -59,11 +59,19 @@ export function rollbackHistory(interfaceId, historyId) {
 }
 
 // 上传文件
-export function uploadFile(data) {
+export function uploadFile(formData) {
   return request({
     url: "/api/upload",
     method: "post",
-    data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    transformRequest: [
+      function () {
+        return formData;
+      },
+    ],
+    data:formData,
   });
 }
 

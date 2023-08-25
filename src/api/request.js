@@ -27,7 +27,7 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    console.log(error.response);
+    console.log(error);
     if (error.response) {
       if (error.response.status === 401) {
         localStorage.removeItem("token");
