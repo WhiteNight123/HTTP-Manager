@@ -20,7 +20,7 @@ exports.createInterface = async (req, res, next) => {
     // 3.1 创建接口
     const interface = await Interface.create({
       ...req.validValue,
-      project: projectId,
+      projectId: projectId,
       history: [
         {
           version: 1,
@@ -44,6 +44,78 @@ exports.createInterface = async (req, res, next) => {
       code: 200,
       msg: "创建接口成功!",
       data: interface,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// 批量创建接口
+exports.batchCreateInterface = async (req, res, next) => {
+  try {
+    let { type, datas, projectId } = req.body;
+    let userId = req.userData._id;
+    // 1. 判断项目是否存在
+    let project = await Project.findOne({ _id: projectId });
+    // 2. 如果项目不存在，返回错误信息
+    if (!project) {
+      return res.status(400).json({
+        code: 400,
+        msg: "项目不存在!",
+        data: { projectId },
+      });
+    }
+    // 判断类型，如果是覆盖，先删除所有接口
+    if (type === "overwrite") {
+      await Interface.deleteMany({ projectId: projectId });
+      // 项目接口数量置为0
+      project = await Project.findByIdAndUpdate(
+        projectId,
+        {
+          interfaceCount: 0,
+          $set: { interfaces: [] },
+        },
+        { new: true }
+      );
+    } else if (type !== "append") {
+      return res.status(400).json({
+        code: 400,
+        msg: "type 参数错误!",
+        data: { type },
+      });
+    }
+    // 批量创建接口
+    let interfaces = [];
+    for (let i = 0; i < datas.length; i++) {
+      let data = datas[i];
+      let interface = await Interface.create({
+        ...data,
+        requestHeaders: JSON.stringify(data.requestHeaders, null, 2),
+        requestParams: JSON.stringify(data.requestParams, null, 2),
+        requestBody: JSON.stringify(data.requestBody, null, 2),
+        response: JSON.stringify(data.response, null, 2),
+        projectId: projectId,
+        history: [
+          {
+            version: 1,
+            updatedAt: Date.now(),
+            updatedBy: userId,
+            data: JSON.stringify(data, null, 2),
+          },
+        ],
+      });
+      interfaces.push(interface);
+    }
+    // 存到项目中，项目接口数量加interfaces.length
+    await Project.findByIdAndUpdate(projectId, {
+      interfaceCount: project.interfaceCount + interfaces.length,
+      $push: { interfaces: { $each: interfaces } },
+    });
+    // 返回响应
+    res.status(200).json({
+      code: 200,
+      msg: "批量创建接口成功!",
+      data: interfaces,
     });
   } catch (err) {
     next(err);
@@ -203,9 +275,9 @@ exports.getInterfaceHistory = async (req, res, next) => {
     let { interfaceId } = req.params;
     let userId = req.userData._id;
     // 1. 判断接口是否存在
-    let interface = await Interface.findOne({ _id: interfaceId }).select(
-      "history"
-    ).populate("history.updatedBy");
+    let interface = await Interface.findOne({ _id: interfaceId })
+      .select("history")
+      .populate("history.updatedBy");
     // 2. 如果接口不存在，返回错误信息
     if (!interface) {
       return res.status(400).json({

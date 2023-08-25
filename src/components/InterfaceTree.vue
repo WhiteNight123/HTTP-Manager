@@ -2,7 +2,7 @@
   <el-container style="width: 100%; height: 100%">
     <el-aside>
       <span style="margin-left: 10px">树形控件</span>
-     
+
       <el-tree
         :data="dataSource"
         node-key="id"
@@ -190,7 +190,6 @@ const getInterfaces1 = async () => {
         });
       });
       dataSource.value = [result];
-
     }
   } catch (err) {
     console.log(err);
@@ -289,8 +288,6 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener("contextmenu", handleContextMenu);
 });
-
-
 </script>
 
 <style scoped>

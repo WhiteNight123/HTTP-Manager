@@ -9,6 +9,15 @@ export function createInterface(data) {
   });
 }
 
+// 批量创建接口
+export function batchCreateInterface(data) {
+  return request({
+    url: "/api/interface/batch",
+    method: "post",
+    data,
+  });
+}
+
 // 获取指定项目的所有接口
 export function getInterfaces(projectId) {
   return request({
@@ -64,14 +73,14 @@ export function uploadFile(formData) {
     url: "/api/upload",
     method: "post",
     headers: {
-      'Content-Type': 'multipart/form-data'
+      "Content-Type": "multipart/form-data",
     },
     transformRequest: [
       function () {
         return formData;
       },
     ],
-    data:formData,
+    data: formData,
   });
 }
 

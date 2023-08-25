@@ -1,20 +1,24 @@
 <template>
   <div class="project-details">
     <el-card>
-      <div class="project-name">{{ project.name }}</div>
-      <div class="project-description">项目介绍：{{ project.description }}</div>
+      <div class="project-name">{{ projectData.name }}</div>
+      <div class="project-description">
+        项目介绍：{{ projectData.description }}
+      </div>
       <div class="project-info">
         <el-row>
           <el-col :span="12">
-            <p style="font-size: 18px">创建者: {{ project.creator }}</p>
-            <p style="font-size: 18px">创建时间: {{ project.createTime }}</p>
+            <p style="font-size: 18px">创建者: {{ projectData.creator }}</p>
+            <p style="font-size: 18px">
+              创建时间: {{ projectData.createTime }}
+            </p>
           </el-col>
           <el-col :span="12">
             <p style="font-size: 18px">
-              接口数量: {{ project.interfaceCount }}
+              接口数量: {{ projectData.interfaceCount }}
             </p>
             <p style="font-size: 18px">
-              项目成员数量: {{ project.memberCount }}
+              项目成员数量: {{ projectData.memberCount }}
             </p>
           </el-col>
         </el-row>
@@ -50,7 +54,7 @@
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip" slot="tip">支持Swagger/OpenApi 3.0</div>
       </el-upload>
-      <el-card shadow="hover" style="margin-top: 10px">
+      <el-card shadow="hover" style="margin-top: 10px; margin-bottom: 5px">
         <el-Text type="primary">导入数据预览</el-Text>
         <el-tree
           ref="importTreeRef"
@@ -82,12 +86,15 @@
           </template>
         </el-tree>
       </el-card>
-      <span slot="footer" class="dialog-footer" style="margin-top: 20px">
+      <el-radio-group v-model="radio1" class="ml-4">
+        <el-radio label="append">追加模式</el-radio>
+        <el-radio label="overwrite">覆盖模式</el-radio>
+      </el-radio-group>
+      <span slot="footer" class="dialog-footer" style="margin-top: 5px">
         <el-button @click="importDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="handleImport">确定导入</el-button>
       </span>
     </el-dialog>
-
     <el-dialog v-model="updateDialogVisible" title="修改项目" width="40%">
       <el-form :model="editForm" ref="editForm1">
         <el-form-item label="项目" prop="name">
@@ -112,27 +119,31 @@
 <script setup>
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
+import router from "../router";
 import { Upload, Edit, Delete } from "@element-plus/icons-vue";
 import { Files, Folder } from "@element-plus/icons-vue";
 import { updateProject, getProject, deleteProject } from "../api/project";
+import { batchCreateInterface } from "../api/interface";
 import { projectStore } from "../store/project";
 const store = projectStore();
 const projectId = store.getProjectId;
-import router from "../router";
 const uploadRef = ref();
 const fileList = ref([]);
 const editForm = ref({});
 const importTreeRef = ref();
+const radio1 = ref("append");
 const updateDialogVisible = ref(false);
 const importDialogVisible = ref(false);
-const project = ref({});
-
 const importData = ref([]);
+const projectData = ref({});
+let id = 1;
+
+// 获取项目详情
 const getProjectDetail = async () => {
   try {
     const res = await getProject(projectId);
     console.log(res);
-    project.value = {
+    projectData.value = {
       ...res.data,
       creator: res.data.creator.name,
       createTime: new Date(res.data.createTime).toLocaleDateString(),
@@ -144,7 +155,8 @@ const getProjectDetail = async () => {
     ElMessage.error(error);
   }
 };
-let id = 1;
+
+// 根据请求方法返回对应的颜色
 function textColor(data) {
   switch (data.data.requestMethod) {
     case "GET":
@@ -161,20 +173,22 @@ function textColor(data) {
   }
 }
 
+// 打开导入接口弹窗
 const importInterface = () => {
   importDialogVisible.value = true;
 };
 
+// 处理上传文件超过限制
 const handleExceed = (files, fileList) => {
   ElMessage.warning("只能上传一个文件");
 };
+
 const handleBeforeUpload = (file) => {
   // 限制文件大小
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
     ElMessage.error("上传文件大小不能超过 2MB!");
     throw new Error("上传文件大小不能超过 2MB!");
-    return false;
   }
   // 检查是否为json文件
   console.log(file);
@@ -185,25 +199,9 @@ const handleBeforeUpload = (file) => {
   }
   return true;
 };
-const handleImport = () => {
-  //console.log(importTreeRef.value.getCheckedNodes());
-  if (importData.value.length === 0) {
-    ElMessage.error("请先上传文件");
-    return;
-  }
-  if (importTreeRef.value.getCheckedNodes().length === 0) {
-    ElMessage.error("请选择要导入的接口");
-    return;
-  }
-  // 选出type为interface的节点
-  const interfaces = importTreeRef.value.getCheckedNodes().filter((node) => {
-    return node.type === "interface";
-  });
-  console.log(interfaces);
-};
 
+// 上传成功的钩子
 const handleSuccess = (response, file, fileList) => {
-  console.log(response);
   if (response.data) {
     const result = {
       id: 1,
@@ -241,17 +239,54 @@ const handleSuccess = (response, file, fileList) => {
     console.log(importData.value);
   }
 };
+
+// 上传失败的钩子
 const handleError = (err, file, fileList) => {
   console.log(err);
   ElMessage.error("上传失败");
 };
+
+// 导入接口
+const handleImport = async () => {
+  if (importData.value.length === 0) {
+    ElMessage.error("请先上传文件");
+    return;
+  }
+  if (importTreeRef.value.getCheckedNodes().length === 0) {
+    ElMessage.error("请选择要导入的接口");
+    return;
+  }
+  // 选出type为interface的节点
+  const interfaces = importTreeRef.value.getCheckedNodes().filter((node) => {
+    return node.type === "interface";
+  });
+  const interfaceData = {
+    type: radio1.value,
+    projectId: projectId,
+    datas: interfaces.map((interface1) => {
+      return interface1.data;
+    }),
+  };
+  try {
+    console.log(interfaceData);
+    await batchCreateInterface(interfaceData);
+    ElMessage.success("导入成功");
+    importDialogVisible.value = false;
+    getProjectDetail();
+  } catch (error) {
+    console.log(error);
+    ElMessage.error(error);
+  }
+};
+
 function editProject() {
   updateDialogVisible.value = true;
   editForm.value = {
-    name: project.value.name,
-    description: project.value.description,
+    name: projectData.value.name,
+    description: projectData.value.description,
   };
 }
+
 const handleUpdate = async () => {
   try {
     console.log(editForm.value);
