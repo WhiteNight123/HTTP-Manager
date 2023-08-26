@@ -3,9 +3,8 @@
     src="../assets/img/history.svg"
     alt="历史记录"
     @click="showHistory"
-    style="width: 24px; height: 24px"
+    style="width: 20px; height: 20px"
   />
-
   <el-drawer v-model="drawer" title="历史记录" size="350">
     <el-table :data="historyData" @row-click="showData">
       <el-table-column property="name" label="更改人" width="100" />
@@ -45,7 +44,7 @@ const historyDate = ref("");
 const historyId = ref("");
 const oldData = ref("");
 const newData = ref("");
-const interfaceId = "64e728a3163a57a3679e41e8"
+const interfaceId = "64e728a3163a57a3679e41e8";
 const showHistory = async () => {
   drawer.value = true;
   try {

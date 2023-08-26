@@ -215,6 +215,7 @@ const handleSuccess = (response, file, fileList) => {
         tags.push(item.tag);
       }
     });
+    tags = [...new Set(tags)];
     const tagMap = {};
     tags.forEach((tag, index) => {
       tagMap[tag] = index + 2;

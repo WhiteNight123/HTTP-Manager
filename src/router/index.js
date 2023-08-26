@@ -4,18 +4,17 @@ import Register from "../views/Register.vue";
 import My from "../views/My.vue";
 import Welcome from "../views/Welcome.vue";
 import Projects from "../views/Projects.vue";
-import Nopage from "../views/404.vue";
-import InterfaceTree from "../components/InterfaceTree.vue";
+import NoPage from "../views/404.vue";
+import InterfaceTree from "../views/InterfaceTree.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Members from "../views/Members.vue";
-import Home from "../components/Home.vue";
-import Test from "../components/History.vue"
+import Home from "../views/Home.vue";
 
 const routes = [
   {
     path: "/",
     name: "Welcom",
-    component: Test,
+    component: Welcome,
   },
   {
     path: "/login",
@@ -62,9 +61,8 @@ const routes = [
   {
     path: "/:pathMatch(.*)*",
     name: "404",
-    component: Nopage,
+    component: NoPage,
   },
-
 ];
 
 const router = createRouter({

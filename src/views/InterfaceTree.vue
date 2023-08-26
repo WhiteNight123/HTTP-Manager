@@ -2,7 +2,6 @@
   <el-container style="width: 100%; height: 100%">
     <el-aside>
       <span style="margin-left: 10px">树形控件</span>
-
       <el-tree
         :data="dataSource"
         node-key="id"
@@ -75,7 +74,7 @@
         </template>
       </el-tree>
     </el-aside>
-    <el-main>
+    <el-main style="--el-main-padding: 10px">
       <InterfaceDetail :interfaceData="InterfaceData" :key="detailKey" />
     </el-main>
   </el-container>
@@ -111,9 +110,9 @@
 
 <script setup>
 import { ref, nextTick } from "vue";
-import InterfaceDetail from "../views/Interface.vue";
+import InterfaceDetail from "../components/Interface.vue";
 import { Files, Folder } from "@element-plus/icons-vue";
-import { getInterfaces, deleteInterface, getHistory } from "../api/interface";
+import { getInterfaces, deleteInterface } from "../api/interface";
 import { ElMessage } from "element-plus";
 import { projectStore } from "../store/project";
 let detailKey = 0;
@@ -253,13 +252,14 @@ const remove = async (node, data) => {
   try {
     if (data.data._id) {
       console.log(data.data._id);
-      //await deleteInterface(data.data._id);
+      await deleteInterface(data.data._id);
     }
     const parent = node.parent;
     const children = parent.data.children || parent.data;
     const index = children.findIndex((d) => d.id === data.id);
     children.splice(index, 1);
     dataSource.value = [...dataSource.value];
+    ElMessage.success("删除成功");
   } catch (err) {
     console.log(err);
     ElMessage.error(err);

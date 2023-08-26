@@ -89,7 +89,7 @@ const goProjects = () => {
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  border-bottom: 1px solid #b8950ba2;
+  border-bottom: 1px solid #a9a9a97a;
 }
 .header-left {
   display: flex;
