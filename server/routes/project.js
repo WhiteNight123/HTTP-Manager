@@ -18,21 +18,21 @@ const project = require("../controller/project");
 router.get("/", auth, project.getProjects);
 
 // 获取指定项目
-router.get("/:id", project.getProject);
+router.get("/:projectId", project.getProject);
 
 // 创建项目
 router.post("/", [auth, validator(projectValidator)], project.createProject);
 
 // 修改指定项目
 router.patch(
-  "/:id",
+  "/:projectId",
   [auth, validator(updateProjectValidator), checkPermission("project")],
   project.updateProject
 );
 
 // 删除指定项目
 router.delete(
-  "/:id",
+  "/:projectId",
   [auth, checkPermission("project")],
   project.deleteProject
 );

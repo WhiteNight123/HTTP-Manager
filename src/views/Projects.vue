@@ -12,11 +12,11 @@
     class="project-list"
     @row-click="handleRowClick"
   >
-    <el-table-column prop="name" label="项目名称"></el-table-column>
-    <el-table-column prop="description" label="项目描述"></el-table-column>
-    <el-table-column prop="creator" label="创建者"></el-table-column>
-    <el-table-column prop="createTime" label="创建时间"></el-table-column>
-    <el-table-column prop="interfaceCount" label="接口数量"></el-table-column>
+    <el-table-column prop="name" label="项目名称" min-width="2%"></el-table-column>
+    <el-table-column prop="description" label="项目描述" min-width="8%"></el-table-column>
+    <el-table-column prop="creator" label="创建者" min-width="2%"></el-table-column>
+    <el-table-column prop="createTime" label="创建时间" min-width="2%"></el-table-column>
+    <el-table-column prop="interfaceCount" label="接口数量" min-width="2%"></el-table-column>
   </el-table>
   <el-dialog v-model="dialogFormVisible" title="创建项目">
     <el-form :model="newProject" :rules="rules" ref="projectFormRef">

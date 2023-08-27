@@ -38,7 +38,7 @@ export function getInterface(interfaceId) {
 export function updateInterface(interfaceId, data) {
   return request({
     url: `/api/interface/${interfaceId}`,
-    method: "put",
+    method: "patch",
     data,
   });
 }

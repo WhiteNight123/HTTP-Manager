@@ -74,7 +74,7 @@
         </template>
       </el-tree>
     </el-aside>
-    <el-main style="--el-main-padding: 10px">
+    <el-main style="--el-main-padding: 0; margin-top: 5px">
       <InterfaceDetail :interfaceData="InterfaceData" :key="detailKey" />
     </el-main>
   </el-container>

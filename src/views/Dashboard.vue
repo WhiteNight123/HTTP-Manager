@@ -302,6 +302,7 @@ const handleUpdate = async () => {
 
 const deleteProject1 = async () => {
   try {
+    console.log(projectId);
     await deleteProject(projectId);
     ElMessage.success("删除成功");
     router.push("/projects");

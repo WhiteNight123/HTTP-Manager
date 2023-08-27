@@ -46,14 +46,8 @@ exports.upload = (req, res, next) => {
     SwaggerParser.parse(req.file.path)
       .then((api) => {
         const swagger = [];
-        // 将路径参数格式转换为路由参数格式
-        const paths = api.paths;
-        for (const path in paths) {
-          // 将路径参数格式转换为路由参数格式
-          const expressPath = path.replace(/\{(\w+)\}/g, ":$1");
-          api.paths[expressPath] = paths[path];
-          if (expressPath !== path) delete api.paths[path];
-          const methods = api.paths[expressPath];
+        for (const path in api.paths) {
+          const methods = api.paths[path];
           // 遍历所有请求方法
           for (const method in methods) {
             const operation = methods[method];
@@ -65,8 +59,7 @@ exports.upload = (req, res, next) => {
               tag = operation.tags[0];
             }
             const requestMethod = method.toUpperCase();
-            // 将路径参数格式转换为路由参数格式
-            const requestPath = path.replace(/\{(\w+)\}/g, ":$1");
+            const requestPath = path;
             // 处理请求头
             const requestHeaders = operation.parameters
               .filter((param) => param.in === "header")

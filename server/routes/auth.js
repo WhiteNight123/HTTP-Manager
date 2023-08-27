@@ -3,8 +3,8 @@ const router = require("express").Router();
 const auth = require("../controller/auth");
 
 const validator = require("../middleware/validate");
-const { userValidator } = require("../model/user");
+const { userLoginValidator } = require("../model/user");
 
-router.post("/", validator(userValidator), auth.login);
+router.post("/", validator(userLoginValidator), auth.login);
 
 module.exports = router;
