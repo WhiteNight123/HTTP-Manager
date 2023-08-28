@@ -2,8 +2,8 @@
 // 该文件由接口管理工具自动生成，请勿手动修改
 const router = require("express").Router();
 const Mock = require("mockjs");
-router.patch("/api/interface/:interfaceId", function (req, res) {
-    const requiredHeaders = ["authorization"];
+router.post("/api/auth", function (req, res) {
+    const requiredHeaders = [];
     for (const header of requiredHeaders) {
         if (!req.headers[header]) {
             return res.status(400).json({
@@ -12,7 +12,7 @@ router.patch("/api/interface/:interfaceId", function (req, res) {
             });
         }
     }
-    const requiredPathParams = ["interfaceId","interfaceId2"];
+    const requiredPathParams = [];
     for (const param of requiredPathParams) {
         if (!req.params[param] && !req.query[param]) {
             return res.status(400).json({
@@ -21,7 +21,7 @@ router.patch("/api/interface/:interfaceId", function (req, res) {
             });
         }
     }
-    response = {"contentType":"application/json","content":[{"code":"200","msg":"@csentence","data":{"_id":"@string(26)","name":"@cname","historys":[{"historyname":"@ctitle"}]}},{"code":"300","msg":"失败了"},{"code":"400","msg":"失败了"}]};  
+    response = {"contentType":"application/json","content":[{"code":202,"data":{"name":"@cname","id":123},"msg":"Mock"}]};  
     const responseContent = response.content;
     if (responseContent.length === 0) {
         return res.status(200).json({
@@ -60,6 +60,14 @@ router.patch("/api/interface/:interfaceId", function (req, res) {
         selectedResponse = yaml.dump(selectedResponse);
     }
     const mockResponse = Mock.mock(selectedResponse);
-    res.status(statusCode).json(mockResponse);
+    // 根据不同的类型返回不同的响应
+    if (response.contentType === 'application/xml'){
+      res.set('Content-Type', 'application/xml');
+    } else if (response.contentType === 'application/yaml') {
+      res.set('Content-Type', 'application/yaml');
+    } else if (response.contentType === 'application/json') {
+      res.set('Content-Type', 'application/json');
+    }
+    res.status(statusCode).send(mockResponse);
 });
 module.exports = router;

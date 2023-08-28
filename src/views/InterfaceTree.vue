@@ -1,7 +1,6 @@
 <template>
   <el-container style="width: 100%; height: 100%">
     <el-aside>
-      <span style="margin-left: 10px">树形控件</span>
       <el-tree
         :data="dataSource"
         node-key="id"
@@ -74,7 +73,7 @@
         </template>
       </el-tree>
     </el-aside>
-    <el-main style="--el-main-padding: 0; margin-top: 5px">
+    <el-main style="--el-main-padding: 0; margin-top: 5px; padding-right: 10px">
       <InterfaceDetail :interfaceData="InterfaceData" :key="detailKey" />
     </el-main>
   </el-container>
@@ -241,7 +240,6 @@ const handleAddInterface = () => {
     type: "new",
     data: { tag: tmpData.label, name: newInterfacename.value },
   };
-  // 为了强制渲染
   detailKey++;
   nextTick(() => {
     treeRef.value.setCurrentNode(newChild);
@@ -259,6 +257,8 @@ const remove = async (node, data) => {
     const index = children.findIndex((d) => d.id === data.id);
     children.splice(index, 1);
     dataSource.value = [...dataSource.value];
+    InterfaceData.value = { type: "none" };
+    detailKey++;
     ElMessage.success("删除成功");
   } catch (err) {
     console.log(err);

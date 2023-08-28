@@ -10,7 +10,7 @@
   </div>
   <div v-else>
     <el-container style="min-width: 1003px">
-      <el-header>
+      <el-header style="height: 100px">
         <el-row align="middle">
           <el-col :span="3">
             <el-checkbox v-model="isMock" label="Mock服务器" border />
@@ -19,7 +19,7 @@
             <el-text type="primary" @click="openPrefixDialog">接口前缀</el-text>
           </el-col>
           <el-col :span="1" :offset="17">
-            <History />
+            <History v-on:refresh="refresh"/>
           </el-col>
         </el-row>
         <el-row
@@ -46,38 +46,36 @@
             />
           </el-col>
           <el-col :span="7">
-            <el-button
-              type="success"
-              plain
-              @click="sendRequest"
-              style="margin-top: 0"
-              >发送请求</el-button
-            >
-            <el-button
-              type="primary"
-              @click="saveInterface"
-              style="margin-top: 0"
-              >保存接口</el-button
-            >
-            <el-button
-              type="primary"
-              :icon="Refresh"
-              @click="refresh"
-              style="margin-top: 0"
-              >刷新</el-button
-            >
+            <div style="min-width: 290px">
+              <el-button
+                type="success"
+                plain
+                @click="sendRequest"
+                style="margin-top: 0"
+                >发送请求</el-button
+              >
+              <el-button
+                type="primary"
+                @click="saveInterface"
+                style="margin-top: 0"
+                >保存接口</el-button
+              >
+              <el-button
+                type="primary"
+                :icon="Refresh"
+                @click="refresh"
+                style="margin-top: 0"
+                >刷新</el-button
+              >
+            </div>
           </el-col>
         </el-row>
         <el-row>
           <el-text> 实际发送请求地址: {{ realRequestPath }} </el-text>
         </el-row>
       </el-header>
-      <el-main>
-        <el-tabs
-          v-model="activeName"
-          class="demo-tabs"
-          style="margin-top: 20px"
-        >
+      <el-main style="--el-main-padding: 0; margin: 10px 20px">
+        <el-tabs class="interface-tabs" v-model="activeName">
           <el-tab-pane label="Params" name="Param">
             <el-text>Path参数</el-text>
             <el-table
@@ -522,16 +520,24 @@
             />
           </el-tab-pane>
           <el-tab-pane label="Mock" name="Mcok">
-            <el-text
-              type="info"
-              style="
-                display: flex;
-                justify-content: right;
-                margin-right: 5px;
-                margin-bottom: 5px;
-              "
-              >按Ctrl+I格式化代码</el-text
-            >
+            <el-text>HTTP返回状态码: </el-text>
+            <el-input-number
+              v-model="responseCode"
+              :min="100"
+              :max="505"
+              size="small"
+            />
+            <div>
+              <el-text>返回类型: </el-text>
+              <el-radio-group v-model="responseType" @change="changeResponse">
+                <el-radio label="json">json</el-radio>
+                <el-radio label="xml">xml</el-radio>
+                <el-radio label="yaml">yaml</el-radio>
+              </el-radio-group>
+              <el-text type="info" style="float: right; margin-top: 10px"
+                >按Ctrl+I格式化代码</el-text
+              >
+            </div>
             <JsonEditorVue
               :class="isDarkMode ? 'jse-theme-dark' : ''"
               v-model="interfaceData.response.content[0]"
@@ -540,6 +546,13 @@
               :status-bar="false"
               :ask-to-format="true"
             />
+            <el-button
+              type="primary"
+              size="small"
+              @click="addMock1"
+              style="float: right"
+              >生成Mock</el-button
+            >
           </el-tab-pane>
         </el-tabs>
       </el-main>
@@ -554,8 +567,11 @@
           :main-menu-bar="false"
           :status-bar="false"
           :read-only="true"
+          style="margin: 0 20px"
         />
-        <el-text v-else>点击"发送请求"按钮获取返回结果</el-text>
+        <el-text style="margin: 0 10px" v-else
+          >点击"发送请求"按钮获取返回结果</el-text
+        >
       </el-footer>
     </el-container>
     <el-dialog v-model="prefixDialogVisiable" title="接口前缀" width="30%">
@@ -583,14 +599,17 @@ import {
   getInterface,
   createInterface,
   updateInterface,
+  addMock,
 } from "../api/interface";
 import axios from "axios";
 import JsonEditorVue from "json-editor-vue";
 import { ElMessage } from "element-plus";
 import { useDark } from "@vueuse/core";
 import { projectStore } from "../store/project";
+import { interfaceStore } from "../store/interface";
 import { computed } from "vue";
 
+const interfaceStore1 = interfaceStore();
 const isDarkMode = useDark();
 const prefixDialogVisiable = ref(false);
 const isMock = ref(false);
@@ -609,7 +628,7 @@ const interfaceData = ref({
     query: [],
   },
   requestBody: {
-    contentType: "",
+    contentType: "application/json",
     content: [],
   },
   response: {
@@ -617,39 +636,31 @@ const interfaceData = ref({
     content: [],
   },
 });
-const realResponse = ref({
-  code: 200,
-  msg: "获取接口成功!",
-  data: {
-    name: "更改接口",
-    description: "修改接口说明",
-    tag: "接口",
-    requestMethod: "PATCH",
-    requestPath: "/api/interface/:interfaceId",
-
-    _id: "64e8a87e89412f63b9437e61",
-    __v: 0,
-  },
-});
+const realResponse = ref();
 const activeName = ref("Param");
 const requestBodyType = ref("json");
+const responseType = ref("json");
 // 从父组件获取数据
 const parentData = defineProps({
   interfaceData: Object,
 });
+const responseCode = ref(200);
 let interfaceId = "";
 
 onMounted(() => {
+  console.log("父布局传来的")
   console.log(parentData.interfaceData);
   if (parentData.interfaceData.type === "normal") {
     interfaceId = parentData.interfaceData.InterfaceId;
+    interfaceStore1.setInterfaceId(interfaceId);
     getInterfaceData();
   } else if (parentData.interfaceData.type === "new") {
     interfaceData.value.tag = parentData.interfaceData.data.tag;
     interfaceData.value.name = parentData.interfaceData.data.name;
-  }
-});
 
+  }
+  console.log(interfaceStore1.getInterfaceId);
+});
 const realRequestPath = computed(() => {
   // 匹配path参数,即{}中的参数
   const pathParams = interfaceData.value.requestPath.match(/{\w+}/g);
@@ -689,7 +700,6 @@ const realRequestPath = computed(() => {
 const matchParams = () => {
   // 匹配path参数,即{}中的参数
   const pathParams = interfaceData.value.requestPath.match(/{\w+}/g);
-  console.log(pathParams);
   if (pathParams) {
     // 如果interfaceData.value.requestParams.path存在但是没有这个pathParams，则删除
     interfaceData.value.requestParams.path.forEach((item, index) => {
@@ -747,10 +757,27 @@ const changeBody = (val) => {
     };
   }
 };
+const changeResponse = (val) => {
+  if (val === "json") {
+    interfaceData.value.response = {
+      contentType: "application/json",
+      content: [{}],
+    };
+  } else if (val === "xml") {
+    interfaceData.value.response = {
+      contentType: "application/xml",
+      content: [{}],
+    };
+  } else if (val === "yaml") {
+    interfaceData.value.response = {
+      contentType: "application/x-yaml",
+      content: [{}],
+    };
+  }
+};
 const openPrefixDialog = () => {
   prefixDialogVisiable.value = true;
   prefixTmp.value = prefix.value;
-  console.log(prefix.value);
 };
 const handlePrefix = () => {
   prefixDialogVisiable.value = false;
@@ -760,7 +787,6 @@ const handlePrefix = () => {
 const getInterfaceData = async () => {
   try {
     const res = await getInterface(parentData.interfaceData.InterfaceId);
-    console.log(JSON.parse(res.data.response).content);
     interfaceData.value = {
       ...res.data,
       requestHeaders: JSON.parse(res.data.requestHeaders),
@@ -794,16 +820,29 @@ const getInterfaceData = async () => {
 };
 
 const refresh = () => {
-  window.location.reload();
-  console.log("refresh");
+  getInterfaceData();
 };
 const sendRequest = () => {
+  console.log("发送的请求")
   console.log(interfaceData.value);
   let body = {};
   if (interfaceData.value.requestBody.contentType === "application/json") {
-    if (Object.keys(interfaceData.value.requestBody.content[0]).length !== 0) {
-      body = JSON.parse(interfaceData.value.requestBody.content[0]);
+    // 如果interfaceData.value.requestBody.content[0]是string，则转换为json
+    if (typeof interfaceData.value.requestBody.content[0] === "string") {
+      if (interfaceData.value.requestBody.content[0] === "") {
+        interfaceData.value.requestBody.content[0] = {};
+      } else {
+        try {
+          interfaceData.value.requestBody.content[0] = JSON.parse(
+            interfaceData.value.requestBody.content[0]
+          );
+        } catch (error) {
+          ElMessage.error("json格式错误");
+          return;
+        }
+      }
     }
+    body = interfaceData.value.requestBody.content[0];
   } else {
     body = interfaceData.value.requestBody.content;
   }
@@ -823,46 +862,75 @@ const sendRequest = () => {
     data: body,
   })
     .then((res) => {
-      response.value = res;
+      console.log(res);
+      realResponse.value = res.data;
       ElMessage.success("发送请求成功");
     })
     .catch((err) => {
       realResponse.value = err;
       console.log(err);
       if (err.response) {
-        ElMessage.error("发送请求失败: " + err.response.data.msg);
+        // 检查mock和404错误
+        if (isMock.value && err.message.includes("404")) {
+          ElMessage.error("发送请求失败: 请检查mock服务器是否开启");
+        } else if (err.response.data.msg) {
+          ElMessage.error("发送请求失败: " + err.response.data.msg);
+        }
       } else {
         ElMessage.error("发送请求失败");
       }
     });
 };
-const saveInterface = async () => {
-  try {
-    if (interfaceData.value.requestPath[0] !== "/") {
-      ElMessage.error("请求路径必须以/开头");
-      return;
-    } else if (interfaceData.value.requestPath.includes(" ")) {
-      ElMessage.error("请求路径不能包含空格");
-      return;
-    } else if (interfaceData.value.requestPath.includes("?")) {
-      ElMessage.error("请求路径不能包含?");
-      return;
-    }
-    if (interfaceData.value.requestBody.contentType === "application/json") {
-      // 如果interfaceData.value.requestBody.content[0]是string，则转换为json
-      if (typeof interfaceData.value.requestBody.content[0] === "string") {
-        interfaceData.value.requestBody.content[0] = JSON.parse(
-          interfaceData.value.requestBody.content[0]
-        );
+
+const checkInterfaceData = () => {
+  if (!interfaceData.value.name) {
+    ElMessage.error("接口名称不能为空");
+    return false;
+  }
+  if (!interfaceData.value.requestPath) {
+    ElMessage.error("接口路径不能为空");
+    return false;
+  }
+  if (!interfaceData.value.requestMethod) {
+    ElMessage.error("接口方法不能为空");
+    return false;
+  }
+  if (interfaceData.value.requestBody.contentType === "application/json") {
+    if (typeof interfaceData.value.requestBody.content[0] === "string") {
+      if (interfaceData.value.requestBody.content[0] === "") {
+        interfaceData.value.requestBody.content[0] = {};
+      } else {
+        try {
+          interfaceData.value.requestBody.content[0] = JSON.parse(
+            interfaceData.value.requestBody.content[0]
+          );
+        } catch (error) {
+          ElMessage.error("json格式错误");
+          return false;
+        }
       }
     }
-    if (interfaceData.value.response.contentType === "application/json") {
-      // 如果interfaceData.value.response.content[0]是string，则转换为json
-      if (typeof interfaceData.value.response.content[0] === "string") {
+  }
+  if (typeof interfaceData.value.response.content[0] === "string") {
+    if (interfaceData.value.response.content[0] === "") {
+      interfaceData.value.response.content[0] = {};
+    } else {
+      try {
         interfaceData.value.response.content[0] = JSON.parse(
           interfaceData.value.response.content[0]
         );
+      } catch (error) {
+        ElMessage.error("json格式错误");
+        return false;
       }
+    }
+  }
+  return true;
+};
+const saveInterface = async () => {
+  try {
+    if (!checkInterfaceData()) {
+      return;
     }
     const newInterfaceData = {
       ...interfaceData.value,
@@ -875,22 +943,56 @@ const saveInterface = async () => {
       requestBody: JSON.stringify(interfaceData.value.requestBody, null, 2),
       response: JSON.stringify(interfaceData.value.response, null, 2),
       projectId: projectStore().getProjectId,
-      history: undefined,
-      // 删除不需要的字段
-      _id: undefined,
     };
+    delete newInterfaceData._id;
+    delete newInterfaceData.history;
     if (parentData.interfaceData.type === "normal") {
       const res = await updateInterface(interfaceId, newInterfaceData);
       console.log(res);
       ElMessage.success("修改成功");
+      getInterfaceData();
     } else if (parentData.interfaceData.type === "new") {
       const res = await createInterface(newInterfaceData);
       console.log(res);
       ElMessage.success("新建接口成功");
+      interfaceStore1.setInterfaceId(res.data._id);
     }
+    
   } catch (error) {
     console.log(error);
     ElMessage.error("保存失败");
+  }
+};
+const addMock1 = async () => {
+  try {
+    if (!checkInterfaceData()) {
+      return;
+    }
+    const newInterfaceData = {
+      ...interfaceData.value,
+      requestPath: interfaceData.value.requestPath,
+      response: {
+        contentType: interfaceData.value.response.contentType,
+        content: [
+          {
+            code: responseCode.value,
+            data: interfaceData.value.response.content[0],
+            msg: "Mock",
+          },
+        ],
+      },
+    };
+    delete newInterfaceData._id;
+    delete newInterfaceData.history;
+    delete newInterfaceData.projectId;
+    delete newInterfaceData.tag;
+    console.log("生成的Mock:" )
+    console.log(newInterfaceData);
+    const res = await addMock(newInterfaceData);
+    ElMessage.success("生成Mock成功");
+  } catch (error) {
+    console.log(error);
+    ElMessage.error("生成Mock失败");
   }
 };
 const addParamsQuery = () => {
@@ -962,12 +1064,15 @@ const deleteBodyFormData = (index) => {
   interfaceData.value.requestBody.content.splice(index, 1);
 };
 </script>
-<style scoped>
+<style>
 .main {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   margin: 0 5px;
+}
+.interface-tabs > .el-tabs__content {
+  margin: 0 20px;
 }
 </style>

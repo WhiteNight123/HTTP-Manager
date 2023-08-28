@@ -80,7 +80,15 @@ router.${requestMethod.toLowerCase()}("${requestPath}", function (req, res) {
         selectedResponse = yaml.dump(selectedResponse);
     }
     const mockResponse = Mock.mock(selectedResponse);
-    res.status(statusCode).json(mockResponse);
+    // 根据不同的类型返回不同的响应
+    if (response.contentType === 'application/xml'){
+      res.set('Content-Type', 'application/xml');
+    } else if (response.contentType === 'application/yaml') {
+      res.set('Content-Type', 'application/yaml');
+    } else if (response.contentType === 'application/json') {
+      res.set('Content-Type', 'application/json');
+    }
+    res.status(statusCode).send(mockResponse);
 });
 module.exports = router;
 `;
@@ -88,7 +96,7 @@ module.exports = router;
 }
 
 // 插入数据
-router.use("/add", function (req, res) {
+router.use("/add", function (req, res, next) {
   try {
     const generatedString = generateRouterString(req.body);
     // 先删除文件内容
