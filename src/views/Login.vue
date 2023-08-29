@@ -6,7 +6,7 @@
       class="login-form"
       :rules="loginRules"
     >
-      <h2>登录</h2>
+      <h2>HTTP接口管理平台</h2>
       <el-form-item label="邮箱" prop="email">
         <el-input
           v-model="loginForm.email"
@@ -75,7 +75,6 @@ const login = async () => {
     console.log("Login response:", response);
     store.setToken(response.data);
     localStorage.setItem("token", response.data.token);
-    console.log(response.data.token);
     request.defaults.headers.common["Authorization"] = response.data.token;
     ElMessage.success("登录成功");
     router.push("/projects");

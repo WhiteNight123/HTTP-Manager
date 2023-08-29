@@ -52,7 +52,7 @@
                 </template>
               </el-dropdown>
             </span>
-            <div v-else class="other-node" @click="handleClick(data)">
+            <div v-else class="other-node" @click.stop="handleClick($event,data) ">
               <el-dropdown trigger="contextmenu" class="node-dropdown">
                 <el-row class="el-dropdown-link">
                   <el-text :style="{ color: textColor(data) }"
@@ -74,7 +74,12 @@
       </el-tree>
     </el-aside>
     <el-main style="--el-main-padding: 0; margin-top: 5px; padding-right: 10px">
-      <InterfaceDetail :interfaceData="InterfaceData" :key="detailKey" />
+      <InterfaceDetail
+        :interfaceData="InterfaceData"
+        :key="detailKey"
+        ref="interfaceDetailRef"
+        v-on:refresh="refresh"
+      />
     </el-main>
   </el-container>
   <el-dialog v-model="addFolderVisible" title="新建文件夹" width="30%">
@@ -121,6 +126,7 @@ const treeRef = ref();
 let id = 1;
 let addFolderVisible = ref(false);
 const addInterfaceVisible = ref(false);
+const interfaceDetailRef = ref();
 const newFoldername = ref("");
 const newInterfacename = ref("");
 let tmpData = null;
@@ -133,12 +139,19 @@ const dataSource = ref([
   },
 ]);
 
+const refresh = () => {
+  getInterfaces1();
+};
 function appendContents(data) {
   addFolderVisible.value = true;
   tmpData = data;
 }
-
 function appendInterface(data) {
+   // 检测子组件是否有未保存的数据
+   if (interfaceDetailRef.value && interfaceDetailRef.value.isNotSave) {
+    ElMessage.error("请先保存当前接口");
+    return;
+  }
   addInterfaceVisible.value = true;
   tmpData = data;
 }
@@ -194,11 +207,20 @@ const getInterfaces1 = async () => {
     ElMessage.error(err);
   }
 };
-const handleClick = (data) => {
+const handleClick = (event,data) => {
   console.log(data);
+  // 检测子组件是否有未保存的数据
+  if (interfaceDetailRef.value && interfaceDetailRef.value.isNotSave) {
+    ElMessage.error("请先保存当前接口");
+    event.stopPropagation(); // 阻止事件冒泡
+    return;
+  }
   InterfaceData.value = { InterfaceId: data.data._id, type: "normal" };
   // 为了强制渲染
   detailKey++;
+      nextTick(() => {
+      treeRef.value.setCurrentKey(data.id);
+    });
 };
 const handleAddFolder = () => {
   if (!newFoldername.value) {
@@ -249,7 +271,6 @@ const handleAddInterface = () => {
 const remove = async (node, data) => {
   try {
     if (data.data._id) {
-      console.log(data.data._id);
       await deleteInterface(data.data._id);
     }
     const parent = node.parent;

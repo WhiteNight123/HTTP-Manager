@@ -1,25 +1,41 @@
 <template>
   <div class="project-details">
     <el-card>
-      <div class="project-name">{{ projectData.name }}</div>
-      <div class="project-description">
-        项目介绍：{{ projectData.description }}
+      <el-text
+        class="project-name"
+        style="margin-bottom: 10px; font-size: x-large"
+        >{{ projectData.name }}</el-text
+      >
+      <div style="width: 92%">
+        <el-text style="font-size: large; line-height: 1.3">
+          &emsp;&emsp;项目介绍: {{ projectData.description }}
+        </el-text>
       </div>
       <div class="project-info">
         <el-row>
-          <el-col :span="12">
-            <p style="font-size: 18px">创建者: {{ projectData.creator }}</p>
-            <p style="font-size: 18px">
-              创建时间: {{ projectData.createTime }}
-            </p>
+          <el-col :span="6">
+            <el-text> 创建时间 </el-text>
+            <el-text style="font-weight: bold">
+              {{ projectData.createTime }}
+            </el-text>
           </el-col>
-          <el-col :span="12">
-            <p style="font-size: 18px">
-              接口数量: {{ projectData.interfaceCount }}
-            </p>
-            <p style="font-size: 18px">
-              项目成员数量: {{ projectData.memberCount }}
-            </p>
+          <el-col :span="6">
+            <el-text> 创建者 </el-text>
+            <el-text style="font-weight: bold">
+              {{ projectData.creator }}
+            </el-text>
+          </el-col>
+          <el-col :span="6" style="display: flex; flex-direction: column">
+            <el-text> 接口数量 </el-text>
+            <el-text style="font-weight: bold">
+              {{ projectData.interfaceCount }}
+            </el-text>
+          </el-col>
+          <el-col :span="6" style="display: flex; flex-direction: column">
+            <el-text> 成员数量 </el-text>
+            <el-text style="font-weight: bold">
+              {{ projectData.memberCount }}
+            </el-text>
           </el-col>
         </el-row>
       </div>
@@ -30,9 +46,16 @@
         <el-button type="primary" :icon="Edit" @click="editProject"
           >修改项目</el-button
         >
-        <el-button type="danger" :icon="Delete" @click="deleteProject1"
-          >删除项目</el-button
+        <el-popconfirm
+          title="确定要删除项目?"
+          @confirm="deleteProject1"
+          :icon="WarnTriangleFilled"
+          confirm-button-type="danger"
         >
+          <template #reference>
+            <el-button type="danger" :icon="Delete">删除项目</el-button>
+          </template>
+        </el-popconfirm>
       </div>
     </el-card>
     <el-dialog v-model="importDialogVisible" title="导入接口" width="40%">
@@ -120,8 +143,13 @@
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import router from "../router";
-import { Upload, Edit, Delete } from "@element-plus/icons-vue";
-import { Files, Folder } from "@element-plus/icons-vue";
+import {
+  Upload,
+  Edit,
+  Delete,
+  Files,
+  WarnTriangleFilled,
+} from "@element-plus/icons-vue";
 import { updateProject, getProject, deleteProject } from "../api/project";
 import { batchCreateInterface } from "../api/interface";
 import { projectStore } from "../store/project";
@@ -149,7 +177,7 @@ const getProjectDetail = async () => {
       createTime: new Date(res.data.createTime).toLocaleDateString(),
       memberCount: res.data.members.length,
     };
-    ElMessage.success("获取项目详情成功");
+    console.log("获取项目详情成功");
   } catch (error) {
     console.log(error);
     ElMessage.error(error);
@@ -191,7 +219,6 @@ const handleBeforeUpload = (file) => {
     throw new Error("上传文件大小不能超过 2MB!");
   }
   // 检查是否为json文件
-  console.log(file);
   const isJson = file.type === "application/json";
   if (!isJson) {
     ElMessage.error("上传文件只能是json格式!");
@@ -302,7 +329,6 @@ const handleUpdate = async () => {
 
 const deleteProject1 = async () => {
   try {
-    console.log(projectId);
     await deleteProject(projectId);
     ElMessage.success("删除成功");
     router.push("/projects");
@@ -312,7 +338,6 @@ const deleteProject1 = async () => {
 };
 
 onMounted(() => {
-  console.log(store.getProjectId);
   getProjectDetail();
 });
 </script>
@@ -326,22 +351,23 @@ onMounted(() => {
 .project-name {
   display: flex;
   justify-content: center;
-  font-size: 26px;
-  font-weight: bold;
-  margin-bottom: 10px;
 }
-
-.project-description {
-  line-height: 1.5;
-  font-size: 17px;
-}
-
 .project-info {
   margin-top: 10px;
+}
+.project-info > .el-row > .el-col {
+  display: flex;
+  flex-direction: column;
+}
+.project-info > .el-row > .el-col > .el-text {
+  font-size: medium;
+  margin-bottom: 5px;
+  line-height: 1.3;
 }
 .project-actions {
   display: flex;
   justify-content: flex-end;
+  margin-right: 5%;
 }
 .dialog-footer {
   display: flex;

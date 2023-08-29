@@ -88,13 +88,13 @@ exports.batchCreateInterface = async (req, res, next) => {
     let interfaces = [];
     for (let i = 0; i < datas.length; i++) {
       let data = datas[i];
+      data.requestHeaders = JSON.stringify(data.requestHeaders, null, 2);
+      data.requestParams = JSON.stringify(data.requestParams, null, 2);
+      data.requestBody = JSON.stringify(data.requestBody, null, 2);
+      data.response = JSON.stringify(data.response, null, 2);
+      data.projectId = projectId;
       let interface = await Interface.create({
         ...data,
-        requestHeaders: JSON.stringify(data.requestHeaders, null, 2),
-        requestParams: JSON.stringify(data.requestParams, null, 2),
-        requestBody: JSON.stringify(data.requestBody, null, 2),
-        response: JSON.stringify(data.response, null, 2),
-        projectId: projectId,
         history: [
           {
             version: 1,

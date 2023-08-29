@@ -2,8 +2,8 @@
 // 该文件由接口管理工具自动生成，请勿手动修改
 const router = require("express").Router();
 const Mock = require("mockjs");
-router.post("/api/auth", function (req, res) {
-    const requiredHeaders = [];
+router.post("/api/project", function (req, res) {
+    const requiredHeaders = ["authorization"];
     for (const header of requiredHeaders) {
         if (!req.headers[header]) {
             return res.status(400).json({
@@ -21,7 +21,7 @@ router.post("/api/auth", function (req, res) {
             });
         }
     }
-    response = {"contentType":"application/json","content":[{"code":202,"data":{"name":"@cname","id":123},"msg":"Mock"}]};  
+    response = {"contentType":"application/json","content":[{"code":200,"data":{"code":"@cname"},"msg":"Mock"}]};  
     const responseContent = response.content;
     if (responseContent.length === 0) {
         return res.status(200).json({

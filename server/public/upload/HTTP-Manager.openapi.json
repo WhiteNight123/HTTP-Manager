@@ -596,7 +596,7 @@
         "x-run-in-apifox": "https://apifox.com/web/project/3140859/apis/api-102438241-run"
       }
     },
-    "/api/project/{id}": {
+    "/api/project/{projectId}": {
       "patch": {
         "summary": "修改项目",
         "x-apifox-folder": "项目",
@@ -608,11 +608,10 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "projectId",
             "in": "path",
             "description": "",
             "required": true,
-            "example": "64d72ffc9d1e92800db33d28",
             "schema": {
               "type": "string"
             }
@@ -713,11 +712,10 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "projectId",
             "in": "path",
             "description": "",
             "required": true,
-            "example": "64d74395ec1c472998949672",
             "schema": {
               "type": "string"
             }
@@ -778,11 +776,10 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "projectId",
             "in": "path",
             "description": "",
             "required": true,
-            "example": "64d74390ec1c47299894966b",
             "schema": {
               "type": "string"
             }

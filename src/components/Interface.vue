@@ -9,17 +9,22 @@
     </p>
   </div>
   <div v-else>
-    <el-container style="min-width: 1003px">
+    <el-container style="min-width: 800px">
       <el-header style="height: 100px">
         <el-row align="middle">
           <el-col :span="3">
-            <el-checkbox v-model="isMock" label="Mock服务器" border />
+            <el-checkbox
+              v-model="isMock"
+              label="Mock服务器"
+              border
+              size="small"
+            />
           </el-col>
           <el-col :span="2" :offset="1">
             <el-text type="primary" @click="openPrefixDialog">接口前缀</el-text>
           </el-col>
           <el-col :span="1" :offset="17">
-            <History v-on:refresh="refresh"/>
+            <History v-on:refresh="refresh" />
           </el-col>
         </el-row>
         <el-row
@@ -60,24 +65,99 @@
                 style="margin-top: 0"
                 >保存接口</el-button
               >
+              <el-badge
+                v-if="isNotSave"
+                is-dot
+                class="item"
+                style="margin-left: -12px; margin-top: -20px"
+              />
               <el-button
                 type="primary"
                 :icon="Refresh"
                 @click="refresh"
-                style="margin-top: 0"
+                style="margin-top: 0; margin-left: 12px"
                 >刷新</el-button
               >
             </div>
           </el-col>
         </el-row>
         <el-row>
-          <el-text> 实际发送请求地址: {{ realRequestPath }} </el-text>
+          <el-text type="info">
+            实际发送请求地址: {{ realRequestPath }}
+          </el-text>
         </el-row>
       </el-header>
       <el-main style="--el-main-padding: 0; margin: 10px 20px">
         <el-tabs class="interface-tabs" v-model="activeName">
           <el-tab-pane label="Params" name="Param">
-            <el-text>Path参数</el-text>
+            <el-text>Query参数</el-text>
+            <el-table
+              :data="interfaceData.requestParams.query"
+              stripe
+              table-layout="fixed"
+            >
+              <template #empty>
+                <el-text @click="addParamsQuery">点击添加一条Query参数</el-text>
+              </template>
+              <el-table-column
+                label="参数名"
+                text-align="center"
+                min-width="2%"
+              >
+                <template #default="scope">
+                  <ElInput v-model="scope.row.name"></ElInput>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="参数值"
+                text-align="center"
+                min-width="3%"
+              >
+                <template #default="scope">
+                  <ElInput v-model="scope.row.example"></ElInput>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型" text-align="center" min-width="2%">
+                <template #default="scope">
+                  <el-select v-model="scope.row.type" placeholder="请选择">
+                    <el-option label="string" value="string" />
+                    <el-option label="integer" value="integer" />
+                    <el-option label="number" value="number" />
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column label="说明" text-align="center" min-width="3%">
+                <template #default="scope">
+                  <ElInput v-model="scope.row.description"></ElInput>
+                </template>
+              </el-table-column>
+              <el-table-column label="必填" text-align="center" min-width="1%">
+                <template #default="scope">
+                  <el-switch v-model="scope.row.required" />
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" text-align="center" min-width="2%">
+                <template #default="scope">
+                  <el-button
+                    type="primary"
+                    @click="addParamsQuery"
+                    style="margin-top: 0"
+                    :icon="Plus"
+                    size="small"
+                    circle
+                  />
+                  <el-button
+                    type="danger"
+                    @click="deleteParamsQuery(scope.$index)"
+                    style="margin-top: 0"
+                    :icon="Delete"
+                    size="small"
+                    circle
+                  />
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-text style="display: block; margin-top: 10px">Path参数</el-text>
             <el-table
               :data="interfaceData.requestParams.path"
               stripe
@@ -110,7 +190,7 @@
                   <ElInput v-model="scope.row.example"></ElInput>
                 </template>
               </el-table-column>
-              <el-table-column label="类型" text-align="center" min-width="1%">
+              <el-table-column label="类型" text-align="center" min-width="2%">
                 <template #default="scope">
                   <el-tooltip
                     effect="light"
@@ -129,7 +209,7 @@
                   </el-tooltip>
                 </template>
               </el-table-column>
-              <el-table-column label="说明" text-align="center" min-width="2%">
+              <el-table-column label="说明" text-align="center" min-width="3%">
                 <template #default="scope">
                   <ElInput v-model="scope.row.description"></ElInput>
                 </template>
@@ -155,75 +235,6 @@
                     :icon="Delete"
                     size="small"
                     disabled
-                    circle
-                  />
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-text style="display: block; margin-top: 10px"
-              >Query参数</el-text
-            >
-            <el-table
-              :data="interfaceData.requestParams.query"
-              stripe
-              table-layout="fixed"
-            >
-              <template #empty>
-                <el-text @click="addParamsQuery">点击添加一条Query参数</el-text>
-              </template>
-              <el-table-column
-                label="参数名"
-                text-align="center"
-                min-width="2%"
-              >
-                <template #default="scope">
-                  <ElInput v-model="scope.row.name"></ElInput>
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="参数值"
-                text-align="center"
-                min-width="3%"
-              >
-                <template #default="scope">
-                  <ElInput v-model="scope.row.example"></ElInput>
-                </template>
-              </el-table-column>
-              <el-table-column label="类型" text-align="center" min-width="1%">
-                <template #default="scope">
-                  <el-select v-model="scope.row.type" placeholder="请选择">
-                    <el-option label="string" value="string" />
-                    <el-option label="integer" value="integer" />
-                    <el-option label="number" value="number" />
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="说明" text-align="center" min-width="2%">
-                <template #default="scope">
-                  <ElInput v-model="scope.row.description"></ElInput>
-                </template>
-              </el-table-column>
-              <el-table-column label="必填" text-align="center" min-width="1%">
-                <template #default="scope">
-                  <el-switch v-model="scope.row.required" />
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" text-align="center" min-width="2%">
-                <template #default="scope">
-                  <el-button
-                    type="primary"
-                    @click="addParamsQuery"
-                    style="margin-top: 0"
-                    :icon="Plus"
-                    size="small"
-                    circle
-                  />
-                  <el-button
-                    type="danger"
-                    @click="deleteParamsQuery(scope.$index)"
-                    style="margin-top: 0"
-                    :icon="Delete"
-                    size="small"
                     circle
                   />
                 </template>
@@ -290,7 +301,7 @@
                 <el-table-column
                   label="类型"
                   text-align="center"
-                  min-width="1%"
+                  min-width="2%"
                 >
                   <template #default="scope">
                     <el-select v-model="scope.row.type" placeholder="请选择">
@@ -302,7 +313,7 @@
                 <el-table-column
                   label="说明"
                   text-align="center"
-                  min-width="2%"
+                  min-width="3%"
                 >
                   <template #default="scope">
                     <ElInput v-model="scope.row.description"></ElInput>
@@ -375,7 +386,7 @@
                 <el-table-column
                   label="类型"
                   text-align="center"
-                  min-width="1%"
+                  min-width="2%"
                 >
                   <template #default="scope">
                     <el-select v-model="scope.row.type" placeholder="请选择">
@@ -387,7 +398,7 @@
                 <el-table-column
                   label="说明"
                   text-align="center"
-                  min-width="2%"
+                  min-width="3%"
                 >
                   <template #default="scope">
                     <ElInput v-model="scope.row.description"></ElInput>
@@ -469,7 +480,7 @@
                   <ElInput v-model="scope.row.example"></ElInput>
                 </template>
               </el-table-column>
-              <el-table-column label="类型" text-align="center" min-width="1%">
+              <el-table-column label="类型" text-align="center" min-width="2%">
                 <template #default="scope">
                   <el-select v-model="scope.row.type" placeholder="请选择">
                     <el-option label="string" value="string" />
@@ -479,7 +490,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column label="说明" text-align="center" min-width="2%">
+              <el-table-column label="说明" text-align="center" min-width="3%">
                 <template #default="scope">
                   <ElInput v-model="scope.row.description"></ElInput>
                 </template>
@@ -534,9 +545,21 @@
                 <el-radio label="xml">xml</el-radio>
                 <el-radio label="yaml">yaml</el-radio>
               </el-radio-group>
-              <el-text type="info" style="float: right; margin-top: 10px"
-                >按Ctrl+I格式化代码</el-text
-              >
+              <el-popover placement="top" :width="275" trigger="click">
+                <template #reference>
+                  <el-button size="small" style="float: right; margin-top: 5px"
+                    >Mock语法</el-button
+                  >
+                </template>
+                <el-table :data="mockSyntax">
+                  <el-table-column width="100" property="rule" label="规则" />
+                  <el-table-column
+                    width="150"
+                    property="description"
+                    label="说明"
+                  />
+                </el-table>
+              </el-popover>
             </div>
             <JsonEditorVue
               :class="isDarkMode ? 'jse-theme-dark' : ''"
@@ -574,13 +597,16 @@
         >
       </el-footer>
     </el-container>
-    <el-dialog v-model="prefixDialogVisiable" title="接口前缀" width="30%">
+    <el-dialog v-model="prefixDialogVisiable" title="接口前缀" width="25%">
       <el-row>
-        <div class="folder-name-container">
-          <el-text style="white-space: nowrap; margin-right: 10px">
-            接口前缀
-          </el-text>
-          <el-input v-model="prefixTmp" :maxlength="30"></el-input>
+        <div
+          class="input-container"
+          style="width: 100%; display: flex; align-items: center"
+        >
+          <el-text>接口前缀</el-text>
+          <div class="input-wrapper" style="flex: 1; margin-left: 10px">
+            <el-input v-model="prefixTmp" placeholder="请输入接口前缀" />
+          </div>
         </div>
       </el-row>
       <span slot="footer" class="dialog-footer">
@@ -609,18 +635,48 @@ import { projectStore } from "../store/project";
 import { interfaceStore } from "../store/interface";
 import { computed } from "vue";
 
+const emit = defineEmits(["refresh"]);
 const interfaceStore1 = interfaceStore();
 const isDarkMode = useDark();
 const prefixDialogVisiable = ref(false);
 const isMock = ref(false);
+const isNotSave = ref(false);
 const prefix = ref("http://127.0.0.1:3000");
 const prefixTmp = ref();
+// 判断是否改动
+let isChange = false;
+const mockSyntax = ref([
+  {
+    rule: "cname",
+    description: "中文名称",
+  },
+  {
+    rule: "csentence",
+    description: "中文句子",
+  },
+  {
+    rule: "boolean",
+    description: "布尔值",
+  },
+  {
+    rule: "string(5)",
+    description: "字符串(长度为5)",
+  },
+  {
+    rule: "timestamp",
+    description: "时间戳",
+  },
+  {
+    rule: "now",
+    description: "当前时间",
+  },
+]);
 const interfaceData = ref({
   name: "",
   description: "",
   tag: "",
   requestMethod: "GET",
-  requestPath: "",
+  requestPath: "/",
   projectId: projectStore().getProjectId,
   requestHeaders: [],
   requestParams: {
@@ -648,8 +704,7 @@ const responseCode = ref(200);
 let interfaceId = "";
 
 onMounted(() => {
-  console.log("父布局传来的")
-  console.log(parentData.interfaceData);
+  console.log("parent:" + JSON.stringify(parentData.interfaceData, null, 2));
   if (parentData.interfaceData.type === "normal") {
     interfaceId = parentData.interfaceData.InterfaceId;
     interfaceStore1.setInterfaceId(interfaceId);
@@ -657,9 +712,8 @@ onMounted(() => {
   } else if (parentData.interfaceData.type === "new") {
     interfaceData.value.tag = parentData.interfaceData.data.tag;
     interfaceData.value.name = parentData.interfaceData.data.name;
-
+    isNotSave.value = true;
   }
-  console.log(interfaceStore1.getInterfaceId);
 });
 const realRequestPath = computed(() => {
   // 匹配path参数,即{}中的参数
@@ -786,7 +840,7 @@ const handlePrefix = () => {
 };
 const getInterfaceData = async () => {
   try {
-    const res = await getInterface(parentData.interfaceData.InterfaceId);
+    const res = await getInterface(interfaceId);
     interfaceData.value = {
       ...res.data,
       requestHeaders: JSON.parse(res.data.requestHeaders),
@@ -812,7 +866,8 @@ const getInterfaceData = async () => {
       requestBodyType.value = "none";
     }
     console.log(interfaceData.value);
-    ElMessage.success("获取接口成功");
+    isChange = false;
+    console.log("获取接口成功");
   } catch (error) {
     console.log(error);
     ElMessage.error("获取接口失败");
@@ -823,8 +878,6 @@ const refresh = () => {
   getInterfaceData();
 };
 const sendRequest = () => {
-  console.log("发送的请求")
-  console.log(interfaceData.value);
   let body = {};
   if (interfaceData.value.requestBody.contentType === "application/json") {
     // 如果interfaceData.value.requestBody.content[0]是string，则转换为json
@@ -846,6 +899,7 @@ const sendRequest = () => {
   } else {
     body = interfaceData.value.requestBody.content;
   }
+  console.log("发送的" + JSON.stringify(body));
   axios({
     method: interfaceData.value.requestMethod,
     url: realRequestPath.value,
@@ -956,8 +1010,12 @@ const saveInterface = async () => {
       console.log(res);
       ElMessage.success("新建接口成功");
       interfaceStore1.setInterfaceId(res.data._id);
+      parentData.interfaceData.type = "normal";
+      interfaceId = res.data._id;
+      // 调用父组件的方法，刷新接口数据
+      emit("refresh");
     }
-    
+    isNotSave.value = false;
   } catch (error) {
     console.log(error);
     ElMessage.error("保存失败");
@@ -986,7 +1044,7 @@ const addMock1 = async () => {
     delete newInterfaceData.history;
     delete newInterfaceData.projectId;
     delete newInterfaceData.tag;
-    console.log("生成的Mock:" )
+    console.log("生成的Mock:");
     console.log(newInterfaceData);
     const res = await addMock(newInterfaceData);
     ElMessage.success("生成Mock成功");
@@ -1063,6 +1121,17 @@ const addBodyFormData = () => {
 const deleteBodyFormData = (index) => {
   interfaceData.value.requestBody.content.splice(index, 1);
 };
+watch(interfaceData, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    if (isChange) {
+      isNotSave.value = true;
+    }
+    isChange = !isChange;
+  }
+});
+defineExpose({
+  isNotSave,
+});
 </script>
 <style>
 .main {
