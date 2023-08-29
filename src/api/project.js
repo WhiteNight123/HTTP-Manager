@@ -18,26 +18,26 @@ export function getProjects() {
 }
 
 // 获取指定项目
-export function getProject(id) {
+export function getProject(projectId) {
   return request({
-    url: `/api/project/${id}`,
+    url: `/api/project/${projectId}`,
     method: "get",
   });
 }
 
 // 修改指定项目
-export function updateProject(id, data) {
+export function updateProject(projectId, data) {
   return request({
-    url: `/api/project/${id}`,
-    method: "put",
+    url: `/api/project/${projectId}`,
+    method: "patch",
     data,
   });
 }
 
 // 删除指定项目
-export function deleteProject(id) {
+export function deleteProject(projectId) {
   return request({
-    url: `/api/project/${id}`,
+    url: `/api/project/${projectId}`,
     method: "delete",
   });
 }

@@ -4,7 +4,8 @@ const { Interface } = require("../model/interface");
 // 验证权限
 module.exports = (type) => {
   return async (req, res, next) => {
-    let { projectId } = req.body;
+    // 从req.body或者req.params中获取projectId
+    let projectId = req.body.projectId || req.params.projectId;
     let interfaceId = req.params.interfaceId;
     // 如果有interfaceId，根据interfaceId的projectId进行判断
     try {
@@ -23,6 +24,7 @@ module.exports = (type) => {
     } catch (err) {
       next(err);
     }
+    console.log(projectId);
     const userId = req.userData._id;
     UserProject.findOne({ projectId, userId })
       .then((userProject) => {

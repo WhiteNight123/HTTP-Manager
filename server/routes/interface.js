@@ -1,7 +1,8 @@
 const router = require("express").Router();
-
-const { interfaceValidator } = require("../model/interface");
-
+const {
+  interfaceValidator,
+  interfaceBatchValidator,
+} = require("../model/interface");
 const validator = require("../middleware/validate");
 const auth = require("../middleware/auth");
 const checkPermission = require("../middleware/checkpermission");
@@ -12,6 +13,13 @@ router.post(
   "/",
   [auth, validator(interfaceValidator), checkPermission("interface")],
   interface.createInterface
+);
+
+// 批量新建接口
+router.post(
+  "/batch",
+  [auth, validator(interfaceBatchValidator), checkPermission("interface")],
+  interface.batchCreateInterface
 );
 
 // 获取指定项目的所有接口

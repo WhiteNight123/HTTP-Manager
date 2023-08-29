@@ -6,30 +6,31 @@
       class="login-form"
       :rules="loginRules"
     >
-      <h2>Login</h2>
-      <el-form-item label="Email" prop="email">
+      <h2>HTTP接口管理平台</h2>
+      <el-form-item label="邮箱" prop="email">
         <el-input
           v-model="loginForm.email"
-          placeholder="Enter your email"
+          placeholder="请输入邮箱"
+          :prefix-icon="Message"
         ></el-input>
       </el-form-item>
-      <el-form-item label="Password" prop="password">
+      <el-form-item label="密码" prop="password">
         <el-input
           type="password"
           v-model="loginForm.password"
-          placeholder="Enter your password"
+          placeholder="请输入密码"
+          :prefix-icon="Lock"
+          show-password
         ></el-input>
       </el-form-item>
-      <el-form-item>
-        <div class="button-container">
-          <el-button type="primary" @click="login" class="login-button"
-            >Login</el-button
-          >
-          <el-button @click="goToRegister" class="register-button"
-            >Go to Register</el-button
-          >
-        </div>
-      </el-form-item>
+      <div class="button-container">
+        <el-button type="primary" @click="login" class="login-button"
+          >登录</el-button
+        >
+        <el-button @click="goToRegister" class="register-button"
+          >去注册</el-button
+        >
+      </div>
     </el-form>
   </div>
 </template>
@@ -40,28 +41,22 @@ import { useRouter } from "vue-router";
 import { useStore } from "../store/user";
 import { userLogin } from "../api/user";
 import { ElForm, ElFormItem, ElInput, ElButton, ElMessage } from "element-plus";
+import { Message, Lock } from "@element-plus/icons-vue";
 import request from "../api/request";
 import { onMounted } from "vue";
 
-const loginForm = ref({
-  email: "",
-  password: "",
-  name: "  ",
-});
+const loginForm = ref({});
 const loginRules = ref({
   email: [
-    { required: true, message: "Please input email", trigger: "blur" },
+    { required: true, message: "请输入邮箱", trigger: "blur" },
     {
       type: "email",
-      message: "Please input correct email address",
+      message: "请输入正确的邮箱地址",
       trigger: ["blur"],
     },
   ],
-  password: [
-    { required: true, message: "Please input password", trigger: "blur" },
-  ],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
 });
-
 const loginFormRef = ref();
 const router = useRouter();
 const store = useStore();
@@ -80,27 +75,21 @@ const login = async () => {
     console.log("Login response:", response);
     store.setToken(response.data);
     localStorage.setItem("token", response.data.token);
-    console.log(response.data.token);
     request.defaults.headers.common["Authorization"] = response.data.token;
-    ElMessage({
-      message: "Login success",
-      type: "success",
-    });
+    ElMessage.success("登录成功");
     router.push("/projects");
   } catch (error) {
-    ElMessage({
-      message: error,
-      type: "error",
-    });
+    ElMessage.error(error);
+    console.log("Login error:", error);
   }
 };
 
 const goToRegister = () => {
-  console.log("Go to Register");
-  router.push("/register"); // Assuming you have a 'Register' route
+  router.push("/register");
 };
-// 当前路径带有email参数，将参数填入email
+
 onMounted(() => {
+  // 当前路径带有email参数，将参数填入email
   if (router.currentRoute.value.query.email) {
     loginForm.value.email = router.currentRoute.value.query.email;
   }

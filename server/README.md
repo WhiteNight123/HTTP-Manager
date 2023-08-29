@@ -2,9 +2,7 @@
 
 > v1.0.0
 
-Base URLs:
-
-* <a href="http://localhost:3000">开发环境: http://localhost:3000</a>
+Base URLs: http:localhost:3000
 
 # Default
 
@@ -367,7 +365,8 @@ POST /api/project
     {
       "id": "string",
       "email": "string",
-      "name": "string"
+      "name": "string",
+      "bio": "string"
     }
   ],
   "createTime": "string",
@@ -377,6 +376,7 @@ POST /api/project
       "id": "string",
       "name": "string",
       "description": "string",
+      "tag": "string",
       "requestMethod": "string",
       "requestPath": "string",
       "requestHeaders": "string",
@@ -485,7 +485,7 @@ GET /api/project
 
 ## PATCH 修改项目
 
-PATCH /api/project/{id}
+PATCH /api/project/{projectId}
 
 > Body 请求参数
 
@@ -501,7 +501,7 @@ PATCH /api/project/{id}
 
 |名称|位置|类型|必选|中文名|说明|
 |---|---|---|---|---|---|
-|id|path|string| 是 ||none|
+|projectId|path|string| 是 ||none|
 |Authorization|header|string| 否 ||none|
 |body|body|object| 否 ||none|
 |» name|body|string| 是 | 项目名称|none|
@@ -537,13 +537,13 @@ PATCH /api/project/{id}
 
 ## DELETE 删除项目
 
-DELETE /api/project/{id}
+DELETE /api/project/{projectId}
 
 ### 请求参数
 
 |名称|位置|类型|必选|中文名|说明|
 |---|---|---|---|---|---|
-|id|path|string| 是 ||none|
+|projectId|path|string| 是 ||none|
 |Authorization|header|string| 是 ||none|
 
 > 返回示例
@@ -575,13 +575,13 @@ DELETE /api/project/{id}
 
 ## GET 获取指定的项目
 
-GET /api/project/{id}
+GET /api/project/{projectId}
 
 ### 请求参数
 
 |名称|位置|类型|必选|中文名|说明|
 |---|---|---|---|---|---|
-|id|path|string| 是 ||none|
+|projectId|path|string| 是 ||none|
 
 > 返回示例
 
@@ -714,7 +714,7 @@ POST /api/project/member
 ```json
 {
   "id": "string",
-  "userId": "string",
+  "email": "string",
   "projectId": "string",
   "auth": "string"
 }
@@ -725,7 +725,11 @@ POST /api/project/member
 |名称|位置|类型|必选|中文名|说明|
 |---|---|---|---|---|---|
 |Authorization|header|string| 是 ||none|
-|body|body|[user-project](#schemauser-project)| 否 ||none|
+|body|body|object| 否 ||none|
+|» id|body|string| 否 ||none|
+|» email|body|string| 是 | 用户邮箱|none|
+|» projectId|body|string| 是 | 项目ID|none|
+|» auth|body|string| 是 | 权限|管理，读写，只读|
 
 > 返回示例
 
@@ -826,6 +830,7 @@ POST /api/interface
 {
   "name": "string",
   "description": "string",
+  "tag": "string",
   "requestMethod": "string",
   "requestPath": "string",
   "requestHeaders": "string",
@@ -840,7 +845,8 @@ POST /api/interface
       "updatedBy": {
         "id": "string",
         "email": "string",
-        "name": "string"
+        "name": "string",
+        "bio": "string"
       },
       "data": "string"
     }
@@ -856,6 +862,7 @@ POST /api/interface
 |body|body|object| 否 ||none|
 |» name|body|string| 是 | 接口名称|none|
 |» description|body|string| 否 ||none|
+|» tag|body|string| 否 | 所属目录|none|
 |» requestMethod|body|string| 是 | 请求方法|none|
 |» requestPath|body|string| 是 | 接口地址|none|
 |» requestHeaders|body|string| 否 | header参数|JSON.stringify(parameter)|
@@ -870,6 +877,7 @@ POST /api/interface
 |»»» id|body|string| 否 | 用户ID|none|
 |»»» email|body|string| 是 | 邮箱|none|
 |»»» name|body|string| 是 | 用户名|none|
+|»»» bio|body|string| 否 | 个人简介|none|
 |»» data|body|string| 是 ||none|
 
 > 返回示例
@@ -997,6 +1005,7 @@ PATCH /api/interface/{interfaceId}
 |» id|string|false|none|接口ID|none|
 |» name|string|true|none|接口名称|none|
 |» description|string|false|none||none|
+|» tag|string|false|none|所属目录|none|
 |» requestMethod|string|true|none|请求方法|none|
 |» requestPath|string|true|none|接口地址|none|
 |» requestHeaders|string|false|none|header参数|JSON.stringify(parameter)|
@@ -1069,71 +1078,27 @@ GET /api/interface/{interfaceId}
   "code": 200,
   "msg": "获取接口成功!",
   "data": {
-    "_id": "64dd7ca612844cc36edc60ec",
-    "name": "米哈游3",
-    "description": "米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。",
-    "requestMethod": "POST",
-    "requestPath": "/afjsvglp.se/eksey",
-    "requestHeaders": "esse sunt officia occaecat",
-    "requestParams": "exercitation sint proident commodo",
-    "requestBody": "ea dolor",
-    "response": "Ut",
-    "projectId": {
-      "_id": "64dd7bd112844cc36edc60c4",
-      "name": "项目1"
-    },
+    "name": "更改接口",
+    "description": "修改接口说明",
+    "tag": "接口",
+    "requestMethod": "PATCH",
+    "requestPath": "/api/interface/:interfaceId",
+    "requestHeaders": "[\n  {\n    \"name\": \"Authorization\",\n    \"description\": \"必选token\",\n    \"required\": true,\n    \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n    \"type\": \"string\"\n  }\n]",
+    "requestParams": "{\n  \"path\": [\n    {\n      \"name\": \"interfaceId\",\n      \"description\": \"接口Id\",\n      \"required\": true,\n      \"example\": \"64d782b65239aaa91333922f\",\n      \"type\": \"string\"\n    }\n  ],\n  \"query\": []\n}",
+    "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
+    "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"description\": \"\",\n      \"requestMethod\": \"\",\n      \"requestPath\": \"\",\n      \"requestHeaders\": \"\",\n      \"requestParams\": \"\",\n      \"requestBody\": \"\",\n      \"response\": \"\",\n      \"projectId\": \"\",\n      \"code\": \"200\"\n    }\n  ]\n}",
+    "projectId": "64e1da182d845c0e02cc6811",
     "history": [
       {
         "version": 1,
-        "updatedAt": "2023-08-17T01:49:26.788Z",
-        "updatedBy": {
-          "_id": "64dd7ae412844cc36edc60b4",
-          "name": "用户1"
-        },
-        "data": "{\"name\":\"米哈游3\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-        "_id": "64dd7ca612844cc36edc60ed"
-      },
-      {
-        "version": 2,
-        "updatedAt": "2023-08-17T01:50:41.891Z",
-        "updatedBy": {
-          "_id": "64dd7ae412844cc36edc60b4",
-          "name": "用户1"
-        },
-        "data": "{\"name\":\"米哈游33\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-        "_id": "64dd7cf112844cc36edc60f6"
-      },
-      {
-        "version": 3,
-        "updatedAt": "2023-08-17T01:52:37.706Z",
-        "updatedBy": {
-          "_id": "64dd7ae412844cc36edc60b4",
-          "name": "用户1"
-        },
-        "data": "{\"name\":\"米哈游333\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-        "_id": "64dd7d6512844cc36edc60fd"
-      },
-      {
-        "version": 4,
-        "updatedAt": "2023-08-17T01:52:40.294Z",
-        "updatedBy": {
-          "_id": "64dd7ae412844cc36edc60b4",
-          "name": "用户1"
-        },
-        "data": "{\"name\":\"米哈游3333\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-        "_id": "64dd7d6812844cc36edc6105"
-      },
-      {
-        "version": 5,
-        "updatedAt": "2023-08-17T01:54:50.111Z",
-        "updatedBy": {
-          "_id": "64dd7ae412844cc36edc60b4",
-          "name": "用户1"
-        },
-        "data": "{\"name\":\"米哈游3\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-        "_id": "64dd7dea12844cc36edc6119"
+        "updatedAt": "2023-08-25T13:11:26.701Z",
+        "updatedBy": "64dd7ae412844cc36edc60b4",
+        "data": "{\n  \"name\": \"更改接口\",\n  \"description\": \"修改接口说明\",\n  \"tag\": \"接口\",\n  \"requestMethod\": \"PATCH\",\n  \"requestPath\": \"/api/interface/:interfaceId\",\n  \"requestHeaders\": [\n    {\n      \"name\": \"Authorization\",\n      \"description\": \"必选token\",\n      \"required\": true,\n      \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n      \"type\": \"string\"\n    }\n  ],\n  \"requestParams\": {\n    \"path\": [\n      {\n        \"name\": \"interfaceId\",\n        \"description\": \"接口Id\",\n        \"required\": true,\n        \"example\": \"64d782b65239aaa91333922f\",\n        \"type\": \"string\"\n      }\n    ],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {}\n    ]\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"id\": \"\",\n        \"name\": \"\",\n        \"description\": \"\",\n        \"requestMethod\": \"\",\n        \"requestPath\": \"\",\n        \"requestHeaders\": \"\",\n        \"requestParams\": \"\",\n        \"requestBody\": \"\",\n        \"response\": \"\",\n        \"projectId\": \"\",\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
+        "_id": "64e8a87e89412f63b9437e62"
       }
-    ]
+    ],
+    "_id": "64e8a87e89412f63b9437e61",
+    "__v": 0
   }
 }
 ```
@@ -1353,9 +1318,216 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 
 ### 返回数据结构
 
+## POST 批量添加接口
+
+POST /api/interface/batch
+
+> Body 请求参数
+
+```json
+{
+  "type": "string",
+  "projectId": "string",
+  "datas": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "tag": "string",
+      "requestMethod": "string",
+      "requestPath": "string",
+      "requestHeaders": "string",
+      "requestParams": "string",
+      "requestBody": "string",
+      "response": "string",
+      "projectId": "string",
+      "historys": [
+        {
+          "version": "string",
+          "updatedAt": "string",
+          "updatedBy": {
+            "id": null,
+            "email": null,
+            "name": null,
+            "bio": null
+          },
+          "data": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|Authorization|header|string| 是 ||none|
+|body|body|object| 否 ||none|
+|» type|body|string| 是 | 类型|强制覆盖，追加模式|
+|» projectId|body|string| 是 | 项目Id|none|
+|» datas|body|[[interface](#schemainterface)]| 是 ||none|
+|»» id|body|string| 否 | 接口ID|none|
+|»» name|body|string| 是 | 接口名称|none|
+|»» description|body|string| 否 ||none|
+|»» tag|body|string| 否 | 所属目录|none|
+|»» requestMethod|body|string| 是 | 请求方法|none|
+|»» requestPath|body|string| 是 | 接口地址|none|
+|»» requestHeaders|body|string| 否 | header参数|JSON.stringify(parameter)|
+|»» requestParams|body|string| 否 | query参数|JSON.stringify(parameter)|
+|»» requestBody|body|string| 否 | body参数|JSON.stringify(requestBody)|
+|»» response|body|string| 否 | 返回数据|JSON.stringify(response)|
+|»» projectId|body|string| 否 | 所属项目ID|none|
+|»» historys|body|[object]| 否 | 更改历史|该接口的更改历史记录|
+|»»» version|body|string| 是 ||none|
+|»»» updatedAt|body|string| 否 ||none|
+|»»» updatedBy|body|object| 是 ||none|
+|»»»» id|body|string| 否 | 用户ID|none|
+|»»»» email|body|string| 是 | 邮箱|none|
+|»»»» name|body|string| 是 | 用户名|none|
+|»»»» bio|body|string| 否 | 个人简介|none|
+|»»» data|body|string| 是 ||none|
+
+> 返回示例
+
+> 成功
+
+```json
+{
+  "code": 200,
+  "msg": "批量创建接口成功!",
+  "data": [
+    {
+      "name": "注册用户",
+      "description": "",
+      "tag": "用户",
+      "requestMethod": "POST",
+      "requestPath": "/api/user",
+      "requestHeaders": "[]",
+      "requestParams": "{\n  \"path\": [],\n  \"query\": []\n}",
+      "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
+      "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
+      "projectId": "64e1da182d845c0e02cc6811",
+      "history": [
+        {
+          "version": 1,
+          "updatedAt": "2023-08-25T13:11:26.696Z",
+          "updatedBy": "64dd7ae412844cc36edc60b4",
+          "data": "{\n  \"name\": \"注册用户\",\n  \"description\": \"\",\n  \"tag\": \"用户\",\n  \"requestMethod\": \"POST\",\n  \"requestPath\": \"/api/user\",\n  \"requestHeaders\": [],\n  \"requestParams\": {\n    \"path\": [],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {}\n    ]\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
+          "_id": "64e8a87e89412f63b9437e5c"
+        }
+      ],
+      "_id": "64e8a87e89412f63b9437e5b",
+      "__v": 0
+    },
+    {
+      "name": "上传文件",
+      "description": "上传swagger文件，返回解析的数据",
+      "tag": "",
+      "requestMethod": "POST",
+      "requestPath": "/api/upload",
+      "requestHeaders": "[]",
+      "requestParams": "{\n  \"path\": [],\n  \"query\": []\n}",
+      "requestBody": "{\n  \"contentType\": \"form-data\",\n  \"content\": [\n    {\n      \"name\": \"file\",\n      \"description\": \"\",\n      \"required\": true,\n      \"example\": \"file://C:\\\\Users\\\\WhiteNight\\\\OneDrive\\\\桌面\\\\HTTP-Manager.openapi.json\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+      "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
+      "projectId": "64e1da182d845c0e02cc6811",
+      "history": [
+        {
+          "version": 1,
+          "updatedAt": "2023-08-25T13:11:26.699Z",
+          "updatedBy": "64dd7ae412844cc36edc60b4",
+          "data": "{\n  \"name\": \"上传文件\",\n  \"description\": \"上传swagger文件，返回解析的数据\",\n  \"tag\": \"\",\n  \"requestMethod\": \"POST\",\n  \"requestPath\": \"/api/upload\",\n  \"requestHeaders\": [],\n  \"requestParams\": {\n    \"path\": [],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"form-data\",\n    \"content\": [\n      {\n        \"name\": \"file\",\n        \"description\": \"\",\n        \"required\": true,\n        \"example\": \"file://C:\\\\Users\\\\WhiteNight\\\\OneDrive\\\\桌面\\\\HTTP-Manager.openapi.json\",\n        \"type\": \"string\"\n      }\n    ]\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
+          "_id": "64e8a87e89412f63b9437e5f"
+        }
+      ],
+      "_id": "64e8a87e89412f63b9437e5e",
+      "__v": 0
+    },
+    {
+      "name": "更改接口",
+      "description": "修改接口说明",
+      "tag": "接口",
+      "requestMethod": "PATCH",
+      "requestPath": "/api/interface/:interfaceId",
+      "requestHeaders": "[\n  {\n    \"name\": \"Authorization\",\n    \"description\": \"必选token\",\n    \"required\": true,\n    \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n    \"type\": \"string\"\n  }\n]",
+      "requestParams": "{\n  \"path\": [\n    {\n      \"name\": \"interfaceId\",\n      \"description\": \"接口Id\",\n      \"required\": true,\n      \"example\": \"64d782b65239aaa91333922f\",\n      \"type\": \"string\"\n    }\n  ],\n  \"query\": []\n}",
+      "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
+      "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"description\": \"\",\n      \"requestMethod\": \"\",\n      \"requestPath\": \"\",\n      \"requestHeaders\": \"\",\n      \"requestParams\": \"\",\n      \"requestBody\": \"\",\n      \"response\": \"\",\n      \"projectId\": \"\",\n      \"code\": \"200\"\n    }\n  ]\n}",
+      "projectId": "64e1da182d845c0e02cc6811",
+      "history": [
+        {
+          "version": 1,
+          "updatedAt": "2023-08-25T13:11:26.701Z",
+          "updatedBy": "64dd7ae412844cc36edc60b4",
+          "data": "{\n  \"name\": \"更改接口\",\n  \"description\": \"修改接口说明\",\n  \"tag\": \"接口\",\n  \"requestMethod\": \"PATCH\",\n  \"requestPath\": \"/api/interface/:interfaceId\",\n  \"requestHeaders\": [\n    {\n      \"name\": \"Authorization\",\n      \"description\": \"必选token\",\n      \"required\": true,\n      \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n      \"type\": \"string\"\n    }\n  ],\n  \"requestParams\": {\n    \"path\": [\n      {\n        \"name\": \"interfaceId\",\n        \"description\": \"接口Id\",\n        \"required\": true,\n        \"example\": \"64d782b65239aaa91333922f\",\n        \"type\": \"string\"\n      }\n    ],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {}\n    ]\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"id\": \"\",\n        \"name\": \"\",\n        \"description\": \"\",\n        \"requestMethod\": \"\",\n        \"requestPath\": \"\",\n        \"requestHeaders\": \"\",\n        \"requestParams\": \"\",\n        \"requestBody\": \"\",\n        \"response\": \"\",\n        \"projectId\": \"\",\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
+          "_id": "64e8a87e89412f63b9437e62"
+        }
+      ],
+      "_id": "64e8a87e89412f63b9437e61",
+      "__v": 0
+    },
+    {
+      "name": "Mock",
+      "description": "将接口上传，后端生成一个Mock接口",
+      "tag": "",
+      "requestMethod": "POST",
+      "requestPath": "/mock/add",
+      "requestHeaders": "[]",
+      "requestParams": "{\n  \"path\": [],\n  \"query\": []\n}",
+      "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
+      "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
+      "projectId": "64e1da182d845c0e02cc6811",
+      "history": [
+        {
+          "version": 1,
+          "updatedAt": "2023-08-25T13:11:26.703Z",
+          "updatedBy": "64dd7ae412844cc36edc60b4",
+          "data": "{\n  \"name\": \"Mock\",\n  \"description\": \"将接口上传，后端生成一个Mock接口\",\n  \"tag\": \"\",\n  \"requestMethod\": \"POST\",\n  \"requestPath\": \"/mock/add\",\n  \"requestHeaders\": [],\n  \"requestParams\": {\n    \"path\": [],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {}\n    ]\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
+          "_id": "64e8a87e89412f63b9437e65"
+        }
+      ],
+      "_id": "64e8a87e89412f63b9437e64",
+      "__v": 0
+    },
+    {
+      "name": "111",
+      "description": "",
+      "tag": "接口/1",
+      "requestMethod": "GET",
+      "requestPath": "/111",
+      "requestHeaders": "[]",
+      "requestParams": "{\n  \"path\": [],\n  \"query\": []\n}",
+      "requestBody": "{\n  \"contentType\": \"\",\n  \"content\": []\n}",
+      "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
+      "projectId": "64e1da182d845c0e02cc6811",
+      "history": [
+        {
+          "version": 1,
+          "updatedAt": "2023-08-25T13:11:26.704Z",
+          "updatedBy": "64dd7ae412844cc36edc60b4",
+          "data": "{\n  \"name\": \"111\",\n  \"description\": \"\",\n  \"tag\": \"接口/1\",\n  \"requestMethod\": \"GET\",\n  \"requestPath\": \"/111\",\n  \"requestHeaders\": [],\n  \"requestParams\": {\n    \"path\": [],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"\",\n    \"content\": []\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
+          "_id": "64e8a87e89412f63b9437e68"
+        }
+      ],
+      "_id": "64e8a87e89412f63b9437e67",
+      "__v": 0
+    }
+  ]
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|成功|Inline|
+
+### 返回数据结构
+
 # 数据模型
 
-## user-project
+<h2 id="tocS_user-project">user-project</h2>
 
 <a id="schemauser-project"></a>
 <a id="schema_user-project"></a>
@@ -1381,7 +1553,7 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |projectId|string|true|none|项目ID|none|
 |auth|string|true|none|权限|管理，读写，只读|
 
-## history
+<h2 id="tocS_history">history</h2>
 
 <a id="schemahistory"></a>
 <a id="schema_history"></a>
@@ -1407,7 +1579,7 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |updatedBy|string|true|none||none|
 |data|string|true|none|所有数据|JSON.stringify(interface)|
 
-## parameter
+<h2 id="tocS_parameter">parameter</h2>
 
 <a id="schemaparameter"></a>
 <a id="schema_parameter"></a>
@@ -1439,7 +1611,7 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |example|string|false|none|示例值|none|
 |type|string|false|none|类型|none|
 
-## interface
+<h2 id="tocS_interface">interface</h2>
 
 <a id="schemainterface"></a>
 <a id="schema_interface"></a>
@@ -1451,6 +1623,7 @@ PUT /api/interface/{interfaceId}/history/{historyId}
   "id": "string",
   "name": "string",
   "description": "string",
+  "tag": "string",
   "requestMethod": "string",
   "requestPath": "string",
   "requestHeaders": "string",
@@ -1465,7 +1638,8 @@ PUT /api/interface/{interfaceId}/history/{historyId}
       "updatedBy": {
         "id": "string",
         "email": "string",
-        "name": "string"
+        "name": "string",
+        "bio": "string"
       },
       "data": "string"
     }
@@ -1481,6 +1655,7 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |id|string|false|none|接口ID|none|
 |name|string|true|none|接口名称|none|
 |description|string|false|none||none|
+|tag|string|false|none|所属目录|none|
 |requestMethod|string|true|none|请求方法|none|
 |requestPath|string|true|none|接口地址|none|
 |requestHeaders|string|false|none|header参数|JSON.stringify(parameter)|
@@ -1495,9 +1670,10 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |»» id|string|false|none|用户ID|none|
 |»» email|string|true|none|邮箱|none|
 |»» name|string|true|none|用户名|none|
+|»» bio|string|false|none|个人简介|none|
 |» data|string|true|none||none|
 
-## project
+<h2 id="tocS_project">project</h2>
 
 <a id="schemaproject"></a>
 <a id="schema_project"></a>
@@ -1514,7 +1690,8 @@ PUT /api/interface/{interfaceId}/history/{historyId}
     {
       "id": "string",
       "email": "string",
-      "name": "string"
+      "name": "string",
+      "bio": "string"
     }
   ],
   "createTime": "string",
@@ -1524,6 +1701,7 @@ PUT /api/interface/{interfaceId}/history/{historyId}
       "id": "string",
       "name": "string",
       "description": "string",
+      "tag": "string",
       "requestMethod": "string",
       "requestPath": "string",
       "requestHeaders": "string",
@@ -1549,12 +1727,14 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |» id|string|false|none|用户ID|none|
 |» email|string|true|none|邮箱|none|
 |» name|string|true|none|用户名|none|
+|» bio|string|false|none|个人简介|none|
 |createTime|string|false|none|创建时间|none|
 |interfaceCount|integer|false|none|接口数量|none|
 |interfaces|[object]|false|none|接口列表|该项目含有的接口|
 |» id|string|false|none|接口ID|none|
 |» name|string|true|none|接口名称|none|
 |» description|string|false|none||none|
+|» tag|string|false|none|所属目录|none|
 |» requestMethod|string|true|none|请求方法|none|
 |» requestPath|string|true|none|接口地址|none|
 |» requestHeaders|string|false|none|header参数|JSON.stringify(parameter)|
@@ -1563,7 +1743,7 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |» response|string|false|none|返回数据|JSON.stringify(response)|
 |» projectId|string|false|none|所属项目ID|none|
 
-## user
+<h2 id="tocS_user">user</h2>
 
 <a id="schemauser"></a>
 <a id="schema_user"></a>
@@ -1575,7 +1755,8 @@ PUT /api/interface/{interfaceId}/history/{historyId}
   "id": "string",
   "email": "string",
   "name": "string",
-  "password": "string"
+  "password": "string",
+  "bio": "string"
 }
 
 ```
@@ -1588,4 +1769,5 @@ PUT /api/interface/{interfaceId}/history/{historyId}
 |email|string|true|none|邮箱|none|
 |name|string|true|none|用户名|none|
 |password|string|true|none|密码|none|
+|bio|string|false|none|个人简介|none|
 

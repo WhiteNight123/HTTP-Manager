@@ -4,12 +4,11 @@ import Register from "../views/Register.vue";
 import My from "../views/My.vue";
 import Welcome from "../views/Welcome.vue";
 import Projects from "../views/Projects.vue";
-import Nopage from "../views/404.vue";
-import Interface from "../views/Interface.vue";
+import NoPage from "../views/404.vue";
+import InterfaceTree from "../views/InterfaceTree.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Members from "../views/Members.vue";
-import Home from "../components/Home.vue";
-import Dialog from "../components/Dialog.vue";
+import Home from "../views/Home.vue";
 
 const routes = [
   {
@@ -54,20 +53,15 @@ const routes = [
       },
       {
         path: "/interfaces",
-        name: "Interface",
-        component: Interface,
+        name: "Interfaces",
+        component: InterfaceTree,
       },
     ],
   },
   {
     path: "/:pathMatch(.*)*",
     name: "404",
-    component: Nopage,
-  },
-  {
-    path: "/dialog",
-    name: "Dialog",
-    component: Dialog,
+    component: NoPage,
   },
 ];
 

@@ -7,7 +7,9 @@
         alt="Logo"
         @click="clickLogo"
       />
-      <el-button class="button" text @click="goProjects">api 文档</el-button>
+      <el-button class="button" text @click="goProjects" size="large"
+        >api 文档</el-button
+      >
     </span>
     <span> </span>
     <span class="header-right">
@@ -87,7 +89,7 @@ const goProjects = () => {
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  border-bottom: 1px solid #bfbfbf;
+  border-bottom: 1px solid #a9a9a97a;
 }
 .header-left {
   display: flex;
@@ -95,6 +97,7 @@ const goProjects = () => {
 }
 .button {
   margin-left: 32px;
+  margin-top: -1px;
 }
 
 .logo {

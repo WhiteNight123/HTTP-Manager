@@ -1,22 +1,21 @@
 <template>
   <div>
-    <Header></Header>
-    <el-container>
-      <el-aside width="150px">
-        <!-- 侧边栏内容 -->
-        <el-menu
-          class="el-menu-vertical"
-          default-active="Dashboard"
-          @select="handleMenuSelect"
-        >
-          <el-menu-item index="Dashboard">仪表盘</el-menu-item>
-          <el-menu-item index="Interfaces">接口管理</el-menu-item>
-          <el-menu-item index="Members">用户管理</el-menu-item>
-        </el-menu>
-      </el-aside>
-
+    <el-container style="height: 100vh">
+      <el-header><Header></Header></el-header>
       <el-container>
-        <el-main>
+        <el-aside width="100px">
+          <!-- 侧边栏内容 -->
+          <el-menu
+            class="el-menu-vertical"
+            default-active="Dashboard"
+            @select="handleMenuSelect"
+          >
+            <el-menu-item index="Dashboard">仪表盘</el-menu-item>
+            <el-menu-item index="Interfaces">接口管理</el-menu-item>
+            <el-menu-item index="Members">用户管理</el-menu-item>
+          </el-menu>
+        </el-aside>
+        <el-main style="padding: 5px; width: 100%">
           <!-- 主要内容区域 -->
           <router-view></router-view>
         </el-main>
@@ -34,10 +33,8 @@ import { projectStore } from "../store/project";
 const store = projectStore();
 const activeMenu = ref("dashboard");
 
-
 const handleMenuSelect = (index) => {
   activeMenu.value = index;
-  console.log(index);
   router.push(index);
 };
 

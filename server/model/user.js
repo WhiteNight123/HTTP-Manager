@@ -92,8 +92,43 @@ function userValidator(data) {
   return schema.validate(data);
 }
 
+// 登录校验规则
+function userLoginValidator(data) {
+  const schema = Joi.object({
+    email: Joi.string()
+      .email()
+      .trim()
+      .lowercase()
+      .min(6)
+      .max(30)
+      .required()
+      .messages({
+        "any.required": "邮箱不能为空",
+        "string.email": "邮箱格式不正确",
+        "string.min": "邮箱长度不能小于6位",
+        "string.max": "邮箱长度不能大于30位",
+      }),
+    password: Joi.string()
+      .min(6)
+      .max(18)
+      .pattern(/^[a-zA-Z0-9]{6,18}$/)
+      .required()
+      .messages({
+        "any.required": "密码不能为空",
+        "string.pattern.base": "密码必须是6-18位的数字或字母",
+        "string.min": "密码长度不能小于6位",
+        "string.max": "密码长度不能大于18位",
+      }),
+    _id: Joi.objectId(),
+    bio: Joi.string().max(100).allow("").messages({
+      "string.max": "个人简介长度不能大于100位",
+    }),
+  });
+  return schema.validate(data);
+}
 // 导出
 module.exports = {
   User,
   userValidator,
+  userLoginValidator
 };

@@ -5,40 +5,46 @@
       :rules="registerRules"
       ref="registerFormRef"
       class="register-form"
+      label-width="80px"
+      :label-position="right"
     >
-      <h2>Register</h2>
-      <el-form-item label="Email" prop="email">
+      <h2>注册</h2>
+      <el-form-item label="邮箱" prop="email">
         <el-input
           v-model="registerForm.email"
-          placeholder="Enter your email"
+          placeholder="请输入邮箱"
+          :prefix-icon="Message"
         ></el-input>
       </el-form-item>
-      <el-form-item label="Username" prop="name">
+      <el-form-item label="用户名" prop="name">
         <el-input
           v-model="registerForm.name"
-          placeholder="Enter your username"
+          placeholder="请输入用户名"
+          :prefix-icon="User"
         ></el-input>
       </el-form-item>
-      <el-form-item label="Password" prop="password">
+      <el-form-item label="密码" prop="password">
         <el-input
           type="password"
           v-model="registerForm.password"
           placeholder="Enter your password"
+          :prefix-icon="Lock"
+          show-password
         ></el-input>
       </el-form-item>
-      <el-form-item label="Confirm Password" prop="confirmPassword">
+      <el-form-item label="确认密码" prop="confirmPassword">
         <el-input
           type="password"
           v-model="registerForm.confirmPassword"
-          placeholder="Confirm your password"
+          placeholder="请确认密码"
+          :prefix-icon="Lock"
+          show-password
         ></el-input>
       </el-form-item>
-      <el-form-item>
-        <div class="button-container">
-          <el-button type="primary" @click="register">Register</el-button>
-          <el-button @click="goToLogin">Go to Login</el-button>
-        </div>
-      </el-form-item>
+      <div class="button-container">
+        <el-button type="primary" @click="register">注册</el-button>
+        <el-button @click="goToLogin">去登录</el-button>
+      </div>
     </el-form>
   </div>
 </template>
@@ -47,20 +53,16 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { userRegister } from "../api/user";
+import { Message, User, Lock } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
 
-const registerForm = ref({
-  email: "",
-  name: "",
-  password: "",
-  confirmPassword: "",
-});
-
+const registerForm = ref({});
 const registerRules = ref({
   email: [
     { required: true, message: "Please enter your email", trigger: "blur" },
     {
       type: "email",
-      message: "Please enter a valid email address",
+      message: "请输入正确的邮箱地址",
       trigger: "blur",
     },
   ],
@@ -107,6 +109,7 @@ const registerRules = ref({
 });
 const router = useRouter();
 const registerFormRef = ref();
+
 const register = async () => {
   try {
     await registerFormRef.value.validate().catch((error) => {
@@ -122,6 +125,7 @@ const register = async () => {
     const newUser = { email, name, password };
     const response = await userRegister(newUser);
     console.log("注册 response:", response);
+    ElMessage.success("注册成功");
     router.push({
       name: "Login",
       query: {
@@ -129,10 +133,8 @@ const register = async () => {
       },
     });
   } catch (error) {
-    ElMessage({
-      message: error,
-      type: "error",
-    });
+    console.log("注册 error:", error);
+    ElMessage.error(error);
   }
 };
 
@@ -150,7 +152,7 @@ const goToLogin = () => {
 }
 
 .register-form {
-  width: 300px;
+  width: 350px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;

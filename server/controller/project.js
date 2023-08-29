@@ -68,7 +68,7 @@ exports.getProjects = async (req, res, next) => {
 // 获取指定项目
 exports.getProject = async (req, res, next) => {
   try {
-    let projectId = req.params.id;
+    let projectId = req.params.projectId;
     let project = await Project.findById(projectId).populate(
       "creator members interfaces"
     );
@@ -110,7 +110,7 @@ exports.getProject = async (req, res, next) => {
 // 修改指定项目
 exports.updateProject = async (req, res, next) => {
   try {
-    let projectId = req.params.id;
+    let projectId = req.params.projectId;
     let body = req.body;
     const data = await Project.findByIdAndUpdate(projectId, body, {
       new: true,
@@ -134,7 +134,7 @@ exports.updateProject = async (req, res, next) => {
 // 删除指定项目
 exports.deleteProject = async (req, res, next) => {
   try {
-    let projectId = req.params.id;
+    let projectId = req.params.projectId;
     const data = await Project.findByIdAndDelete(projectId);
     if (!data) {
       return res.status(400).json({
@@ -168,7 +168,6 @@ exports.addMember = async (req, res, next) => {
     let { email, projectId, auth } = req.body;
     // 根据用户email查找用户id
     const userId = await User.findOne({ email });
-    console.log(userId);
     if (!userId) {
       return res.status(400).json({
         code: 400,
