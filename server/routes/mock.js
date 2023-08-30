@@ -84,7 +84,7 @@ router.${requestMethod.toLowerCase()}("${requestPath}", function (req, res) {
     if (response.contentType === 'application/xml'){
       res.set('Content-Type', 'application/xml');
     } else if (response.contentType === 'application/yaml') {
-      res.set('Content-Type', 'application/yaml');
+      res.set('Content-Type', 'text/plain');
     } else if (response.contentType === 'application/json') {
       res.set('Content-Type', 'application/json');
     }

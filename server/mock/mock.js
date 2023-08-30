@@ -2,8 +2,8 @@
 // 该文件由接口管理工具自动生成，请勿手动修改
 const router = require("express").Router();
 const Mock = require("mockjs");
-router.post("/api/project", function (req, res) {
-    const requiredHeaders = ["authorization"];
+router.post("/api/auth", function (req, res) {
+    const requiredHeaders = [];
     for (const header of requiredHeaders) {
         if (!req.headers[header]) {
             return res.status(400).json({
@@ -21,7 +21,7 @@ router.post("/api/project", function (req, res) {
             });
         }
     }
-    response = {"contentType":"application/json","content":[{"code":200,"data":{"code":"@cname"},"msg":"Mock"}]};  
+    response = {"contentType":"application/json","content":[{"code":201,"data":{"data":"@cparagraph","date":"@now"},"msg":"Mock"}]};  
     const responseContent = response.content;
     if (responseContent.length === 0) {
         return res.status(200).json({
@@ -64,7 +64,7 @@ router.post("/api/project", function (req, res) {
     if (response.contentType === 'application/xml'){
       res.set('Content-Type', 'application/xml');
     } else if (response.contentType === 'application/yaml') {
-      res.set('Content-Type', 'application/yaml');
+      res.set('Content-Type', 'text/plain');
     } else if (response.contentType === 'application/json') {
       res.set('Content-Type', 'application/json');
     }
