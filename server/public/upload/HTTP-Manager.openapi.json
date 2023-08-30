@@ -32,10 +32,43 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/user",
-                "x-apifox-overrides": {
-                  "password": null
-                }
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "title": "用户ID"
+                  },
+                  "email": {
+                    "type": "string",
+                    "title": "邮箱"
+                  },
+                  "name": {
+                    "type": "string",
+                    "title": "用户名"
+                  },
+                  "password": {
+                    "type": "string",
+                    "title": "密码"
+                  },
+                  "bio": {
+                    "type": "string",
+                    "title": "个人简介"
+                  }
+                },
+                "x-apifox-refs": {},
+                "x-apifox-orders": [
+                  "id",
+                  "email",
+                  "name",
+                  "password",
+                  "bio"
+                ],
+                "required": [
+                  "name",
+                  "password",
+                  "email"
+                ],
+                "x-apifox-ignore-properties": []
               },
               "example": {
                 "email": "111@qq.com",
@@ -175,8 +208,37 @@
           "content": {
             "application/json": {
               "schema": {
+                "title": "",
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "title": "邮箱"
+                  },
+                  "name": {
+                    "type": "string",
+                    "title": "用户名"
+                  },
+                  "password": {
+                    "type": "string",
+                    "title": "密码"
+                  },
+                  "bio": {
+                    "type": "string",
+                    "title": "个人简介"
+                  }
+                },
+                "x-apifox-orders": [
+                  "email",
+                  "name",
+                  "password",
+                  "bio"
+                ],
+                "required": [
+                  "password"
+                ],
+                "x-apifox-refs": {},
+                "x-apifox-ignore-properties": []
               }
             }
           }
@@ -291,9 +353,26 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {},
-                "x-apifox-ignore-properties": [],
-                "x-apifox-orders": []
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "title": "邮箱"
+                  },
+                  "password": {
+                    "type": "string",
+                    "title": "密码"
+                  }
+                },
+                "x-apifox-orders": [
+                  "email",
+                  "password"
+                ],
+                "required": [
+                  "password",
+                  "email"
+                ],
+                "x-apifox-refs": {},
+                "x-apifox-ignore-properties": []
               }
             }
           }
@@ -377,48 +456,25 @@
                       "msg": "解析文件成功!",
                       "data": [
                         {
-                          "name": "更改接口",
-                          "description": "修改接口说明",
-                          "requestMethod": "PATCH",
-                          "requestPath": "/api/interface/:interfaceId",
-                          "requestHeaders": [
-                            {
-                              "name": "Authorization",
-                              "description": "必选token",
-                              "required": true,
-                              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4",
-                              "type": "string"
-                            }
-                          ],
+                          "name": "注册用户",
+                          "description": "",
+                          "tag": "用户",
+                          "requestMethod": "POST",
+                          "requestPath": "/api/user",
+                          "requestHeaders": [],
                           "requestParams": {
-                            "path": [
-                              {
-                                "name": "interfaceId",
-                                "description": "接口Id",
-                                "required": true,
-                                "example": "64d782b65239aaa91333922f",
-                                "type": "string"
-                              }
-                            ],
+                            "path": [],
                             "query": []
                           },
                           "requestBody": {
                             "contentType": "application/json",
                             "content": [
                               {
+                                "id": "",
+                                "email": "",
                                 "name": "",
-                                "array": [
-                                  {
-                                    "projects": [
-                                      {
-                                        "school": ""
-                                      }
-                                    ]
-                                  }
-                                ],
-                                "user": {
-                                  "age": ""
-                                }
+                                "password": "",
+                                "bio": ""
                               }
                             ]
                           },
@@ -426,17 +482,47 @@
                             "contentType": "application/json",
                             "content": [
                               {
-                                "code": "200",
-                                "msg": "",
-                                "data": {
-                                  "_id": "",
-                                  "name": "",
-                                  "historys": [
-                                    {
-                                      "historyname": ""
-                                    }
-                                  ]
-                                }
+                                "code": "200"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "获取指定用户",
+                          "description": "",
+                          "tag": "用户",
+                          "requestMethod": "GET",
+                          "requestPath": "/api/user/{id}",
+                          "requestHeaders": [
+                            {
+                              "name": "Authorization",
+                              "description": "",
+                              "required": true,
+                              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE3NDAwNzMsImV4cCI6MTY5MjYwNDA3M30.Pm7FJk52zNHReLZ-EGyS6VhMGAVfk9xYplpUhimR5e8",
+                              "type": "string"
+                            }
+                          ],
+                          "requestParams": {
+                            "path": [
+                              {
+                                "name": "id",
+                                "description": "",
+                                "required": true,
+                                "example": "64dd7b0b12844cc36edc60bc",
+                                "type": "string"
+                              }
+                            ],
+                            "query": []
+                          },
+                          "requestBody": {
+                            "contentType": "",
+                            "content": []
+                          },
+                          "response": {
+                            "contentType": "application/json",
+                            "content": [
+                              {
+                                "code": "200"
                               }
                             ]
                           }
@@ -478,7 +564,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/project"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "项目名称"
+                  },
+                  "description": {
+                    "type": "string",
+                    "title": "项目描述"
+                  }
+                },
+                "x-apifox-refs": {},
+                "x-apifox-orders": [
+                  "name",
+                  "description"
+                ],
+                "required": [
+                  "name"
+                ],
+                "x-apifox-ignore-properties": []
               }
             }
           }
@@ -501,16 +606,16 @@
                       "code": 200,
                       "msg": "创建项目成功!",
                       "data": {
-                        "name": "项目1",
-                        "description": "《原神》是由米哈游自研的一款开放世界冒险RPG。你将在游戏中探索一个被称作「提瓦特」的幻想世界。在这广阔的世界中，被神选中的人将被授予「神之眼」，引导元素之力。",
+                        "name": "项目4",
+                        "description": "「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。若不是「禁忌」的威胁日渐临近，她又何尝不想暂时休憩，亲眼去看看须弥的无数生灵？在心灵的净土中，她与阳光和微风作伴，与人类和动物交友，一起讲故事，做游戏，唱刚刚学会的歌…她将最美好的向往尽数倾注于梦境，但无论夜晚如何喧闹，每当白日来临，她的身畔又会重归寂静。——彻底唤醒她的，是来自「虚空」并不明显的异响。「原来是，梦中梦啊…」",
                         "creator": "64dd7ae412844cc36edc60b4",
                         "members": [
                           "64dd7ae412844cc36edc60b4"
                         ],
-                        "createTime": "2023-08-17T01:45:53.606Z",
+                        "createTime": "2023-08-30T03:20:19.710Z",
                         "interfaceCount": 0,
                         "interfaces": [],
-                        "_id": "64dd7bd112844cc36edc60c4",
+                        "_id": "64eeb573274d449810b5d410",
                         "__v": 0
                       }
                     }
@@ -632,13 +737,10 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "x-apifox-refs": {
-                  "01H7MB8CGW6AMQ8H9PWQGWWDMB": {
-                    "$ref": "#/components/schemas/project"
-                  }
-                },
+                "x-apifox-refs": {},
                 "x-apifox-orders": [
-                  "01H7MB8CGW6AMQ8H9PWQGWWDMB"
+                  "name",
+                  "description"
                 ],
                 "properties": {
                   "name": {
@@ -648,20 +750,12 @@
                   "description": {
                     "type": "string",
                     "title": "项目描述"
-                  },
-                  "interfaceCount": {
-                    "type": "integer",
-                    "title": "接口数量"
                   }
                 },
                 "required": [
                   "name"
                 ],
-                "x-apifox-ignore-properties": [
-                  "name",
-                  "description",
-                  "interfaceCount"
-                ]
+                "x-apifox-ignore-properties": []
               },
               "example": ""
             }
@@ -685,11 +779,11 @@
                       "code": 200,
                       "msg": "修改成功!",
                       "data": {
-                        "_id": "64dd7be412844cc36edc60cb",
-                        "name": "修改后的项目2",
-                        "description": "声易约月二论取领装半程统影。为北强己所记改山象增称关已共志。连长于组广选层求直更声装何共完度。以合难以水声线深较很。众难政思记发方广个体然清节节。",
+                        "_id": "64eeb573274d449810b5d410",
+                        "name": "项目44",
+                        "description": "「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。若不是「禁忌」的威胁日渐临近，她又何尝不想暂时休憩，亲眼去看看须弥的无数生灵？在心灵的净土中，她与阳光和微风作伴，与人类和动物交友，一起讲故事，做游戏，唱刚刚学会的歌…她将最美好的向往尽数倾注于梦境，但无论夜晚如何喧闹，每当白日来临，她的身畔又会重归寂静。——彻底唤醒她的，是来自「虚空」并不明显的异响。「原来是，梦中梦啊…」",
                         "creator": "64dd7ae412844cc36edc60b4",
-                        "createTime": "2023-08-17T01:46:12.261Z",
+                        "createTime": "2023-08-30T03:20:19.710Z",
                         "interfaceCount": 0
                       }
                     }
@@ -887,7 +981,34 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/user-project"
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "title": "用户ID"
+                  },
+                  "projectId": {
+                    "type": "string",
+                    "title": "项目ID"
+                  },
+                  "auth": {
+                    "type": "string",
+                    "title": "权限",
+                    "description": "管理，读写，只读"
+                  }
+                },
+                "x-apifox-refs": {},
+                "x-apifox-orders": [
+                  "userId",
+                  "projectId",
+                  "auth"
+                ],
+                "required": [
+                  "userId",
+                  "projectId",
+                  "auth"
+                ],
+                "x-apifox-ignore-properties": []
               }
             }
           }
@@ -958,10 +1079,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "email": {
+                  "userId": {
                     "type": "string",
                     "title": "用户邮箱"
                   },
@@ -977,13 +1095,12 @@
                 },
                 "x-apifox-refs": {},
                 "x-apifox-orders": [
-                  "id",
-                  "email",
+                  "userId",
                   "projectId",
                   "auth"
                 ],
                 "required": [
-                  "email",
+                  "userId",
                   "projectId",
                   "auth"
                 ],
@@ -1060,21 +1177,18 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "x-apifox-refs": {
-                  "01H7MX8TPJD47YX1ZGTBWCFZFG": {
-                    "$ref": "#/components/schemas/interface",
-                    "x-apifox-overrides": {
-                      "query-parameters": null,
-                      "body-parameters": null,
-                      "header-parameters": null,
-                      "return-data": null,
-                      "project": null,
-                      "historys": null
-                    }
-                  }
-                },
+                "x-apifox-refs": {},
                 "x-apifox-orders": [
-                  "01H7MX8TPJD47YX1ZGTBWCFZFG"
+                  "name",
+                  "description",
+                  "tag",
+                  "requestMethod",
+                  "requestPath",
+                  "requestHeaders",
+                  "requestParams",
+                  "requestBody",
+                  "response",
+                  "projectId"
                 ],
                 "properties": {
                   "name": {
@@ -1119,99 +1233,14 @@
                   "projectId": {
                     "type": "string",
                     "title": "所属项目ID"
-                  },
-                  "historys": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "version": {
-                          "type": "string"
-                        },
-                        "updatedAt": {
-                          "type": "string"
-                        },
-                        "updatedBy": {
-                          "type": "object",
-                          "x-apifox-refs": {
-                            "01H7PCAM6PKP8MZQR1YX1GSYDJ": {
-                              "$ref": "#/components/schemas/user",
-                              "x-apifox-overrides": {
-                                "password": null
-                              }
-                            }
-                          },
-                          "x-apifox-orders": [
-                            "01H7PCAM6PKP8MZQR1YX1GSYDJ"
-                          ],
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "title": "用户ID"
-                            },
-                            "email": {
-                              "type": "string",
-                              "title": "邮箱"
-                            },
-                            "name": {
-                              "type": "string",
-                              "title": "用户名"
-                            },
-                            "bio": {
-                              "type": "string",
-                              "title": "个人简介"
-                            }
-                          },
-                          "required": [
-                            "email",
-                            "name"
-                          ],
-                          "x-apifox-ignore-properties": [
-                            "id",
-                            "email",
-                            "name",
-                            "bio"
-                          ]
-                        },
-                        "data": {
-                          "type": "string"
-                        }
-                      },
-                      "x-apifox-orders": [
-                        "version",
-                        "updatedAt",
-                        "updatedBy",
-                        "data"
-                      ],
-                      "required": [
-                        "version",
-                        "updatedBy",
-                        "data"
-                      ],
-                      "x-apifox-ignore-properties": []
-                    },
-                    "title": "更改历史",
-                    "description": "该接口的更改历史记录"
                   }
                 },
                 "required": [
                   "name",
-                  "requestMethod",
-                  "requestPath"
-                ],
-                "x-apifox-ignore-properties": [
-                  "name",
-                  "description",
-                  "tag",
-                  "requestMethod",
                   "requestPath",
-                  "requestHeaders",
-                  "requestParams",
-                  "requestBody",
-                  "response",
-                  "projectId",
-                  "historys"
-                ]
+                  "requestMethod"
+                ],
+                "x-apifox-ignore-properties": []
               }
             }
           }
@@ -1234,25 +1263,26 @@
                       "code": 200,
                       "msg": "创建接口成功!",
                       "data": {
-                        "name": "米哈游1",
-                        "description": "米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。",
-                        "requestMethod": "POST",
-                        "requestPath": "/afjsvglp.se/eksey",
-                        "requestHeaders": "esse sunt officia occaecat",
-                        "requestParams": "exercitation sint proident commodo",
-                        "requestBody": "ea dolor",
-                        "response": "Ut",
-                        "projectId": "64dd7bd112844cc36edc60c4",
+                        "name": "修改用户",
+                        "description": "「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。",
+                        "tag": "用户",
+                        "requestMethod": "PUT",
+                        "requestPath": "/api/user/{id}",
+                        "requestHeaders": "[\n  {\n    \"name\": \"Authorization\",\n    \"description\": \"\",\n    \"required\": true,\n    \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n    \"type\": \"string\"\n  }\n]",
+                        "requestParams": "{\n  \"path\": [\n    {\n      \"name\": \"id\",\n      \"description\": \"\",\n      \"required\": true,\n      \"example\": \"1\",\n      \"type\": \"string\"\n    }\n  ],\n  \"query\": []\n}",
+                        "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
+                        "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
+                        "projectId": "64ede114cfac09b25167d549",
                         "history": [
                           {
                             "version": 1,
-                            "updatedAt": "2023-08-17T01:48:57.989Z",
+                            "updatedAt": "2023-08-30T03:16:37.744Z",
                             "updatedBy": "64dd7ae412844cc36edc60b4",
-                            "data": "{\"name\":\"米哈游1\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                            "_id": "64dd7c8912844cc36edc60df"
+                            "data": "{\n  \"name\": \"修改用户\",\n  \"description\": \"「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。\",\n  \"tag\": \"用户\",\n  \"requestMethod\": \"PUT\",\n  \"requestPath\": \"/api/user/{id}\",\n  \"requestHeaders\": \"[\\n  {\\n    \\\"name\\\": \\\"Authorization\\\",\\n    \\\"description\\\": \\\"\\\",\\n    \\\"required\\\": true,\\n    \\\"example\\\": \\\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\\\",\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n]\",\n  \"requestParams\": \"{\\n  \\\"path\\\": [\\n    {\\n      \\\"name\\\": \\\"id\\\",\\n      \\\"description\\\": \\\"\\\",\\n      \\\"required\\\": true,\\n      \\\"example\\\": \\\"1\\\",\\n      \\\"type\\\": \\\"string\\\"\\n    }\\n  ],\\n  \\\"query\\\": []\\n}\",\n  \"requestBody\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {}\\n  ]\\n}\",\n  \"response\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {\\n      \\\"code\\\": \\\"200\\\"\\n    }\\n  ]\\n}\",\n  \"projectId\": \"64ede114cfac09b25167d549\"\n}",
+                            "_id": "64eeb495274d449810b5d3f6"
                           }
                         ],
-                        "_id": "64dd7c8912844cc36edc60de",
+                        "_id": "64eeb495274d449810b5d3f5",
                         "__v": 0
                       }
                     }
@@ -1309,8 +1339,69 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {},
-                "x-apifox-orders": [],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "接口名称"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string",
+                    "title": "所属目录"
+                  },
+                  "requestMethod": {
+                    "type": "string",
+                    "title": "请求方法"
+                  },
+                  "requestPath": {
+                    "type": "string",
+                    "title": "接口地址"
+                  },
+                  "requestHeaders": {
+                    "type": "string",
+                    "title": "header参数",
+                    "description": "JSON.stringify(parameter)"
+                  },
+                  "requestParams": {
+                    "type": "string",
+                    "title": "query参数",
+                    "description": "JSON.stringify(parameter)"
+                  },
+                  "requestBody": {
+                    "type": "string",
+                    "title": "body参数",
+                    "description": "JSON.stringify(requestBody)"
+                  },
+                  "response": {
+                    "type": "string",
+                    "title": "返回数据",
+                    "description": "JSON.stringify(response)"
+                  },
+                  "projectId": {
+                    "type": "string",
+                    "title": "所属项目ID"
+                  }
+                },
+                "x-apifox-refs": {},
+                "x-apifox-orders": [
+                  "name",
+                  "description",
+                  "tag",
+                  "requestMethod",
+                  "requestPath",
+                  "requestHeaders",
+                  "requestParams",
+                  "requestBody",
+                  "response",
+                  "projectId"
+                ],
+                "required": [
+                  "name",
+                  "requestPath",
+                  "requestMethod"
+                ],
                 "x-apifox-ignore-properties": []
               },
               "example": ""
@@ -1324,89 +1415,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "x-apifox-refs": {
-                    "01H80K35G758VR13TH7TS664WT": {
-                      "$ref": "#/components/schemas/interface",
-                      "x-apifox-overrides": {
-                        "query-parameters": null,
-                        "body-parameters": null,
-                        "header-parameters": null,
-                        "return-data": null,
-                        "project": null,
-                        "historys": null
-                      }
-                    }
-                  },
-                  "x-apifox-orders": [
-                    "01H80K35G758VR13TH7TS664WT"
-                  ],
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "title": "接口ID"
-                    },
-                    "name": {
-                      "type": "string",
-                      "title": "接口名称"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "tag": {
-                      "type": "string",
-                      "title": "所属目录"
-                    },
-                    "requestMethod": {
-                      "type": "string",
-                      "title": "请求方法"
-                    },
-                    "requestPath": {
-                      "type": "string",
-                      "title": "接口地址"
-                    },
-                    "requestHeaders": {
-                      "type": "string",
-                      "title": "header参数",
-                      "description": "JSON.stringify(parameter)"
-                    },
-                    "requestParams": {
-                      "type": "string",
-                      "title": "query参数",
-                      "description": "JSON.stringify(parameter)"
-                    },
-                    "requestBody": {
-                      "type": "string",
-                      "title": "body参数",
-                      "description": "JSON.stringify(requestBody)"
-                    },
-                    "response": {
-                      "type": "string",
-                      "title": "返回数据",
-                      "description": "JSON.stringify(response)"
-                    },
-                    "projectId": {
-                      "type": "string",
-                      "title": "所属项目ID"
-                    }
-                  },
-                  "required": [
-                    "name",
-                    "requestMethod",
-                    "requestPath"
-                  ],
-                  "x-apifox-ignore-properties": [
-                    "id",
-                    "name",
-                    "description",
-                    "tag",
-                    "requestMethod",
-                    "requestPath",
-                    "requestHeaders",
-                    "requestParams",
-                    "requestBody",
-                    "response",
-                    "projectId"
-                  ]
+                  "properties": {},
+                  "x-apifox-orders": [],
+                  "x-apifox-ignore-properties": []
                 },
                 "examples": {
                   "1": {
@@ -1415,16 +1426,17 @@
                       "code": 200,
                       "msg": "更新接口成功!",
                       "data": {
-                        "_id": "64d782b65239aaa91333922f",
-                        "name": "查询派蒙88",
-                        "description": "22222222222222222222米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游米哈游。",
-                        "method": "POST",
-                        "url": "http://fvvs.ru/zxhrmkovy",
-                        "headers": "nisi eiusmod eu veniam consectetur",
-                        "params": "occaecat laborum incididunt est et",
-                        "body": "Ut deserunt",
-                        "response": "dolor exercitation",
-                        "projectId": "64d74390ec1c47299894966b"
+                        "_id": "64eeb495274d449810b5d3f5",
+                        "name": "修改用户",
+                        "description": "222「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。",
+                        "tag": "用户",
+                        "requestMethod": "PUT",
+                        "requestPath": "/api/user/{id}",
+                        "requestHeaders": "[\n  {\n    \"name\": \"Authorization\",\n    \"description\": \"\",\n    \"required\": true,\n    \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n    \"type\": \"string\"\n  }\n]",
+                        "requestParams": "{\n  \"path\": [\n    {\n      \"name\": \"id\",\n      \"description\": \"\",\n      \"required\": true,\n      \"example\": \"1\",\n      \"type\": \"string\"\n    }\n  ],\n  \"query\": []\n}",
+                        "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
+                        "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
+                        "projectId": "64ede114cfac09b25167d549"
                       }
                     }
                   },
@@ -1739,39 +1751,28 @@
                       "msg": "获取接口的历史版本成功!",
                       "data": [
                         {
-                          "version": 1,
-                          "updatedAt": "2023-08-17T01:49:26.788Z",
-                          "updatedBy": "64dd7ae412844cc36edc60b4",
-                          "data": "{\"name\":\"米哈游3\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                          "_id": "64dd7ca612844cc36edc60ed"
-                        },
-                        {
                           "version": 2,
-                          "updatedAt": "2023-08-17T01:50:41.891Z",
-                          "updatedBy": "64dd7ae412844cc36edc60b4",
-                          "data": "{\"name\":\"米哈游33\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                          "_id": "64dd7cf112844cc36edc60f6"
+                          "updatedAt": "2023-08-30T03:17:32.587Z",
+                          "updatedBy": {
+                            "bio": "这是一段很神秘的个人简介~",
+                            "_id": "64dd7ae412844cc36edc60b4",
+                            "email": "111@qq.com",
+                            "name": "用户1"
+                          },
+                          "data": "{\n  \"name\": \"修改用户\",\n  \"description\": \"222「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。\",\n  \"tag\": \"用户\",\n  \"requestMethod\": \"PUT\",\n  \"requestPath\": \"/api/user/{id}\",\n  \"requestHeaders\": \"[\\n  {\\n    \\\"name\\\": \\\"Authorization\\\",\\n    \\\"description\\\": \\\"\\\",\\n    \\\"required\\\": true,\\n    \\\"example\\\": \\\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\\\",\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n]\",\n  \"requestParams\": \"{\\n  \\\"path\\\": [\\n    {\\n      \\\"name\\\": \\\"id\\\",\\n      \\\"description\\\": \\\"\\\",\\n      \\\"required\\\": true,\\n      \\\"example\\\": \\\"1\\\",\\n      \\\"type\\\": \\\"string\\\"\\n    }\\n  ],\\n  \\\"query\\\": []\\n}\",\n  \"requestBody\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {}\\n  ]\\n}\",\n  \"response\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {\\n      \\\"code\\\": \\\"200\\\"\\n    }\\n  ]\\n}\",\n  \"projectId\": \"64ede114cfac09b25167d549\"\n}",
+                          "_id": "64eeb4cc274d449810b5d3ff"
                         },
                         {
-                          "version": 3,
-                          "updatedAt": "2023-08-17T01:52:37.706Z",
-                          "updatedBy": "64dd7ae412844cc36edc60b4",
-                          "data": "{\"name\":\"米哈游333\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                          "_id": "64dd7d6512844cc36edc60fd"
-                        },
-                        {
-                          "version": 4,
-                          "updatedAt": "2023-08-17T01:52:40.294Z",
-                          "updatedBy": "64dd7ae412844cc36edc60b4",
-                          "data": "{\"name\":\"米哈游3333\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                          "_id": "64dd7d6812844cc36edc6105"
-                        },
-                        {
-                          "version": 5,
-                          "updatedAt": "2023-08-17T01:54:50.111Z",
-                          "updatedBy": "64dd7ae412844cc36edc60b4",
-                          "data": "{\"name\":\"米哈游3\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                          "_id": "64dd7dea12844cc36edc6119"
+                          "version": 1,
+                          "updatedAt": "2023-08-30T03:16:37.744Z",
+                          "updatedBy": {
+                            "bio": "这是一段很神秘的个人简介~",
+                            "_id": "64dd7ae412844cc36edc60b4",
+                            "email": "111@qq.com",
+                            "name": "用户1"
+                          },
+                          "data": "{\n  \"name\": \"修改用户\",\n  \"description\": \"「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。\",\n  \"tag\": \"用户\",\n  \"requestMethod\": \"PUT\",\n  \"requestPath\": \"/api/user/{id}\",\n  \"requestHeaders\": \"[\\n  {\\n    \\\"name\\\": \\\"Authorization\\\",\\n    \\\"description\\\": \\\"\\\",\\n    \\\"required\\\": true,\\n    \\\"example\\\": \\\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\\\",\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n]\",\n  \"requestParams\": \"{\\n  \\\"path\\\": [\\n    {\\n      \\\"name\\\": \\\"id\\\",\\n      \\\"description\\\": \\\"\\\",\\n      \\\"required\\\": true,\\n      \\\"example\\\": \\\"1\\\",\\n      \\\"type\\\": \\\"string\\\"\\n    }\\n  ],\\n  \\\"query\\\": []\\n}\",\n  \"requestBody\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {}\\n  ]\\n}\",\n  \"response\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {\\n      \\\"code\\\": \\\"200\\\"\\n    }\\n  ]\\n}\",\n  \"projectId\": \"64ede114cfac09b25167d549\"\n}",
+                          "_id": "64eeb495274d449810b5d3f6"
                         }
                       ]
                     }
@@ -1932,51 +1933,38 @@
                       "code": 200,
                       "msg": "回滚接口成功!",
                       "data": {
-                        "_id": "64dd7ca612844cc36edc60ec",
-                        "name": "米哈游3",
-                        "description": "米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。",
-                        "requestMethod": "POST",
-                        "requestPath": "/afjsvglp.se/eksey",
-                        "requestHeaders": "esse sunt officia occaecat",
-                        "requestParams": "exercitation sint proident commodo",
-                        "requestBody": "ea dolor",
-                        "response": "Ut",
-                        "projectId": "64dd7bd112844cc36edc60c4",
+                        "_id": "64eeb495274d449810b5d3f5",
+                        "name": "修改用户",
+                        "description": "「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。",
+                        "tag": "用户",
+                        "requestMethod": "PUT",
+                        "requestPath": "/api/user/{id}",
+                        "requestHeaders": "[\n  {\n    \"name\": \"Authorization\",\n    \"description\": \"\",\n    \"required\": true,\n    \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n    \"type\": \"string\"\n  }\n]",
+                        "requestParams": "{\n  \"path\": [\n    {\n      \"name\": \"id\",\n      \"description\": \"\",\n      \"required\": true,\n      \"example\": \"1\",\n      \"type\": \"string\"\n    }\n  ],\n  \"query\": []\n}",
+                        "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
+                        "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
+                        "projectId": "64ede114cfac09b25167d549",
                         "history": [
                           {
                             "version": 1,
-                            "updatedAt": "2023-08-17T01:49:26.788Z",
+                            "updatedAt": "2023-08-30T03:16:37.744Z",
                             "updatedBy": "64dd7ae412844cc36edc60b4",
-                            "data": "{\"name\":\"米哈游3\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                            "_id": "64dd7ca612844cc36edc60ed"
+                            "data": "{\n  \"name\": \"修改用户\",\n  \"description\": \"「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。\",\n  \"tag\": \"用户\",\n  \"requestMethod\": \"PUT\",\n  \"requestPath\": \"/api/user/{id}\",\n  \"requestHeaders\": \"[\\n  {\\n    \\\"name\\\": \\\"Authorization\\\",\\n    \\\"description\\\": \\\"\\\",\\n    \\\"required\\\": true,\\n    \\\"example\\\": \\\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\\\",\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n]\",\n  \"requestParams\": \"{\\n  \\\"path\\\": [\\n    {\\n      \\\"name\\\": \\\"id\\\",\\n      \\\"description\\\": \\\"\\\",\\n      \\\"required\\\": true,\\n      \\\"example\\\": \\\"1\\\",\\n      \\\"type\\\": \\\"string\\\"\\n    }\\n  ],\\n  \\\"query\\\": []\\n}\",\n  \"requestBody\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {}\\n  ]\\n}\",\n  \"response\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {\\n      \\\"code\\\": \\\"200\\\"\\n    }\\n  ]\\n}\",\n  \"projectId\": \"64ede114cfac09b25167d549\"\n}",
+                            "_id": "64eeb495274d449810b5d3f6"
                           },
                           {
                             "version": 2,
-                            "updatedAt": "2023-08-17T01:50:41.891Z",
+                            "updatedAt": "2023-08-30T03:17:32.587Z",
                             "updatedBy": "64dd7ae412844cc36edc60b4",
-                            "data": "{\"name\":\"米哈游33\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                            "_id": "64dd7cf112844cc36edc60f6"
+                            "data": "{\n  \"name\": \"修改用户\",\n  \"description\": \"222「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。\",\n  \"tag\": \"用户\",\n  \"requestMethod\": \"PUT\",\n  \"requestPath\": \"/api/user/{id}\",\n  \"requestHeaders\": \"[\\n  {\\n    \\\"name\\\": \\\"Authorization\\\",\\n    \\\"description\\\": \\\"\\\",\\n    \\\"required\\\": true,\\n    \\\"example\\\": \\\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\\\",\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n]\",\n  \"requestParams\": \"{\\n  \\\"path\\\": [\\n    {\\n      \\\"name\\\": \\\"id\\\",\\n      \\\"description\\\": \\\"\\\",\\n      \\\"required\\\": true,\\n      \\\"example\\\": \\\"1\\\",\\n      \\\"type\\\": \\\"string\\\"\\n    }\\n  ],\\n  \\\"query\\\": []\\n}\",\n  \"requestBody\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {}\\n  ]\\n}\",\n  \"response\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {\\n      \\\"code\\\": \\\"200\\\"\\n    }\\n  ]\\n}\",\n  \"projectId\": \"64ede114cfac09b25167d549\"\n}",
+                            "_id": "64eeb4cc274d449810b5d3ff"
                           },
                           {
                             "version": 3,
-                            "updatedAt": "2023-08-17T01:52:37.706Z",
+                            "updatedAt": "2023-08-30T03:19:07.334Z",
                             "updatedBy": "64dd7ae412844cc36edc60b4",
-                            "data": "{\"name\":\"米哈游333\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                            "_id": "64dd7d6512844cc36edc60fd"
-                          },
-                          {
-                            "version": 4,
-                            "updatedAt": "2023-08-17T01:52:40.294Z",
-                            "updatedBy": "64dd7ae412844cc36edc60b4",
-                            "data": "{\"name\":\"米哈游3333\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                            "_id": "64dd7d6812844cc36edc6105"
-                          },
-                          {
-                            "version": 5,
-                            "updatedAt": "2023-08-17T01:54:50.111Z",
-                            "updatedBy": "64dd7ae412844cc36edc60b4",
-                            "data": "{\"name\":\"米哈游3\",\"requestMethod\":\"POST\",\"requestPath\":\"/afjsvglp.se/eksey\",\"requestBody\":\"ea dolor\",\"requestParams\":\"exercitation sint proident commodo\",\"response\":\"Ut\",\"requestHeaders\":\"esse sunt officia occaecat\",\"projectId\":\"64dd7bd112844cc36edc60c4\",\"description\":\"米哈游成立于2011年，致力于为用户提供美好的、超出预期的产品与内容。\"}",
-                            "_id": "64dd7dea12844cc36edc6119"
+                            "data": "{\n  \"name\": \"修改用户\",\n  \"description\": \"「小吉祥草王」深居净善宫内，向来不受重视，也很少被人提及。\",\n  \"tag\": \"用户\",\n  \"requestMethod\": \"PUT\",\n  \"requestPath\": \"/api/user/{id}\",\n  \"requestHeaders\": \"[\\n  {\\n    \\\"name\\\": \\\"Authorization\\\",\\n    \\\"description\\\": \\\"\\\",\\n    \\\"required\\\": true,\\n    \\\"example\\\": \\\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\\\",\\n    \\\"type\\\": \\\"string\\\"\\n  }\\n]\",\n  \"requestParams\": \"{\\n  \\\"path\\\": [\\n    {\\n      \\\"name\\\": \\\"id\\\",\\n      \\\"description\\\": \\\"\\\",\\n      \\\"required\\\": true,\\n      \\\"example\\\": \\\"1\\\",\\n      \\\"type\\\": \\\"string\\\"\\n    }\\n  ],\\n  \\\"query\\\": []\\n}\",\n  \"requestBody\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {}\\n  ]\\n}\",\n  \"response\": \"{\\n  \\\"contentType\\\": \\\"application/json\\\",\\n  \\\"content\\\": [\\n    {\\n      \\\"code\\\": \\\"200\\\"\\n    }\\n  ]\\n}\",\n  \"projectId\": \"64ede114cfac09b25167d549\"\n}",
+                            "_id": "64eeb52b274d449810b5d40a"
                           }
                         ]
                       }
@@ -2011,9 +1999,233 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {},
-                "x-apifox-ignore-properties": [],
-                "x-apifox-orders": []
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "接口名称"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "requestMethod": {
+                    "type": "string",
+                    "title": "请求方法"
+                  },
+                  "requestPath": {
+                    "type": "string",
+                    "title": "接口地址"
+                  },
+                  "requestHeaders": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "title": "参数名"
+                        },
+                        "description": {
+                          "type": "string",
+                          "title": "参数描述"
+                        },
+                        "required": {
+                          "type": "string",
+                          "title": "是否必须"
+                        },
+                        "example": {
+                          "type": "string",
+                          "title": "示例值"
+                        },
+                        "type": {
+                          "type": "string",
+                          "title": "类型"
+                        }
+                      },
+                      "x-apifox-refs": {},
+                      "x-apifox-orders": [
+                        "name",
+                        "description",
+                        "required",
+                        "example",
+                        "type"
+                      ],
+                      "required": [
+                        "name",
+                        "required",
+                        "type"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    },
+                    "title": "header参数",
+                    "description": "JSON.stringify(parameter)"
+                  },
+                  "requestParams": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "title": "参数名"
+                            },
+                            "description": {
+                              "type": "string",
+                              "title": "参数描述"
+                            },
+                            "required": {
+                              "type": "string",
+                              "title": "是否必须"
+                            },
+                            "example": {
+                              "type": "string",
+                              "title": "示例值"
+                            },
+                            "type": {
+                              "type": "string",
+                              "title": "类型"
+                            }
+                          },
+                          "x-apifox-refs": {},
+                          "x-apifox-orders": [
+                            "name",
+                            "description",
+                            "required",
+                            "example",
+                            "type"
+                          ],
+                          "required": [
+                            "name",
+                            "required",
+                            "type"
+                          ],
+                          "x-apifox-ignore-properties": []
+                        }
+                      },
+                      "query": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "title": "参数名"
+                            },
+                            "description": {
+                              "type": "string",
+                              "title": "参数描述"
+                            },
+                            "required": {
+                              "type": "string",
+                              "title": "是否必须"
+                            },
+                            "example": {
+                              "type": "string",
+                              "title": "示例值"
+                            },
+                            "type": {
+                              "type": "string",
+                              "title": "类型"
+                            }
+                          },
+                          "x-apifox-refs": {},
+                          "x-apifox-orders": [
+                            "name",
+                            "description",
+                            "required",
+                            "example",
+                            "type"
+                          ],
+                          "required": [
+                            "name",
+                            "required",
+                            "type"
+                          ],
+                          "x-apifox-ignore-properties": []
+                        }
+                      }
+                    },
+                    "title": "query参数",
+                    "description": "JSON.stringify(parameter)",
+                    "x-apifox-orders": [
+                      "path",
+                      "query"
+                    ],
+                    "x-apifox-ignore-properties": []
+                  },
+                  "requestBody": {
+                    "type": "object",
+                    "properties": {
+                      "contentType": {
+                        "type": "string"
+                      },
+                      "content": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {},
+                          "x-apifox-orders": [],
+                          "x-apifox-ignore-properties": []
+                        }
+                      }
+                    },
+                    "title": "body参数",
+                    "description": "JSON.stringify(requestBody)",
+                    "x-apifox-orders": [
+                      "contentType",
+                      "content"
+                    ],
+                    "required": [
+                      "contentType",
+                      "content"
+                    ],
+                    "x-apifox-ignore-properties": []
+                  },
+                  "response": {
+                    "type": "object",
+                    "properties": {
+                      "contentType": {
+                        "type": "string"
+                      },
+                      "content": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "title": "返回数据",
+                    "description": "JSON.stringify(response)",
+                    "x-apifox-orders": [
+                      "contentType",
+                      "content"
+                    ],
+                    "required": [
+                      "contentType",
+                      "content"
+                    ],
+                    "x-apifox-ignore-properties": []
+                  }
+                },
+                "x-apifox-orders": [
+                  "name",
+                  "description",
+                  "requestMethod",
+                  "requestPath",
+                  "requestHeaders",
+                  "requestParams",
+                  "requestBody",
+                  "response"
+                ],
+                "required": [
+                  "name",
+                  "requestPath",
+                  "requestMethod"
+                ],
+                "x-apifox-refs": {},
+                "x-apifox-ignore-properties": []
               }
             }
           }
@@ -2051,7 +2263,7 @@
         "x-apifox-folder": "接口",
         "x-apifox-status": "developing",
         "deprecated": false,
-        "description": "",
+        "description": "从上传的文件中批量导入接口",
         "tags": [
           "接口"
         ],
@@ -2085,15 +2297,66 @@
                   "datas": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/interface",
-                      "x-apifox-overrides": {
-                        "query-parameters": null,
-                        "body-parameters": null,
-                        "header-parameters": null,
-                        "return-data": null,
-                        "project": null,
-                        "historys": null
-                      }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "title": "接口名称"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "tag": {
+                          "type": "string",
+                          "title": "所属目录"
+                        },
+                        "requestMethod": {
+                          "type": "string",
+                          "title": "请求方法"
+                        },
+                        "requestPath": {
+                          "type": "string",
+                          "title": "接口地址"
+                        },
+                        "requestHeaders": {
+                          "type": "string",
+                          "title": "header参数",
+                          "description": "JSON.stringify(parameter)"
+                        },
+                        "requestParams": {
+                          "type": "string",
+                          "title": "query参数",
+                          "description": "JSON.stringify(parameter)"
+                        },
+                        "requestBody": {
+                          "type": "string",
+                          "title": "body参数",
+                          "description": "JSON.stringify(requestBody)"
+                        },
+                        "response": {
+                          "type": "string",
+                          "title": "返回数据",
+                          "description": "JSON.stringify(response)"
+                        }
+                      },
+                      "x-apifox-refs": {},
+                      "x-apifox-orders": [
+                        "name",
+                        "description",
+                        "tag",
+                        "requestMethod",
+                        "requestPath",
+                        "requestHeaders",
+                        "requestParams",
+                        "requestBody",
+                        "response"
+                      ],
+                      "required": [
+                        "name",
+                        "requestPath",
+                        "requestMethod"
+                      ],
+                      "x-apifox-ignore-properties": []
                     }
                   }
                 },
@@ -2177,29 +2440,6 @@
                           "__v": 0
                         },
                         {
-                          "name": "更改接口",
-                          "description": "修改接口说明",
-                          "tag": "接口",
-                          "requestMethod": "PATCH",
-                          "requestPath": "/api/interface/:interfaceId",
-                          "requestHeaders": "[\n  {\n    \"name\": \"Authorization\",\n    \"description\": \"必选token\",\n    \"required\": true,\n    \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n    \"type\": \"string\"\n  }\n]",
-                          "requestParams": "{\n  \"path\": [\n    {\n      \"name\": \"interfaceId\",\n      \"description\": \"接口Id\",\n      \"required\": true,\n      \"example\": \"64d782b65239aaa91333922f\",\n      \"type\": \"string\"\n    }\n  ],\n  \"query\": []\n}",
-                          "requestBody": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {}\n  ]\n}",
-                          "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"description\": \"\",\n      \"requestMethod\": \"\",\n      \"requestPath\": \"\",\n      \"requestHeaders\": \"\",\n      \"requestParams\": \"\",\n      \"requestBody\": \"\",\n      \"response\": \"\",\n      \"projectId\": \"\",\n      \"code\": \"200\"\n    }\n  ]\n}",
-                          "projectId": "64e1da182d845c0e02cc6811",
-                          "history": [
-                            {
-                              "version": 1,
-                              "updatedAt": "2023-08-25T13:11:26.701Z",
-                              "updatedBy": "64dd7ae412844cc36edc60b4",
-                              "data": "{\n  \"name\": \"更改接口\",\n  \"description\": \"修改接口说明\",\n  \"tag\": \"接口\",\n  \"requestMethod\": \"PATCH\",\n  \"requestPath\": \"/api/interface/:interfaceId\",\n  \"requestHeaders\": [\n    {\n      \"name\": \"Authorization\",\n      \"description\": \"必选token\",\n      \"required\": true,\n      \"example\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGQ1ZDc5YjQwNDhiYmFkMTkyZmYwZWQiLCJpYXQiOjE2OTE4MTA3NjYsImV4cCI6MTY5MjY3NDc2Nn0.Z_u8P4Q8Z1VQ37QNPR64bJIsbA5IqjYEj2aRIZr08T4\",\n      \"type\": \"string\"\n    }\n  ],\n  \"requestParams\": {\n    \"path\": [\n      {\n        \"name\": \"interfaceId\",\n        \"description\": \"接口Id\",\n        \"required\": true,\n        \"example\": \"64d782b65239aaa91333922f\",\n        \"type\": \"string\"\n      }\n    ],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {}\n    ]\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"id\": \"\",\n        \"name\": \"\",\n        \"description\": \"\",\n        \"requestMethod\": \"\",\n        \"requestPath\": \"\",\n        \"requestHeaders\": \"\",\n        \"requestParams\": \"\",\n        \"requestBody\": \"\",\n        \"response\": \"\",\n        \"projectId\": \"\",\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
-                              "_id": "64e8a87e89412f63b9437e62"
-                            }
-                          ],
-                          "_id": "64e8a87e89412f63b9437e61",
-                          "__v": 0
-                        },
-                        {
                           "name": "Mock",
                           "description": "将接口上传，后端生成一个Mock接口",
                           "tag": "",
@@ -2220,29 +2460,6 @@
                             }
                           ],
                           "_id": "64e8a87e89412f63b9437e64",
-                          "__v": 0
-                        },
-                        {
-                          "name": "111",
-                          "description": "",
-                          "tag": "接口/1",
-                          "requestMethod": "GET",
-                          "requestPath": "/111",
-                          "requestHeaders": "[]",
-                          "requestParams": "{\n  \"path\": [],\n  \"query\": []\n}",
-                          "requestBody": "{\n  \"contentType\": \"\",\n  \"content\": []\n}",
-                          "response": "{\n  \"contentType\": \"application/json\",\n  \"content\": [\n    {\n      \"code\": \"200\"\n    }\n  ]\n}",
-                          "projectId": "64e1da182d845c0e02cc6811",
-                          "history": [
-                            {
-                              "version": 1,
-                              "updatedAt": "2023-08-25T13:11:26.704Z",
-                              "updatedBy": "64dd7ae412844cc36edc60b4",
-                              "data": "{\n  \"name\": \"111\",\n  \"description\": \"\",\n  \"tag\": \"接口/1\",\n  \"requestMethod\": \"GET\",\n  \"requestPath\": \"/111\",\n  \"requestHeaders\": [],\n  \"requestParams\": {\n    \"path\": [],\n    \"query\": []\n  },\n  \"requestBody\": {\n    \"contentType\": \"\",\n    \"content\": []\n  },\n  \"response\": {\n    \"contentType\": \"application/json\",\n    \"content\": [\n      {\n        \"code\": \"200\"\n      }\n    ]\n  }\n}",
-                              "_id": "64e8a87e89412f63b9437e68"
-                            }
-                          ],
-                          "_id": "64e8a87e89412f63b9437e67",
                           "__v": 0
                         }
                       ]
@@ -2328,49 +2545,42 @@
         "x-apifox-folder": ""
       },
       "parameter": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "title": "参数ID"
-            },
-            "name": {
-              "type": "string",
-              "title": "名字"
-            },
-            "description": {
-              "type": "string",
-              "title": "备注"
-            },
-            "required": {
-              "type": "string",
-              "title": "是否必须"
-            },
-            "example": {
-              "type": "string",
-              "title": "示例值"
-            },
-            "type": {
-              "type": "string",
-              "title": "类型"
-            }
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "参数名"
           },
-          "x-apifox-orders": [
-            "id",
-            "name",
-            "description",
-            "required",
-            "example",
-            "type"
-          ],
-          "required": [
-            "name",
-            "required"
-          ],
-          "x-apifox-ignore-properties": []
+          "description": {
+            "type": "string",
+            "title": "参数描述"
+          },
+          "required": {
+            "type": "string",
+            "title": "是否必须"
+          },
+          "example": {
+            "type": "string",
+            "title": "示例值"
+          },
+          "type": {
+            "type": "string",
+            "title": "类型"
+          }
         },
+        "x-apifox-orders": [
+          "name",
+          "description",
+          "required",
+          "example",
+          "type"
+        ],
+        "required": [
+          "name",
+          "required",
+          "type"
+        ],
+        "x-apifox-ignore-properties": [],
         "x-apifox-folder": ""
       },
       "interface": {
