@@ -1,12 +1,8 @@
 #   HTTP 接口管理平台
 
----
-
 ## 简介
 
 随着互联网的发展，接口管理变得越来越重要。HTTP 接口管理平台为开发人员和测试人员提供了一个高效的工具，用于管理、测试和模拟 HTTP 接口。
-
----
 
 ## 技术选型
 
@@ -42,7 +38,75 @@ node app.js
 
 ## 项目架构
 
+系统用例图
+
+```mermaid
+graph TD
+  用户 --> 管理项目[管理项目]
+  用户(用户) -->  登录/注册[登录/注册]
+  登录/注册 --> 修改个人信息[修改个人信息]
+
+  管理项目 -->  新建项目[新建项目]
+  管理项目成员 --> 邀请成员[邀请成员]
+  管理项目成员 --> 修改成员权限[修改成员权限]
+  管理项目成员 --> 删除成员[删除成员]
+  管理项目 -->  获取项目[获取项目]
+  管理项目 -->  导入接口[导入接口]
+  导入接口 --> 上传文件[上传文件]
+  导入接口 --> 批量添加接口[批量添加接口]
+  管理项目 -->  管理项目成员[管理项目成员]
+  管理项目 -->  修改项目[修改项目]  
+  管理项目 -->  删除项目[删除项目]
+
+  用户 -->  管理接口[管理接口]
+  管理接口 -->  新建接口[新建接口]
+  管理接口 -->  修改接口[修改接口]
+  管理接口 -->  删除接口[删除接口]
+  管理接口 -->  查询接口[查询接口]
+  管理接口 -->  接口历史[接口历史]
+  接口历史 --> 查询接口历史[查询接口历史]
+  接口历史 --> 回滚接口历史[回滚接口历史]
+  管理接口 -->  发送请求[发送请求]
+  管理接口 -->  Mock功能[Mock功能]
+  Mock功能 --> 生成Mock接口[生成Mock接口]
+  Mock功能 --> 请求Mock接口[请求Mock接口]
+  
+```
+
 ### 前端
+
+前端架构图
+
+```mermaid
+graph TB
+  vue["前端"]
+  index["index.html"]
+  package["package.json"]
+  src["src"]
+  public["public"]
+  App["App.vue"]
+  api["api"]
+  assets["assets"]
+  components["components"]
+  main["main.js"]
+  router["router"]
+  store["store"]
+  views["views"]
+  vite["vite.config.js"]
+  vue --> index
+  vue --> package
+  vue --> src
+  vue -->public
+  vue --> vite
+  src --> App
+  src --> api
+  src --> assets
+  src --> components
+  src --> main
+  src --> router
+  src --> store
+  src --> views
+```
 
 ```bash
 ├── README.md                  # 项目的说明文档
@@ -97,6 +161,31 @@ node app.js
 ```
 
 ### 后端
+
+后端架构图
+
+```mermaid
+graph TB
+  app["app.js"]
+  config["config"]
+  controller["controller"]
+  middleware["middleware"]
+  mock["mock"]
+  model["model"]
+  package["package.json"]
+  public["public"]
+  routes["routes"]
+  utils["utils"]
+  app --> config
+  app --> controller
+  app --> middleware
+  app --> mock
+  app --> model
+  app --> package
+  app --> public
+  app --> routes
+  app --> utils
+```
 
 ```bash
 ├── README.md                  # 项目的说明文档
@@ -170,7 +259,7 @@ node app.js
 
 ### 登录界面
 
-![](https://s2.loli.net/2023/08/30/JgV9BwGZlvtqIhu.png)
+<img src="https://s2.loli.net/2023/08/30/JgV9BwGZlvtqIhu.png" width="400px" />
 
 - **功能描述**：
   此界面为用户的入口，提供登录功能。用户可以通过输入已注册的邮箱和密码进行登录。对于新用户，界面还提供了一个注册按钮，允许他们创建新账户。
@@ -179,28 +268,28 @@ node app.js
   - **邮箱输入框**：用户输入注册时使用的邮箱地址。
   - **密码输入框**：用户输入对应的密码。
   - **登录按钮**：点击后，系统将验证邮箱和密码的正确性，正确则进入项目列表界面。
-    ![](https://s2.loli.net/2023/08/30/QELA2K4oYBqXnbe.png)
+    <img src="https://s2.loli.net/2023/08/30/QELA2K4oYBqXnbe.png" width="400px" />
   - **注册按钮**：点击后，用户将被引导到注册界面。
 
 ---
 
 ### 项目列表界面
 
-![](https://s2.loli.net/2023/08/30/YfqHQJuwkscMj5E.png)
+<img src="https://s2.loli.net/2023/08/30/YfqHQJuwkscMj5E.png" width="800px" />
 
 - **功能描述**：
   此界面展示了用户所创建或参与的所有项目。用户可以一目了然地查看所有项目，并可以创建新的项目。每个项目都可以点击，进入其详细页面。
 - **主要元素**：
 
   - **项目列表**：以列表形式展示用户的所有项目，每个项目条目显示项目名称，项目描述，创建者，创建时间和接口数量。
-    ![](https://s2.loli.net/2023/08/30/Nsd7q2gGnI1iBKz.png)
+    <img src="https://s2.loli.net/2023/08/30/Nsd7q2gGnI1iBKz.png" width="400px" />
   - **创建项目按钮**：点击后，用户将被引导到项目创建界面。
 
 ---
 
 ### 项目详情界面
 
-![](https://s2.loli.net/2023/08/30/QlMExb2KNWk5w9a.png)
+<img src="https://s2.loli.net/2023/08/30/QlMExb2KNWk5w9a.png" width="800px" />
 
 - **功能描述**：
   在此界面，用户可以查看特定项目的详细信息，如创建时间、创建者、接口数量和参与项目的成员数量。除了查看功能，用户还可以进行一系列操作，如导入新的接口、修改项目信息或删除项目。
@@ -212,7 +301,8 @@ node app.js
   - **接口数量**：显示该项目中的接口数量。
   - **成员数量**：显示参与该项目的成员数量。
   - **导入接口按钮**：点击后，用户将被引导到导入接口界面。
-    ![](https://s2.loli.net/2023/08/30/MNHymJzAjTGrqwK.png)
+    
+    <img src="https://s2.loli.net/2023/08/30/MNHymJzAjTGrqwK.png" width="400px"/>
   - **修改项目按钮**：点击后，用户可以修改项目的相关信息。
   - **删除项目按钮**：点击后，用户可以删除该项目。
 
@@ -220,7 +310,7 @@ node app.js
 
 ### 导入接口界面
 
-![](https://s2.loli.net/2023/08/30/QMocZOudj4pLrJs.png)
+<img src="https://s2.loli.net/2023/08/30/QMocZOudj4pLrJs.png" width="800px" />
 
 - **功能描述**：
   此界面为用户提供了一个简单的方式来导入新的接口。用户可以上传 Swagger 文件，系统将自动解析文件并展示接口信息。用户可以选择他们想要导入的接口，并通过一键导入功能将其添加到项目中。
@@ -235,14 +325,15 @@ node app.js
 
 ### 用户管理界面
 
-![](https://s2.loli.net/2023/08/30/ne9saUoYP4r6x7y.png)
+<img src="https://s2.loli.net/2023/08/30/ne9saUoYP4r6x7y.png" width="800px"/>
 
 - **功能描述**：
   此界面允许查看和管理项目中的所有用户。管理员可以添加新用户、删除现有用户或修改用户的权限。权限级别包括管理员、编辑者和只读访问。
 - **主要元素**：
 
   - **用户列表**：以列表形式展示所有用户，每个用户条目显示用户名、邮箱和权限。
-    ![](https://s2.loli.net/2023/08/30/nILYgJ1rhBkNAdv.png)
+    
+    <img src="https://s2.loli.net/2023/08/30/nILYgJ1rhBkNAdv.png" width=300px/>
   - **添加用户按钮**：点击后，用户可以添加新的项目成员。
   - **删除用户按钮**：选定用户后，点击此按钮可以删除用户。
   - **权限下拉菜单**：用户可以为每个项目成员设置权限，如管理员、编辑者或只读访问。
@@ -263,7 +354,7 @@ node app.js
 
 ### 接口详情界面
 
-![](https://s2.loli.net/2023/08/30/5LYI8VvZMkeADwm.png)
+<img src="https://s2.loli.net/2023/08/30/5LYI8VvZMkeADwm.png" width=800px />
 
 - **功能描述**：
   此界面展示了选定接口的所有详细信息。用户可以查看和编辑接口的请求方法、请求路径、参数等。界面还提供了 Mock 服务功能，允许用户模拟接口的行为。用户还可以查看接口的更改历史，比较不同版本之间的差异，并根据需要回滚到早期版本。
@@ -287,23 +378,31 @@ node app.js
 - **主要元素**：
 
   - **接口 Params 区域：**
-    ![](https://s2.loli.net/2023/08/30/A97mhsb5u1nDCJf.png)
+    
+    <img src="https://s2.loli.net/2023/08/30/A97mhsb5u1nDCJf.png" width=600px />
+    
     - **参数列表：**详细展示接口的所有请求参数。每个参数都有其名称、数据类型、是否必填的标志以及简短描述。
     - **添加参数按钮：**用户点击此按钮后，将添加一个新列，允许他们输入新参数的详细信息，如名称、类型、是否必填和描述。
     - **删除参数按钮：**用户可以通过选择特定的参数，然后点击此按钮来删除不再需要的参数。
   - **Body 区域：**
-    ![](https://s2.loli.net/2023/08/30/BqJ65MT9FWDyLQa.png)
+    
+    <img src="https://s2.loli.net/2023/08/30/BqJ65MT9FWDyLQa.png" width="600px"/>
+    
     - **数据格式 Radio**：允许用户选择请求体的数据格式，如 JSON、form-data、row 等，确保与 API 接口的实际需求相匹配。
     - **编辑框：**一个大型的文本框，用户可以在其中直接输入或粘贴请求体的内容，也可以进行编辑和修改。
   - **请求头区域：**
-    ![](https://s2.loli.net/2023/08/30/hcuJ7qEKnlZpOgM.png)
+    
+    <img src="https://s2.loli.net/2023/08/30/hcuJ7qEKnlZpOgM.png" width="600px" />
+    
     - **头部列表：**清晰地列出接口的所有请求头。每个头部都有其名称和值，方便用户一目了然。
     - **添加头部按钮：**点击此按钮，用户可以添加新的请求头，为其指定名称和值。
     - **删除头部按钮：**用户可以选择不需要的请求头，然后点击此按钮进行删除。
   - **接口描述区域：**
     - **编辑框：**一个专门的文本框，允许用户为接口提供详细的描述。这有助于其他团队成员理解接口的用途和功能。
   - **Mock 功能区域：**
-    ![](https://s2.loli.net/2023/08/30/ACBxLIeyvRt1Xnq.png)
+    
+    <img src="https://s2.loli.net/2023/08/30/ACBxLIeyvRt1Xnq.png" width="600px" />
+    
     - **启用 Mock 复选框**：用户通过勾选此复选框来决定是否启用 Mock 服务。
     - **Mock 数据编辑框：**当 Mock 服务被启用时，此编辑框允许用户输入或修改用于模拟的数据。
     - **响应状态码输入框：**用户可以在此输入框中设置 Mock 服务的响应状态码，如 200、404 等。
@@ -311,12 +410,14 @@ node app.js
 
 ### 更改历史界面
 
-![](https://s2.loli.net/2023/08/30/PK3RIiSXTdGQHn8.png)
+<img src="https://s2.loli.net/2023/08/30/PK3RIiSXTdGQHn8.png" width="300px" />
 
 - **功能描述**：
   此界面为用户提供了一个查看接口更改历史的方式。每次更改都会被记录，包括更改人和更新时间。用户可以查看每个更改的详细内容，比较与当前版本的差异，并可以回滚到之前的版本。
 - **主要元素**：
   - **更改列表**：以列表形式展示所有的更改记录，每个记录显示更改人和更新时间。
-    ![](https://s2.loli.net/2023/08/30/d9ISRiujUApPa3c.png)
+    
+    <img src="https://s2.loli.net/2023/08/30/d9ISRiujUApPa3c.png" width="500px"/>
+    
   - **历史详情**：点击后，用户可以查看选定历史记录与当前版本的差异。
   - **回滚按钮**：点击后，接口将回滚到选定的历史版本。
