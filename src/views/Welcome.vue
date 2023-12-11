@@ -1,6 +1,6 @@
 <template>
   <el-button class="my-button" @click="goLogin">去登录</el-button>
-  <h1>欢迎使用HTTP-接口管理平台</h1>
+  <h1>欢迎使用API 文档、调试、Mock一体化平台</h1>
   <img src="../assets/img/welcome.svg" alt="logo" />
 </template>
 <script setup>

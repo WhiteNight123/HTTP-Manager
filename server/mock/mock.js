@@ -21,7 +21,7 @@ router.post("/api/auth", function (req, res) {
             });
         }
     }
-    response = {"contentType":"application/json","content":[{"code":201,"data":{"data":"@cparagraph","date":"@now"},"msg":"Mock"}]};  
+    response = {"contentType":"application/json","content":[{"code":202,"data":{"date":"@now","data":"@csentence","name":"@city"},"msg":"Mock"}]};  
     const responseContent = response.content;
     if (responseContent.length === 0) {
         return res.status(200).json({

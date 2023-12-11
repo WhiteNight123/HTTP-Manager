@@ -3,7 +3,7 @@
     <span class="header-left">
       <img
         class="logo"
-        src="../assets/img/bytedance.svg"
+        src="../assets/img/cqupt.svg"
         alt="Logo"
         @click="clickLogo"
       />
@@ -63,7 +63,7 @@ const toggleDarkMode = () => {
 };
 
 const clickLogo = () => {
-  ElMessage.success("ByteDance");
+  ElMessage.success("CQUPT");
 };
 const handleDropdownCommand = (command) => {
   if (command === "profile") {

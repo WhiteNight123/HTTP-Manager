@@ -31,7 +31,7 @@ cd server
 # 安装依赖
 npm install
 # 运行
-node app.js
+nodemon app.js
 ```
 
 ---
@@ -114,7 +114,7 @@ graph TB
 ├── package-lock.json         # 锁定安装时的包的版本号，确保依赖的一致性
 ├── package.json              # 描述项目的文件，如项目依赖、脚本等
 ├── public                    # 公共文件目录，存放静态资源
-│   ├── bytedance.svg         # ByteDance的SVG图标
+│   ├── cqupt.svg             # cqupt的SVG图标
 │   └── vue.svg               # Vue的SVG图标
 ├── src                       
 │   ├── App.vue               # 主Vue组件
@@ -128,7 +128,7 @@ graph TB
 │   │   │   └── reset.css     # 重置样式文件
 │   │   └── img               # 图片目录
 │   │       ├── 404.svg       # 404页面的SVG图标
-│   │       ├── bytedance.svg # ByteDance的SVG图标
+│   │       ├── cqupt.svg     # cqupt的SVG图标
 │   │       ├── history.svg   # 历史的SVG图标
 │   │       ├── vue.svg       # Vue的SVG图标
 │   │       └── welcome.svg   # 欢迎页面的SVG图标
