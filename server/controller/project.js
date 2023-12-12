@@ -97,6 +97,24 @@ exports.getProject = async (req, res, next) => {
     }
     let data = { ...project._doc };
     data.members = tmp;
+    // 从interfaces提取每个接口的数量
+    const interfaceOrder = ["GET", "POST", "PATCH", "PUT", "DELETE"];
+    const interfaceCountArray = interfaceOrder.map((requestType) => {
+      const count = data.interfaces.reduce((acc, interface) => {
+        return acc + (interface.requestMethod === requestType ? 1 : 0);
+      }, 0);
+      return count;
+    });
+    data.interfaceCountArray = interfaceCountArray;
+    // 从members提取每个权限的人数
+    const authOrder = ["admin", "write", "read"];
+    const authCountArray = authOrder.map((auth) => {
+      const count = data.members.reduce((acc, member) => {
+        return acc + (member.auth === auth ? 1 : 0);
+      }, 0);
+      return count;
+    });
+    data.authCountArray = authCountArray;
     res.status(200).json({
       code: 200,
       msg: "获取项目成功!",

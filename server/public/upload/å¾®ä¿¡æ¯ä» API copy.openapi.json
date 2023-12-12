@@ -1,0 +1,2272 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "微信支付 API copy",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "API列表"
+    }
+  ],
+  "paths": {
+    "/pay/unifiedorder": {
+      "post": {
+        "summary": " 统一下单",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景\n\n除付款码支付场景以外，商户系统先调用该接口在微信支付服务后台生成预支付交易单，返回正确的预支付交易会话标识后再按Native、JSAPI、APP等不同场景生成交易串调起支付。 \n\n### 状态机\n\n支付状态转变如下：\n\n![img](https://pay.weixin.qq.com/wiki/doc/api/img/chapter9_1_0.jpg)\n\n### 错误码 \n\n| 名称                  | 描述                | 原因                         | 解决方案                                           |\n| --------------------- | ------------------- | ---------------------------- | -------------------------------------------------- |\n| INVALID_REQUEST       | 参数错误            | 参数格式有误或者未按规则上传 | 订单重入时，要求参数值与原请求一致，请确认参数问题 |\n| NOAUTH                | 商户无此接口权限    | 商户未开通此接口权限         | 请商户前往申请此接口权限                           |\n| NOTENOUGH             | 余额不足            | 用户账号余额不足             | 用户账号余额不足，请用户充值或更换支付卡后再支付   |\n| ORDERPAID             | 商户订单已支付      | 商户订单已支付，无需重复操作 | 商户订单已支付，无需更多操作                       |\n| ORDERCLOSED           | 订单已关闭          | 当前订单已关闭，无法支付     | 当前订单已关闭，请重新下单                         |\n| SYSTEMERROR           | 系统错误            | 系统超时                     | 系统异常，请用相同参数重新调用                     |\n| APPID_NOT_EXIST       | APPID不存在         | 参数中缺少APPID              | 请检查APPID是否正确                                |\n| MCHID_NOT_EXIST       | MCHID不存在         | 参数中缺少MCHID              | 请检查MCHID是否正确                                |\n| APPID_MCHID_NOT_MATCH | appid和mch_id不匹配 | appid和mch_id不匹配          | 请确认appid和mch_id是否匹配                        |\n| LACK_PARAMS           | 缺少参数            | 缺少必要的请求参数           | 请检查参数是否齐全                                 |\n| OUT_TRADE_NO_USED     | 商户订单号重复      | 同一笔交易不能多次提交       | 请核实商户订单号是否重复提交                       |\n| SIGNERROR             | 签名错误            | 参数签名结果不正确           | 请检查签名参数和方法是否都符合签名算法要求         |\n| XML_FORMAT_ERROR      | XML格式错误         | XML格式错误                  | 请检查XML参数格式是否正确                          |\n| REQUIRE_POST_METHOD   | 请使用post方法      | 未使用post传递参数           | 请检查请求参数是否通过post方法提交                 |\n| POST_DATA_EMPTY       | post数据为空        | post数据不能为空             | 请检查post数据是否为空                             |\n| NOT_UTF8              | 编码格式错误        | 未使用指定编码格式           | 请使用UTF-8编码格式                                |",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID",
+                    "description": "微信支付分配的公众账号ID（企业号corpid即为此appid）"
+                  },
+                  "attach": {
+                    "type": "string",
+                    "title": "附加数据",
+                    "description": "附加数据，在查询API和支付通知中原样返回，可作为自定义参数使用。"
+                  },
+                  "body": {
+                    "type": "string",
+                    "title": "商品描述",
+                    "description": "商品简单描述，该字段请按照规范传递，具体请见[参数规定](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号"
+                  },
+                  "detail": {
+                    "type": "string",
+                    "title": "商品详情",
+                    "description": "商品详细描述，对于使用单品优惠的商户，该字段必须按照规范上传，详见[“单品优惠参数说明”](https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2)"
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，长度要求在32位以内。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "notify_url": {
+                    "type": "string",
+                    "title": "通知地址",
+                    "description": "body 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。 公网域名必须为https，如果是走专线接入，使用专线NAT IP或者私有回调域名可使用http"
+                  },
+                  "openid": {
+                    "type": "string",
+                    "title": "用户标识",
+                    "description": "trade_type=JSAPI时（即JSAPI支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识。openid如何获取，可参考【[获取openid](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_4)】。企业号请使用【[企业号OAuth2.0接口](https://qydev.weixin.qq.com/wiki/index.php?title=OAuth验证接口)】获取企业号内成员userid，再调用【[企业号userid转openid接口](https://qydev.weixin.qq.com/wiki/index.php?title=Userid与openid互换接口)】进行转换"
+                  },
+                  "out_trade_no": {
+                    "type": "string",
+                    "title": "商户订单号",
+                    "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "spbill_create_ip": {
+                    "type": "string",
+                    "title": "终端IP",
+                    "description": "支持IPV4和IPV6两种格式的IP地址。用户的客户端IP"
+                  },
+                  "total_fee": {
+                    "type": "string",
+                    "title": "标价金额",
+                    "description": "订单总金额，单位为分，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "trade_type": {
+                    "type": "string",
+                    "title": "交易类型",
+                    "description": "JSAPI -JSAPI支付  NATIVE -Native支付  APP -APP支付  说明详见[参数规定](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "通过签名算法计算得出的签名值，详见[签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，默认为MD5，支持HMAC-SHA256和MD5。"
+                  },
+                  "device_info": {
+                    "type": "string",
+                    "title": "设备号",
+                    "description": "自定义参数，可以为终端设备号(门店号或收银设备ID)，PC网页或公众号内支付可以传\"WEB\""
+                  },
+                  "fee_type": {
+                    "type": "string",
+                    "title": "标价币种",
+                    "description": "符合ISO 4217标准的三位字母代码，默认人民币：CNY，详细列表请参见[货币类型](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "time_start": {
+                    "type": "string",
+                    "title": "交易起始时间",
+                    "description": "订单生成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见[时间规则](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "time_expire": {
+                    "type": "string",
+                    "title": "交易结束时间",
+                    "description": "订单失效时间，格式为yyyyMMddHHmmss，如2009年12月27日9点10分10秒表示为20091227091010。"
+                  },
+                  "goods_tag": {
+                    "type": "string",
+                    "title": "订单优惠标记",
+                    "description": "订单优惠标记，使用代金券或立减优惠功能时需要的参数，说明详见[代金券或立减优惠](https://pay.weixin.qq.com/wiki/doc/api/tools/sp_coupon.php?chapter=12_7&index=3)"
+                  },
+                  "product_id": {
+                    "type": "string",
+                    "title": "商品ID",
+                    "description": "trade_type=NATIVE时，此参数必传。此参数为二维码中包含的商品ID，商户自行定义。"
+                  },
+                  "limit_pay": {
+                    "type": "string",
+                    "title": "指定支付方式",
+                    "description": "上传此参数no_credit--可限制用户不能使用信用卡支付"
+                  },
+                  "receipt": {
+                    "type": "string",
+                    "title": "电子发票入口开放标识",
+                    "description": "Y，传入Y时，支付成功消息和支付详情页将出现开票入口。需要在微信支付商户平台或微信公众平台开通电子发票功能，传此字段才可生效"
+                  },
+                  "profit_sharing": {
+                    "type": "string",
+                    "title": "是否需要分账",
+                    "description": "Y-是，需要分账 N-否，不分账 字母要求大写，不传默认不分账"
+                  },
+                  "scene_info": {
+                    "title": "场景信息",
+                    "description": "该字段常用于线下活动时的场景信息上报，支持上报实际门店信息，商户也可以按需求自己上报相关信息。该字段为JSON对象数据，对象格式为{\"store_info\":{\"id\": \"门店ID\",\"name\": \"名称\",\"area_code\": \"编码\",\"address\": \"地址\" }} ，字段详细说明请点击行前的+展开",
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "title": "门店id",
+                          "description": "门店编号，由商户自定义 "
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "门店名称 ，由商户自定义 ",
+                          "title": "门店名称 "
+                        },
+                        "area_code": {
+                          "type": "string",
+                          "description": "门店所在地行政区划码，详细见[《最新县及县以上行政区划代码》](https://pay.weixin.qq.com/wiki/doc/api/download/store_adress.csv)",
+                          "title": "门店行政区划码 "
+                        },
+                        "address": {
+                          "type": "string",
+                          "description": "门店详细地址 ，由商户自定义 ",
+                          "title": "门店详细地址 "
+                        }
+                      },
+                      "x-apifox-orders": [
+                        "id",
+                        "name",
+                        "area_code",
+                        "address"
+                      ],
+                      "required": [
+                        "id"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  }
+                },
+                "required": [
+                  "appid",
+                  "body",
+                  "mch_id",
+                  "nonce_str",
+                  "notify_url",
+                  "out_trade_no",
+                  "spbill_create_ip",
+                  "total_fee",
+                  "trade_type",
+                  "sign"
+                ],
+                "xml": {
+                  "name": "xml"
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "attach",
+                  "body",
+                  "mch_id",
+                  "detail",
+                  "nonce_str",
+                  "notify_url",
+                  "openid",
+                  "out_trade_no",
+                  "spbill_create_ip",
+                  "total_fee",
+                  "trade_type",
+                  "sign",
+                  "sign_type",
+                  "device_info",
+                  "fee_type",
+                  "time_start",
+                  "time_expire",
+                  "goods_tag",
+                  "product_id",
+                  "limit_pay",
+                  "receipt",
+                  "profit_sharing",
+                  "scene_info"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "<xml>\n   <appid>wx2421b1c4370ec43b</appid>\n   <attach>支付测试</attach>\n   <body>JSAPI支付测试</body>\n   <mch_id>10000100</mch_id>\n   <detail><![CDATA[{ \"goods_detail\":[ { \"goods_id\":\"iphone6s_16G\", \"wxpay_goods_id\":\"1001\", \"goods_name\":\"iPhone6s 16G\", \"quantity\":1, \"price\":528800, \"goods_category\":\"123456\", \"body\":\"苹果手机\" }, { \"goods_id\":\"iphone6s_32G\", \"wxpay_goods_id\":\"1002\", \"goods_name\":\"iPhone6s 32G\", \"quantity\":1, \"price\":608800, \"goods_category\":\"123789\", \"body\":\"苹果手机\" } ] }]]></detail>\n   <nonce_str>1add1a30ac87aa2db72f57a2375d8fec</nonce_str>\n   <notify_url>https://wxpay.wxutil.com/pub_v2/pay/notify.v2.php</notify_url>\n   <openid>oUpF8uMuAJO_M2pxb1Q9zNjWeS6o</openid>\n   <out_trade_no>1415659990</out_trade_no>\n   <spbill_create_ip>14.23.150.211</spbill_create_ip>\n   <total_fee>1</total_fee>\n   <trade_type>JSAPI</trade_type>\n   <sign>0CB01533B8C1EF103065174F50BCA001</sign>\n</xml>"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": " SUCCESS/FAIL  此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断"
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误"
+                    },
+                    "appid": {
+                      "type": "string",
+                      "title": "公众账号ID",
+                      "description": "调用接口提交的公众账号ID"
+                    },
+                    "mch_id": {
+                      "type": "string",
+                      "title": "商户号",
+                      "description": "调用接口提交的商户号"
+                    },
+                    "nonce_str": {
+                      "type": "string",
+                      "title": "随机字符串",
+                      "description": "微信返回的随机字符串"
+                    },
+                    "openid": {
+                      "type": "string",
+                      "title": ""
+                    },
+                    "sign": {
+                      "type": "string",
+                      "title": "签名",
+                      "description": "微信返回的签名值，详见[签名算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                    },
+                    "result_code": {
+                      "type": "string",
+                      "title": "业务结果",
+                      "description": "SUCCESS/FAIL"
+                    },
+                    "prepay_id": {
+                      "type": "string",
+                      "title": "预支付交易会话标识",
+                      "description": "微信生成的预支付会话标识，用于后续接口调用中使用，该值有效期为2小时。此字段在return_code 和result_code都为SUCCESS的时候有返回"
+                    },
+                    "trade_type": {
+                      "type": "string",
+                      "title": "交易类型",
+                      "description": "JSAPI -JSAPI支付  NATIVE -Native支付  APP -APP支付  说明详见[参数规定](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)\n此字段在return_code 和result_code都为SUCCESS的时候有返回"
+                    },
+                    "code_url": {
+                      "type": "string",
+                      "title": "二维码链接",
+                      "description": "trade_type=NATIVE时有返回，此url用于生成支付二维码，然后提供给用户进行扫码支付。  注意：code_url的值并非固定，使用时按照URL格式转成二维码即可。时效性为2小时 。此字段在return_code 和result_code都为SUCCESS的时候有返回"
+                    },
+                    "device_info": {
+                      "type": "string",
+                      "title": "设备号",
+                      "description": "自定义参数，可以为请求支付的终端设备号等"
+                    },
+                    "err_code": {
+                      "type": "string",
+                      "title": "错误代码",
+                      "description": "当result_code为FAIL时返回错误代码，详细参见下文错误列表"
+                    },
+                    "err_code_des": {
+                      "type": "string",
+                      "title": "错误代码描述",
+                      "description": "当result_code为FAIL时返回错误描述，详细参见下文错误列表"
+                    }
+                  },
+                  "required": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "openid",
+                    "sign",
+                    "result_code",
+                    "prepay_id",
+                    "trade_type"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "openid",
+                    "sign",
+                    "result_code",
+                    "prepay_id",
+                    "trade_type",
+                    "code_url",
+                    "device_info",
+                    "err_code",
+                    "err_code_des"
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例 ",
+                    "value": "<xml>\r\n   <return_code><![CDATA[SUCCESS]]></return_code>\r\n   <return_msg><![CDATA[OK]]></return_msg>\r\n   <appid><![CDATA[wx2421b1c4370ec43b]]></appid>\r\n   <mch_id><![CDATA[10000100]]></mch_id>\r\n   <nonce_str><![CDATA[IITRi8Iabbblz1Jc]]></nonce_str>\r\n   <openid><![CDATA[oUpF8uMuAJO_M2pxb1Q9zNjWeS6o]]></openid>\r\n   <sign><![CDATA[7921E432F65EB8ED0CE9755F0E86D72F]]></sign>\r\n   <result_code><![CDATA[SUCCESS]]></result_code>\r\n   <prepay_id><![CDATA[wx201411101639507cbf6ffd8b0779950874]]></prepay_id>\r\n   <trade_type><![CDATA[JSAPI]]></trade_type>\r\n</xml> "
+                  }
+                }
+              }
+            }
+          },
+          "x-200:失败": {
+            "description": "失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": " SUCCESS/FAIL  此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断"
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误"
+                    }
+                  },
+                  "required": [
+                    "return_code",
+                    "return_msg"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848648-run"
+      }
+    },
+    "/pay/orderquery": {
+      "post": {
+        "summary": "查询订单",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景\n\n该接口提供所有微信支付订单的查询，商户可以通过查询订单接口主动查询订单状态，完成下一步的业务逻辑。 \n\n需要调用查询接口的情况：\n\n1. ◆ 当商户后台、网络、服务器等出现异常，商户系统最终未接收到支付通知（查单实现可参考：[支付回调和查单实现指引](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=23_9&index=1)）； \n2. ◆ 调用支付接口后，返回系统错误或未知交易状态情况； \n3. ◆ 调用付款码支付API，返回USERPAYING的状态； \n4. ◆ 调用关单或撤销接口API之前，需确认支付状态；\n\n### 错误码\n\n| 名称          | 描述               | 原因                         | 解决方案                                                     |\n| ------------- | ------------------ | ---------------------------- | ------------------------------------------------------------ |\n| ORDERNOTEXIST | 此交易订单号不存在 | 查询系统中不存在此交易订单号 | 该API只能查提交支付交易返回成功的订单，请商户检查需要查询的订单号是否正确 |\n| SYSTEMERROR   | 系统错误           | 后台系统返回错误             | 系统异常，请再调用发起查询                                   |\n\n",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID ",
+                    "description": "微信支付分配的公众账号ID（企业号corpid即为此appid） "
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号 "
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "transaction_id": {
+                    "type": "string",
+                    "title": "微信订单号",
+                    "description": "微信的订单号，建议优先使用 "
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "通过签名算法计算得出的签名值，[详见签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "out_trade_no": {
+                    "type": "string",
+                    "title": "商户订单号",
+                    "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2) "
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，目前支持HMAC-SHA256和MD5，默认为MD5"
+                  }
+                },
+                "required": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "transaction_id",
+                  "sign",
+                  "out_trade_no"
+                ],
+                "xml": {
+                  "name": "xml"
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "transaction_id",
+                  "sign",
+                  "out_trade_no",
+                  "sign_type"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "<xml>\r\n   <appid>wx2421b1c4370ec43b</appid>\r\n   <mch_id>10000100</mch_id>\r\n   <nonce_str>ec2316275641faa3aacf3cc599e8730f</nonce_str>\r\n   <transaction_id>1008450740201411110005820873</transaction_id>\r\n   <sign>FDD167FAA73459FD921B144BAF4F4CA2</sign>\r\n</xml> "
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "SUCCESS/FAIL  此字段是通信标识，非交易标识，交易是否成功需要查看trade_state来判断 "
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误"
+                    },
+                    "appid": {
+                      "type": "string",
+                      "title": "公众账号ID ",
+                      "description": "微信分配的公众账号ID "
+                    },
+                    "mch_id": {
+                      "type": "string",
+                      "title": "商户号 ",
+                      "description": "微信支付分配的商户号 "
+                    },
+                    "device_info": {
+                      "type": "string",
+                      "title": "设备号",
+                      "description": "微信支付分配的终端设备号"
+                    },
+                    "nonce_str": {
+                      "type": "string",
+                      "title": "随机字符串",
+                      "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                    },
+                    "sign": {
+                      "type": "string",
+                      "title": "签名",
+                      "description": "签名，详见[签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                    },
+                    "result_code": {
+                      "type": "string",
+                      "title": "业务结果",
+                      "description": "SUCCESS/FAIL "
+                    },
+                    "openid": {
+                      "type": "string",
+                      "title": "用户标识",
+                      "description": "用户在商户appid下的唯一标识 "
+                    },
+                    "is_subscribe": {
+                      "type": "string",
+                      "title": "是否关注公众账号 ",
+                      "description": "用户是否关注公众账号，Y-关注，N-未关注 "
+                    },
+                    "trade_type": {
+                      "type": "string",
+                      "title": "交易类型",
+                      "description": "调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP，MICROPAY，详细说明见[参数规定](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "bank_type": {
+                      "type": "string",
+                      "title": "付款银行",
+                      "description": "银行类型，采用字符串类型的银行标识 "
+                    },
+                    "total_fee": {
+                      "type": "string",
+                      "title": "标价金额",
+                      "description": "订单总金额，单位为分 "
+                    },
+                    "fee_type": {
+                      "type": "string",
+                      "title": "标价币种",
+                      "description": "货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见[货币类型](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "title": ""
+                    },
+                    "out_trade_no": {
+                      "type": "string",
+                      "title": ""
+                    },
+                    "attach": {
+                      "type": "string",
+                      "title": "附加数据",
+                      "description": "附加数据，原样返回 "
+                    },
+                    "time_end": {
+                      "type": "string",
+                      "title": "支付完成时间",
+                      "description": "订单支付时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见[时间规则](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2) "
+                    },
+                    "trade_state": {
+                      "type": "string",
+                      "title": "交易状态",
+                      "description": "SUCCESS--支付成功 REFUND--转入退款 NOTPAY--未支付 CLOSED--已关闭 REVOKED--已撤销(刷卡支付) USERPAYING--用户支付中 PAYERROR--支付失败(其他原因，如银行返回失败) ACCEPT--已接收，等待扣款 支付状态机请见下单API页面 "
+                    },
+                    "err_code": {
+                      "type": "string",
+                      "title": "错误代码",
+                      "description": "当result_code为FAIL时返回错误代码，详细参见下文错误列表"
+                    },
+                    "err_code_des ": {
+                      "type": "string",
+                      "title": "错误代码描述",
+                      "description": "当result_code为FAIL时返回错误描述，详细参见下文错误列表 "
+                    },
+                    "cash_fee": {
+                      "type": "string",
+                      "title": "现金支付金额",
+                      "description": "现金支付金额订单现金支付金额，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "cash_fee_type ": {
+                      "type": "string",
+                      "title": "现金支付币种",
+                      "description": "货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见[货币类型](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "coupon_fee": {
+                      "type": "string",
+                      "title": "代金券金额",
+                      "description": "“代金券”金额<=订单金额，订单金额-“代金券”金额=现金支付金额，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "coupon_count ": {
+                      "type": "string",
+                      "title": "代金券使用数量",
+                      "description": "代金券使用数量"
+                    },
+                    "coupon_type_$n ": {
+                      "type": "string",
+                      "title": "代金券类型",
+                      "description": "CASH：充值代金券  NO_CASH：非充值优惠券  开通免充值券功能，并且订单使用了优惠券后有返回（取值：CASH、NO_CASH）。$n为下标,从0开始编号，举例：coupon_type_$0"
+                    },
+                    "coupon_id_$n ": {
+                      "type": "string",
+                      "title": "代金券ID ",
+                      "description": "代金券ID, $n为下标，从0开始编号 "
+                    },
+                    "coupon_fee_$n ": {
+                      "type": "string",
+                      "title": "单个代金券支付金额 ",
+                      "description": "单个代金券支付金额, $n为下标，从0开始编号 "
+                    },
+                    "transaction_id ": {
+                      "type": "string",
+                      "title": "微信支付订单号",
+                      "description": "微信支付订单号 "
+                    },
+                    "out_trade_no ": {
+                      "type": "string",
+                      "title": "商户订单号",
+                      "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2) "
+                    },
+                    "trade_state_desc": {
+                      "type": "string",
+                      "title": "交易状态描述",
+                      "description": "对当前查询订单状态的描述和下一步操作的指引"
+                    },
+                    "settlement_total_fee ": {
+                      "type": "string",
+                      "title": "应结订单金额",
+                      "description": "当订单使用了免充值型优惠券后返回该参数，应结订单金额=订单金额-免充值优惠券金额。 "
+                    }
+                  },
+                  "required": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "sign",
+                    "result_code",
+                    "openid",
+                    "is_subscribe",
+                    "trade_type",
+                    "bank_type",
+                    "total_fee",
+                    "transaction_id",
+                    "out_trade_no",
+                    "attach",
+                    "time_end",
+                    "trade_state",
+                    "cash_fee",
+                    "transaction_id ",
+                    "out_trade_no ",
+                    "trade_state_desc"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "device_info",
+                    "nonce_str",
+                    "sign",
+                    "result_code",
+                    "openid",
+                    "is_subscribe",
+                    "trade_type",
+                    "bank_type",
+                    "total_fee",
+                    "fee_type",
+                    "transaction_id",
+                    "out_trade_no",
+                    "attach",
+                    "time_end",
+                    "trade_state",
+                    "err_code",
+                    "err_code_des ",
+                    "cash_fee",
+                    "cash_fee_type ",
+                    "coupon_fee",
+                    "coupon_count ",
+                    "coupon_type_$n ",
+                    "coupon_id_$n ",
+                    "coupon_fee_$n ",
+                    "transaction_id ",
+                    "out_trade_no ",
+                    "trade_state_desc",
+                    "settlement_total_fee "
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例 ",
+                    "value": "<xml>\r\n   <return_code><![CDATA[SUCCESS]]></return_code>\r\n   <return_msg><![CDATA[OK]]></return_msg>\r\n   <appid><![CDATA[wx2421b1c4370ec43b]]></appid>\r\n   <mch_id><![CDATA[10000100]]></mch_id>\r\n   <device_info><![CDATA[1000]]></device_info>\r\n   <nonce_str><![CDATA[TN55wO9Pba5yENl8]]></nonce_str>\r\n   <sign><![CDATA[BDF0099C15FF7BC6B1585FBB110AB635]]></sign>\r\n   <result_code><![CDATA[SUCCESS]]></result_code>\r\n   <openid><![CDATA[oUpF8uN95-Ptaags6E_roPHg7AG0]]></openid>\r\n   <is_subscribe><![CDATA[Y]]></is_subscribe>\r\n   <trade_type><![CDATA[MICROPAY]]></trade_type>\r\n   <bank_type><![CDATA[CCB_DEBIT]]></bank_type>\r\n   <total_fee>1</total_fee>\r\n   <fee_type><![CDATA[CNY]]></fee_type>\r\n   <transaction_id><![CDATA[1008450740201411110005820873]]></transaction_id>\r\n   <out_trade_no><![CDATA[1415757673]]></out_trade_no>\r\n   <attach><![CDATA[订单额外描述]]></attach>\r\n   <time_end><![CDATA[20141111170043]]></time_end>\r\n   <trade_state><![CDATA[SUCCESS]]></trade_state>\r\n</xml> "
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848649-run"
+      }
+    },
+    "/pay/closeorder": {
+      "post": {
+        "summary": "关闭订单",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景 \n\n以下情况需要调用关单接口：商户订单支付失败需要生成新单号重新发起支付，要对原订单号调用关单，避免重复支付；系统下单后，用户支付超时，系统退出不再受理，避免用户继续，请调用关单接口。 \n\n**注意：订单生成后不能马上调用关单接口，最短调用时间间隔为5分钟。**\n\n### 错误码 \n\n| 名称                | 描述           | 原因                     | 解决方案                                         |\n| ------------------- | -------------- | ------------------------ | ------------------------------------------------ |\n| ORDERPAID           | 订单已支付     | 订单已支付，不能发起关单 | 订单已支付，不能发起关单，请当作已支付的正常交易 |\n| SYSTEMERROR         | 系统错误       | 系统错误                 | 系统异常，请重新调用该API                        |\n| ORDERCLOSED         | 订单已关闭     | 订单已关闭，无法重复关闭 | 订单已关闭，无需继续调用                         |\n| SIGNERROR           | 签名错误       | 参数签名结果不正确       | 请检查签名参数和方法是否都符合签名算法要求       |\n| REQUIRE_POST_METHOD | 请使用post方法 | 未使用post传递参数       | 请检查请求参数是否通过post方法提交               |\n| XML_FORMAT_ERROR    | XML格式错误    | XML格式错误              | 请检查XML参数格式是否正确                        |\n\n",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID",
+                    "description": "微信分配的公众账号ID（企业号corpid即为此appid）"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号"
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "out_trade_no": {
+                    "type": "string",
+                    "title": "商户订单号",
+                    "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2) "
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "签名，[详见签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，目前支持HMAC-SHA256和MD5，默认为MD5"
+                  }
+                },
+                "required": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "out_trade_no",
+                  "sign"
+                ],
+                "xml": {
+                  "name": "xml"
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "out_trade_no",
+                  "sign",
+                  "sign_type"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "<xml>\r\n   <appid>wx2421b1c4370ec43b</appid>\r\n   <mch_id>10000100</mch_id>\r\n   <nonce_str>4ca93f17ddf3443ceabf72f26d64fe0e</nonce_str>\r\n   <out_trade_no>1415983244</out_trade_no>\r\n   <sign>59FF1DF214B2D279A0EA7077C54DD95D</sign>\r\n</xml> "
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "SUCCESS/FAIL  此字段是通信标识，非交易标识，交易是否成功需要查看trade_state来判断 "
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误"
+                    },
+                    "appid": {
+                      "type": "string",
+                      "title": "公众账号ID",
+                      "description": "微信分配的公众账号ID"
+                    },
+                    "mch_id": {
+                      "type": "string",
+                      "title": "商户号",
+                      "description": "微信支付分配的商户号"
+                    },
+                    "nonce_str": {
+                      "type": "string",
+                      "title": "随机字符串",
+                      "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                    },
+                    "sign": {
+                      "type": "string",
+                      "title": "签名",
+                      "description": "签名，[详见签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                    },
+                    "result_code": {
+                      "type": "string",
+                      "title": "业务结果",
+                      "description": "SUCCESS/FAIL"
+                    },
+                    "result_msg": {
+                      "type": "string",
+                      "title": "业务结果描述",
+                      "description": "对业务结果的补充说明"
+                    },
+                    "err_code": {
+                      "type": "string",
+                      "title": "错误代码",
+                      "description": "当result_code为FAIL时返回错误代码，详细参见下文错误列表"
+                    },
+                    "err_code_des": {
+                      "type": "string",
+                      "title": "错误代码描述",
+                      "description": "当result_code为FAIL时返回错误描述，详细参见下文错误列表"
+                    }
+                  },
+                  "required": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "sign",
+                    "result_code",
+                    "result_msg"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "sign",
+                    "result_code",
+                    "result_msg",
+                    "err_code",
+                    "err_code_des"
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例 ",
+                    "value": "<xml>\r\n   <return_code><![CDATA[SUCCESS]]></return_code>\r\n   <return_msg><![CDATA[OK]]></return_msg>\r\n   <appid><![CDATA[wx2421b1c4370ec43b]]></appid>\r\n   <mch_id><![CDATA[10000100]]></mch_id>\r\n   <nonce_str><![CDATA[BFK89FC6rxKCOjLX]]></nonce_str>\r\n   <sign><![CDATA[72B321D92A7BFA0B2509F3D13C7B1631]]></sign>\r\n   <result_code><![CDATA[SUCCESS]]></result_code>\r\n   <result_msg><![CDATA[OK]]></result_msg>\r\n</xml> "
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848650-run"
+      }
+    },
+    "/secapi/pay/refund": {
+      "post": {
+        "summary": "申请退款",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景\n\n当交易发生之后一段时间内，由于买家或者卖家的原因需要退款时，卖家可以通过退款接口将支付款退还给买家，微信支付将在收到退款请求并且验证成功之后，按照退款规则将支付款按原路退到买家账号上。 \n\n注意： \n\n1、交易时间超过一年的订单无法提交退款 \n\n2、微信支付退款支持单笔交易分多次退款，多次退款需要提交原支付订单的商户订单号和设置不同的退款单号。申请退款总金额不能超过订单金额。 一笔退款失败后重新提交，请不要更换退款单号，请使用原商户退款单号\n\n3、请求频率限制：150qps，即每秒钟正常的申请退款请求次数不超过150次\n\n4、每个支付订单的部分退款次数不能超过50次\n\n5、如果同一个用户有多笔退款，建议分不同批次进行退款，避免并发退款导致退款失败\n\n6、申请退款接口的返回仅代表业务的受理情况，具体退款是否成功，需要通过退款查询接口获取结果。\n\n7、一个月之前的订单申请退款频率限制为：5000/min\n\n8、同一笔订单多次退款的请求需相隔1分钟\n\n### 状态机\n\n退款状态转变如下：\n\n![img](https://pay.weixin.qq.com/wiki/doc/api/img/chapter61_1_1.png)\n\n### 是否需要证书 \n\n请求需要双向证书。 详见[证书使用](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)\n",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID",
+                    "description": "微信分配的公众账号ID（企业号corpid即为此appid）"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号"
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "out_refund_no": {
+                    "type": "string",
+                    "title": "商户退款单号",
+                    "description": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@ ，同一退款单号多次请求只退一笔。"
+                  },
+                  "out_trade_no": {
+                    "type": "string",
+                    "title": "商户订单号",
+                    "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)  transaction_id、out_trade_no二选一，如果同时存在优先级：transaction_id> out_trade_no "
+                  },
+                  "refund_fee": {
+                    "type": "string",
+                    "title": "退款金额",
+                    "description": "退款总金额，订单总金额，单位为分，只能为整数，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "total_fee": {
+                    "type": "string",
+                    "title": "订单金额",
+                    "description": "订单总金额，单位为分，只能为整数，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "transaction_id": {
+                    "type": "string",
+                    "title": "微信支付订单号",
+                    "description": "微信生成的订单号，在支付通知中有返回"
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "签名，详见[签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，目前支持HMAC-SHA256和MD5，默认为MD5"
+                  },
+                  "refund_fee_type": {
+                    "type": "string",
+                    "title": "退款货币种类",
+                    "description": "退款货币类型，需与支付一致，或者不填。符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见[货币类型](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  },
+                  "refund_desc": {
+                    "type": "string",
+                    "title": "退款原因",
+                    "description": "若商户传入，会在下发给用户的退款消息中体现退款原因  注意：若订单退款金额≤1元，且属于部分退款，则不会在退款消息中体现退款原因"
+                  },
+                  "refund_account": {
+                    "type": "string",
+                    "title": "退款资金来源",
+                    "description": "仅针对老资金流商户使用  REFUND_SOURCE_UNSETTLED_FUNDS---未结算资金退款（默认使用未结算资金退款）  REFUND_SOURCE_RECHARGE_FUNDS---可用余额退款"
+                  },
+                  "notify_url": {
+                    "type": "string",
+                    "title": "退款结果通知url",
+                    "description": "异步接收微信支付退款结果通知的回调地址，通知URL必须为外网可访问的url，不允许带参数 公网域名必须为https，如果是走专线接入，使用专线NAT IP或者私有回调域名可使用http  如果参数中传了notify_url，则商户平台上配置的回调地址将不会生效。"
+                  }
+                },
+                "required": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "out_refund_no",
+                  "out_trade_no",
+                  "refund_fee",
+                  "total_fee",
+                  "transaction_id",
+                  "sign"
+                ],
+                "xml": {
+                  "name": "xml"
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "out_refund_no",
+                  "out_trade_no",
+                  "refund_fee",
+                  "total_fee",
+                  "transaction_id",
+                  "sign",
+                  "sign_type",
+                  "refund_fee_type",
+                  "refund_desc",
+                  "refund_account",
+                  "notify_url"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "<xml>\r\n   <appid>wx2421b1c4370ec43b</appid>\r\n   <mch_id>10000100</mch_id>\r\n   <nonce_str>6cefdb308e1e2e8aabd48cf79e546a02</nonce_str>\r\n   <out_refund_no>1415701182</out_refund_no>\r\n   <out_trade_no>1415757673</out_trade_no>\r\n   <refund_fee>1</refund_fee>\r\n   <total_fee>1</total_fee>\r\n   <transaction_id>4006252001201705123297353072</transaction_id>\r\n   <sign>FE56DD4AA85C0EECA82C35595A69E153</sign>\r\n</xml> "
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "description": "SUCCESS/FAIL  此字段是通信标识，表示接口层的请求结果，并非退款状态。",
+                      "title": "返回状态码"
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误"
+                    },
+                    "appid": {
+                      "type": "string",
+                      "title": "公众账号ID",
+                      "description": "微信分配的公众账号ID"
+                    },
+                    "mch_id": {
+                      "type": "string",
+                      "title": "商户号",
+                      "description": "微信支付分配的商户号"
+                    },
+                    "nonce_str": {
+                      "type": "string",
+                      "title": "随机字符串",
+                      "description": "随机字符串，不长于32位"
+                    },
+                    "sign": {
+                      "type": "string",
+                      "title": "签名",
+                      "description": "签名，详见[签名算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                    },
+                    "result_code": {
+                      "type": "string",
+                      "title": "业务结果",
+                      "description": "SUCCESS/FAIL  SUCCESS退款申请接收成功，结果通过退款查询接口查询  FAIL 提交业务失败"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "title": "微信支付订单号",
+                      "description": "微信订单号"
+                    },
+                    "out_trade_no": {
+                      "type": "string",
+                      "title": "商户订单号",
+                      "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2) "
+                    },
+                    "out_refund_no": {
+                      "type": "string",
+                      "title": "商户退款单号",
+                      "description": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@ ，同一退款单号多次请求只退一笔。"
+                    },
+                    "refund_id": {
+                      "type": "string",
+                      "title": "微信退款单号",
+                      "description": "微信退款单号"
+                    },
+                    "refund_fee": {
+                      "type": "string",
+                      "title": "退款金额",
+                      "description": "退款总金额,单位为分,可以做部分退款"
+                    },
+                    "err_code": {
+                      "type": "string",
+                      "title": "错误代码",
+                      "description": "列表详见错误码列表"
+                    },
+                    "err_code_des": {
+                      "type": "string",
+                      "title": "错误代码描述",
+                      "description": "结果信息描述"
+                    },
+                    "settlement_refund_fee": {
+                      "type": "string",
+                      "title": "应结退款金额",
+                      "description": "去掉非充值代金券退款金额后的退款金额，退款金额=申请退款金额-非充值代金券退款金额，退款金额<=申请退款金额"
+                    },
+                    "total_fee": {
+                      "type": "string",
+                      "title": "标价金额",
+                      "description": "订单总金额，单位为分，只能为整数，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "settlement_total_fee ": {
+                      "type": "string",
+                      "title": "应结订单金额",
+                      "description": "去掉非充值代金券金额后的订单总金额，应结订单金额=订单金额-非充值代金券金额，应结订单金额<=订单金额。 "
+                    },
+                    "fee_type": {
+                      "type": "string",
+                      "title": "标价币种",
+                      "description": "订单金额货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见[货币类型](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "cash_fee": {
+                      "type": "string",
+                      "title": "现金支付金额",
+                      "description": "现金支付金额，单位为分，只能为整数，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "cash_fee_type": {
+                      "type": "string",
+                      "title": "现金支付币种",
+                      "description": "货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见[货币类型](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "cash_refund_fee": {
+                      "type": "string",
+                      "title": "现金退款金额",
+                      "description": "现金退款金额，单位为分，只能为整数，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "coupon_type_$n ": {
+                      "type": "string",
+                      "title": "代金券类型",
+                      "description": "CASH--充值代金券  NO_CASH---非充值代金券  订单使用代金券时有返回（取值：CASH、NO_CASH）。$n为下标,从0开始编号，举例：coupon_type_0"
+                    },
+                    "coupon_refund_fee": {
+                      "type": "string",
+                      "title": "代金券退款总金额",
+                      "description": "代金券退款金额<=退款金额，退款金额-代金券或立减优惠退款金额为现金，说明详见[代金券或立减优惠](https://pay.weixin.qq.com/wiki/doc/api/tools/sp_coupon.php?chapter=12_1)"
+                    },
+                    "coupon_refund_fee_$n": {
+                      "type": "string",
+                      "title": "单个代金券退款金额",
+                      "description": "代金券退款金额<=退款金额，退款金额-代金券或立减优惠退款金额为现金，说明详见[代金券或立减优惠](https://pay.weixin.qq.com/wiki/doc/api/tools/sp_coupon.php?chapter=12_1)"
+                    },
+                    "coupon_refund_count": {
+                      "type": "string",
+                      "title": "退款代金券使用数量",
+                      "description": "退款代金券使用数量"
+                    },
+                    "coupon_refund_id_$n": {
+                      "type": "string",
+                      "title": "退款代金券ID",
+                      "description": "退款代金券ID, $n为下标，从0开始编号"
+                    }
+                  },
+                  "required": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "sign",
+                    "result_code",
+                    "transaction_id",
+                    "out_trade_no",
+                    "out_refund_no",
+                    "refund_id",
+                    "refund_fee",
+                    "total_fee",
+                    "cash_fee"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "sign",
+                    "result_code",
+                    "transaction_id",
+                    "out_trade_no",
+                    "out_refund_no",
+                    "refund_id",
+                    "refund_fee",
+                    "err_code",
+                    "err_code_des",
+                    "settlement_refund_fee",
+                    "total_fee",
+                    "settlement_total_fee ",
+                    "fee_type",
+                    "cash_fee",
+                    "cash_fee_type",
+                    "cash_refund_fee",
+                    "coupon_type_$n ",
+                    "coupon_refund_fee",
+                    "coupon_refund_fee_$n",
+                    "coupon_refund_count",
+                    "coupon_refund_id_$n"
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例 ",
+                    "value": "<xml>\r\n   <return_code><![CDATA[SUCCESS]]></return_code>\r\n   <return_msg><![CDATA[OK]]></return_msg>\r\n   <appid><![CDATA[wx2421b1c4370ec43b]]></appid>\r\n   <mch_id><![CDATA[10000100]]></mch_id>\r\n   <nonce_str><![CDATA[NfsMFbUFpdbEhPXP]]></nonce_str>\r\n   <sign><![CDATA[B7274EB9F8925EB93100DD2085FA56C0]]></sign>\r\n   <result_code><![CDATA[SUCCESS]]></result_code>\r\n   <transaction_id><![CDATA[1008450740201411110005820873]]></transaction_id>\r\n   <out_trade_no><![CDATA[1415757673]]></out_trade_no>\r\n   <out_refund_no><![CDATA[1415701182]]></out_refund_no>\r\n   <refund_id><![CDATA[2008450740201411110000174436]]></refund_id>\r\n   <refund_fee>1</refund_fee>\r\n</xml>"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848651-run"
+      }
+    },
+    "/pay/refundquery": {
+      "post": {
+        "summary": "查询退款",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景\n\n提交退款申请后，通过调用该接口查询退款状态。退款有一定延时，用零钱支付的退款20分钟内到账，银行卡支付的退款3个工作日后重新查询退款状态。\n\n注意：如果单个支付订单部分退款次数超过20次请使用退款单号查询\n\n​     如果该订单支付时间超过一年半，需单独使用微信订单号查询或者同时使用微信订单号和微信退款单号查询\n\n### 分页查询\n\n当一个订单部分退款超过10笔后，商户用微信订单号或商户订单号调退款查询API查询退款时，默认返回前10笔和total_refund_count（订单总退款次数）。商户需要查询同一订单下超过10笔的退款单时，可传入订单号及offset来查询，微信支付会返回offset及后面的10笔，以此类推。当商户传入的offset超过total_refund_count，则系统会返回报错PARAM_ERROR。\n\n举例：\n\n一笔订单下的退款单有36笔，当商户想查询第25笔时，可传入订单号及offset=24，微信支付平台会返回第25笔到第35笔的退款单信息，或商户可直接传入退款单号查询退款\n\n### 退款状态机\n\n退款状态变化如下：\n        ![img](https://pay.weixin.qq.com/wiki/doc/api/img/chapter9_5_0.jpg)\n\n### 错误码 \n\n| 名称                  | 描述                                   | 原因                                                         | 解决方案                                                     |\n| --------------------- | -------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |\n| SYSTEMERROR           | 接口返回错误                           | 系统超时                                                     | 请尝试再次调用API。                                          |\n| REFUNDNOTEXIST        | 退款订单查询失败                       | 订单号错误或订单状态不正确                                   | 请检查订单号是否有误以及订单状态是否正确，如：未支付、已支付未退款 |\n| INVALID_TRANSACTIONID | 无效transaction_id                     | 请求参数未按指引进行填写                                     | 请求参数错误，检查原交易号是否存在或发起支付交易接口返回失败 |\n| PARAM_ERROR           | 参数错误                               | 请求参数未按指引进行填写                                     | 请求参数错误，请检查参数再调用退款申请                       |\n| APPID_NOT_EXIST       | APPID不存在                            | 参数中缺少APPID                                              | 请检查APPID是否正确                                          |\n| MCHID_NOT_EXIST       | MCHID不存在                            | 参数中缺少MCHID                                              | 请检查MCHID是否正确                                          |\n| REQUIRE_POST_METHOD   | 请使用post方法                         | 未使用post传递参数                                           | 请检查请求参数是否通过post方法提交                           |\n| SIGNERROR             | 签名错误                               | 参数签名结果不正确                                           | 请检查签名参数和方法是否都符合签名算法要求                   |\n| XML_FORMAT_ERROR      | XML格式错误                            | XML格式错误                                                  | 请检查XML参数格式是否正确                                    |\n| INVALID_REQUEST       | 请求参数符合参数格式，但不符合业务规则 | 此状态代表退款申请失败，商户可根据具体的错误提示做相应的处理。 | 此状态代表退款申请失败，商户可根据具体的错误提示做相应的处理。 |",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID",
+                    "description": "微信支付分配的公众账号ID（企业号corpid即为此appid）"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号"
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "out_refund_no": {
+                    "type": "string",
+                    "title": "商户退款单号",
+                    "description": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@ ，同一退款单号多次请求只退一笔。"
+                  },
+                  "out_trade_no": {
+                    "type": "string",
+                    "title": "商户订单号",
+                    "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2) "
+                  },
+                  "refund_id": {
+                    "type": "string",
+                    "title": "微信退款单号",
+                    "description": "微信生成的退款单号，在申请退款接口有返回 "
+                  },
+                  "transaction_id": {
+                    "type": "string",
+                    "title": "微信订单号",
+                    "description": "微信订单号查询的优先级是： refund_id > out_refund_no > transaction_id > out_trade_no"
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "签名，详见[签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，目前支持HMAC-SHA256和MD5，默认为MD5"
+                  },
+                  "offset": {
+                    "type": "string",
+                    "title": "偏移量",
+                    "description": "偏移量，当部分退款次数超过10次时可使用，表示返回的查询结果从这个偏移量开始取记录 "
+                  }
+                },
+                "required": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "out_refund_no",
+                  "out_trade_no",
+                  "refund_id",
+                  "transaction_id",
+                  "sign"
+                ],
+                "xml": {
+                  "name": "xml"
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "out_refund_no",
+                  "out_trade_no",
+                  "refund_id",
+                  "transaction_id",
+                  "sign",
+                  "sign_type",
+                  "offset"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "<xml>\n   <appid>wx2421b1c4370ec43b</appid>\n   <mch_id>10000100</mch_id>\n   <nonce_str>0b9f35f484df17a732e537c37708d1d0</nonce_str>\n   <out_refund_no></out_refund_no>\n   <out_trade_no>1415757673</out_trade_no>\n   <refund_id></refund_id>\n   <transaction_id></transaction_id>\n   <sign>66FFB727015F450D167EF38CCC549521</sign>\n</xml>"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "appid": {
+                      "type": "string",
+                      "title": "公众账号ID",
+                      "description": "微信分配的公众账号ID（企业号corpid即为此appid）"
+                    },
+                    "mch_id": {
+                      "type": "string",
+                      "title": "商户号",
+                      "description": "微信支付分配的商户号"
+                    },
+                    "nonce_str": {
+                      "type": "string",
+                      "title": "随机字符串",
+                      "description": "随机字符串，不长于32位"
+                    },
+                    "out_trade_no": {
+                      "type": "string",
+                      "title": "商户订单号",
+                      "description": "商户系统内部订单号，要求32个字符内（最少6个字符），只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见[商户订单号](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "refund_count": {
+                      "type": "string",
+                      "title": "退款笔数",
+                      "description": "当前返回退款笔数"
+                    },
+                    "refund_fee_0": {
+                      "type": "string"
+                    },
+                    "refund_id_0": {
+                      "type": "string"
+                    },
+                    "refund_status_0": {
+                      "type": "string"
+                    },
+                    "result_code": {
+                      "type": "string",
+                      "title": "业务结果",
+                      "description": " \t  SUCCESS/FAIL  SUCCESS退款申请接收成功，退款结果以退款状态为准  FAIL"
+                    },
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "SUCCESS/FAIL  此字段是通信标识，表示接口层的请求结果，并非退款状态。"
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误"
+                    },
+                    "cash_refund_fee": {
+                      "type": "string"
+                    },
+                    "sign": {
+                      "type": "string",
+                      "title": "签名",
+                      "description": "签名，详见[签名算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "title": "微信订单号",
+                      "description": "微信订单号"
+                    },
+                    "err_code": {
+                      "type": "string",
+                      "title": "错误码",
+                      "description": "错误码详见第6节"
+                    },
+                    "err_code_des": {
+                      "type": "string",
+                      "title": "错误描述",
+                      "description": "结果信息描述"
+                    },
+                    "total_refund_count": {
+                      "type": "string",
+                      "title": "订单总退款次数",
+                      "description": "订单总共已发生的部分退款次数，当请求参数传入offset后有返回"
+                    },
+                    "total_fee": {
+                      "type": "string",
+                      "title": "订单金额",
+                      "description": "订单总金额，单位为分，只能为整数，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "settlement_total_fee ": {
+                      "type": "string",
+                      "title": "应结订单金额",
+                      "description": "当订单使用了免充值型优惠券后返回该参数，应结订单金额=订单金额-免充值优惠券金额。 "
+                    },
+                    "fee_type": {
+                      "type": "string",
+                      "title": "货币种类",
+                      "description": "订单金额货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见[货币类型](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "cash_fee": {
+                      "type": "string",
+                      "title": "现金支付金额",
+                      "description": "现金支付金额，单位为分，只能为整数，详见[支付金额](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                    },
+                    "out_refund_no_$n": {
+                      "type": "string",
+                      "title": "商户退款单号",
+                      "description": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@ ，同一退款单号多次请求只退一笔。"
+                    },
+                    "refund_id_$n": {
+                      "type": "string",
+                      "title": "微信退款单号",
+                      "description": "微信退款单号"
+                    },
+                    "refund_channel_$n": {
+                      "type": "string",
+                      "title": "退款渠道",
+                      "description": "ORIGINAL—原路退款  BALANCE—退回到余额  OTHER_BALANCE—原账户异常退到其他余额账户  OTHER_BANKCARD—原银行卡异常退到其他银行卡"
+                    },
+                    "refund_fee_$n": {
+                      "type": "string",
+                      "title": "申请退款金额",
+                      "description": "退款总金额,单位为分,可以做部分退款"
+                    },
+                    "refund_fee": {
+                      "type": "string",
+                      "title": "退款总金额",
+                      "description": "各退款单的退款金额累加"
+                    },
+                    "coupon_refund_fee": {
+                      "type": "string",
+                      "title": "代金券退款总金额",
+                      "description": "各退款单的代金券退款金额累加"
+                    },
+                    "settlement_refund_fee_$n": {
+                      "type": "string",
+                      "title": "退款金额",
+                      "description": "退款金额=申请退款金额-非充值代金券退款金额，退款金额<=申请退款金额"
+                    },
+                    "coupon_type_$n_$m ": {
+                      "type": "string",
+                      "title": "代金券类型",
+                      "description": "CASH--充值代金券  NO_CASH---非充值优惠券  开通免充值券功能，并且订单使用了优惠券后有返回（取值：CASH、NO_CASH）。$n为下标,$m为下标,从0开始编号，举例：coupon_type_$0_$1"
+                    },
+                    "coupon_refund_fee_$n": {
+                      "type": "string",
+                      "title": "总代金券退款金额",
+                      "description": "代金券退款金额<=退款金额，退款金额-代金券或立减优惠退款金额为现金，说明详见[代金券或立减优惠](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=12_1)"
+                    },
+                    "coupon_refund_count_$n": {
+                      "type": "string",
+                      "title": "退款代金券使用数量",
+                      "description": "退款代金券使用数量 ,$n为下标,从0开始编号"
+                    },
+                    "coupon_refund_id_$n_$m": {
+                      "type": "string",
+                      "title": "退款代金券ID",
+                      "description": "退款代金券ID, $n为下标，$m为下标，从0开始编号"
+                    },
+                    "coupon_refund_fee_$n_$m": {
+                      "type": "string",
+                      "title": "单个代金券退款金额",
+                      "description": "单个退款代金券支付金额, $n为下标，$m为下标，从0开始编号"
+                    },
+                    "refund_status_$n": {
+                      "type": "string",
+                      "title": "退款状态",
+                      "description": "退款状态：  SUCCESS—退款成功  REFUNDCLOSE—退款关闭，指商户发起退款失败的情况。  PROCESSING—退款处理中  CHANGE—退款异常，退款到银行发现用户的卡作废或者冻结了，导致原路退款银行卡失败，可前往商户平台（pay.weixin.qq.com）-交易中心，手动处理此笔退款。$n为下标，从0开始编号。"
+                    },
+                    "refund_account_$n": {
+                      "type": "string",
+                      "title": "退款资金来源",
+                      "description": "REFUND_SOURCE_RECHARGE_FUNDS---可用余额退款/基本账户  REFUND_SOURCE_UNSETTLED_FUNDS---未结算资金退款  $n为下标，从0开始编号。"
+                    },
+                    "refund_recv_accout_$n": {
+                      "type": "string",
+                      "title": "退款入账账户",
+                      "description": "取当前退款单的退款入账方  1）退回银行卡：  {银行名称}{卡类型}{卡尾号}  2）退回支付用户零钱:  支付用户零钱  3）退还商户:  商户基本账户  商户结算银行账户  4）退回支付用户零钱通:  支付用户零钱通"
+                    },
+                    "refund_success_time_$n": {
+                      "type": "string",
+                      "title": "退款成功时间",
+                      "description": "退款成功时间，当退款状态为退款成功时有返回。$n为下标，从0开始编号。"
+                    },
+                    "cash_refund_fee ": {
+                      "type": "string",
+                      "title": "用户退款金额",
+                      "description": "退款给用户的金额，不包含所有优惠券金额 "
+                    }
+                  },
+                  "required": [
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "out_trade_no",
+                    "refund_count",
+                    "refund_fee_0",
+                    "refund_id_0",
+                    "refund_status_0",
+                    "result_code",
+                    "return_code",
+                    "return_msg",
+                    "cash_refund_fee",
+                    "sign",
+                    "transaction_id",
+                    "err_code",
+                    "err_code_des",
+                    "total_fee",
+                    "cash_fee",
+                    "out_refund_no_$n",
+                    "refund_id_$n",
+                    "refund_fee_$n",
+                    "refund_fee",
+                    "coupon_refund_fee",
+                    "refund_status_$n",
+                    "refund_recv_accout_$n",
+                    "cash_refund_fee "
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "out_trade_no",
+                    "refund_count",
+                    "refund_fee_0",
+                    "refund_id_0",
+                    "refund_status_0",
+                    "result_code",
+                    "return_code",
+                    "return_msg",
+                    "cash_refund_fee",
+                    "sign",
+                    "transaction_id",
+                    "err_code",
+                    "err_code_des",
+                    "total_refund_count",
+                    "total_fee",
+                    "settlement_total_fee ",
+                    "fee_type",
+                    "cash_fee",
+                    "out_refund_no_$n",
+                    "refund_id_$n",
+                    "refund_channel_$n",
+                    "refund_fee_$n",
+                    "refund_fee",
+                    "coupon_refund_fee",
+                    "settlement_refund_fee_$n",
+                    "coupon_type_$n_$m ",
+                    "coupon_refund_fee_$n",
+                    "coupon_refund_count_$n",
+                    "coupon_refund_id_$n_$m",
+                    "coupon_refund_fee_$n_$m",
+                    "refund_status_$n",
+                    "refund_account_$n",
+                    "refund_recv_accout_$n",
+                    "refund_success_time_$n",
+                    "cash_refund_fee "
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例 ",
+                    "value": "<xml>\r\n   <appid><![CDATA[wx8888888888888888]]></appid>\r\n   <mch_id><![CDATA[1900000109]]></mch_id>\r\n   <nonce_str><![CDATA[5K8264ILTKCH16CQ2502SI8ZNMTM67VS]]></nonce_str>\r\n   <out_trade_no><![CDATA[1217752501201407033233368018]]></out_trade_no>\r\n   <refund_count>1</refund_count>\r\n   <refund_fee_0>1</refund_fee_0>\r\n   <refund_id_0><![CDATA[2008450740201411110000174436]]></refund_id_0>\r\n   <refund_status_0><![CDATA[PROCESSING]]></refund_status_0>\r\n   <result_code><![CDATA[SUCCESS]]></result_code>\r\n   <return_code><![CDATA[SUCCESS]]></return_code>\r\n   <return_msg><![CDATA[OK]]></return_msg>\r\n   <cash_refund_fee><![CDATA[90]]></cash_refund_fee>\r\n   <sign><![CDATA[1F2841558E233C33ABA71A961D27561C]]></sign>\r\n   <transaction_id><![CDATA[1008450740201411110005820873]]></transaction_id>\r\n</xml>"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848652-run"
+      }
+    },
+    "/pay/downloadbill": {
+      "post": {
+        "summary": "下载交易账单",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景 \n\n商户可以通过该接口下载历史交易清单。比如掉单、系统错误等导致商户侧和微信侧数据不一致，通过对账单核对后可校正支付状态。 \n\n注意：\n\n1、微信侧未成功下单的交易不会出现在对账单中。支付成功后撤销的交易会出现在对账单中，跟原支付单订单号一致； \n\n2、微信在次日9点启动生成前一天的对账单，建议商户10点后再获取； \n\n3、对账单中涉及金额的字段单位为“元”。 \n\n4、对账单接口只能下载三个月以内的账单。\n\n5、对账单是以商户号维度来生成的，如一个商户号与多个appid有绑定关系，则使用其中任何一个appid都可以请求下载对账单。对账单中的appid取自交易时候提交的appid，与请求下载对账单时使用的appid无关。\n\n6、自2018年起入驻的商户默认是开通免充值券后的结算对账单，且汇总数据为总交易单数，应结订单总金额，退款总金额，充值券退款总金额，手续费总金额，订单总金额，申请退款总金额。\n\n#### **交易账单格式说明**\n\n\n\n###### **1. 交易账单介绍**\n\n微信支付每天提供前一天的交易账单文件，用于商户核对订单、退款、营销、手续费等信息。账单内的数据包括：\n\n（1）当天支付成功的订单，下单成功但用户未支付的订单不会出账。\n\n（2）当天发起退款成功的退款单，退款发起成功就会出账，出账后退款状态不会更新。如果需要获取最新退款状态，请使用[查询退款API](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_5)查询。\n\n微信支付提供了3份不同类型的账单文件：\n\n•  ALL，包含了当天支付成功的订单和发起成功的退款单\n\n•  SUCCESS，仅包含支付成功的订单\n\n•  REFUND，仅包含发起成功的退款单\n\n",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID ",
+                    "description": "微信分配的公众账号ID "
+                  },
+                  "bill_date": {
+                    "type": "string",
+                    "title": "对账单日期",
+                    "description": "下载对账单的日期，格式：20140603 "
+                  },
+                  "bill_type": {
+                    "type": "string",
+                    "title": "账单类型",
+                    "description": "ALL（默认值），返回当日所有订单信息（不含充值退款订单）  SUCCESS，返回当日成功支付的订单（不含充值退款订单）  REFUND，返回当日退款订单（不含充值退款订单）  RECHARGE_REFUND，返回当日充值退款订单"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号 "
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "签名，详见[签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，目前支持HMAC-SHA256和MD5，默认为MD5"
+                  },
+                  "tar_type": {
+                    "type": "string",
+                    "title": "压缩账单",
+                    "description": "非必传参数，固定值：GZIP，返回格式为.gzip的压缩包账单。不传则默认为数据流形式。"
+                  }
+                },
+                "required": [
+                  "appid",
+                  "bill_date",
+                  "bill_type",
+                  "mch_id",
+                  "nonce_str",
+                  "sign"
+                ],
+                "xml": {
+                  "name": "xml"
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "bill_date",
+                  "bill_type",
+                  "mch_id",
+                  "nonce_str",
+                  "sign",
+                  "sign_type",
+                  "tar_type"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "<xml>\n   <appid>wx2421b1c4370ec43b</appid>\n   <bill_date>20141110</bill_date>\n   <bill_type>ALL</bill_type>\n   <mch_id>10000100</mch_id>\n   <nonce_str>21df7dc9cd8616b56919f20d9f679233</nonce_str>\n   <sign>332F17B766FC787203EBE9D6E40457A1</sign>\n</xml>"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "FAIL"
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "错误码描述",
+                      "description": "返回信息，如非空，为错误原因  如：签名失败 等。 "
+                    },
+                    "error_code": {
+                      "type": "string",
+                      "title": "错误码",
+                      "description": "失败错误码，详见错误码列表 "
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "error_code"
+                  ],
+                  "required": [
+                    "return_code"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848653-run"
+      }
+    },
+    "/pay/downloadfundflow": {
+      "post": {
+        "summary": "下载资金账单",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景\n\n商户可以通过该接口下载自2017年6月1日起 的历史资金流水账单。\n\n说明： \n\n1、资金账单中的数据反映的是商户微信账户资金变动情况； \n\n2、当日账单在次日上午9点开始生成，建议商户在上午10点以后获取； \n\n3、资金账单中涉及金额的字段单位为“元”。 \n\n### 是否需要证书 \n\n请求需要双向证书。 详见[证书使用](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)\n\n\n返回结果\n接口请求成功时，数据以文本表格的方式返回\n1）第一行为表头\n记账时间,微信支付业务单号,资金流水单号,业务名称,业务类型,收支类型,收支金额（元）,账户结余（元）,资金变更提交申请人,备注,业务凭证号\n2)从第二行起，为资金流水数据，各参数以逗号分隔，参数前增加`符号，为标准键盘1左边键的字符，字段顺序与表头一致\n3）倒数第二行为资金账单统计标题\n资金流水总笔数,收入笔数,收入金额,支出笔数,支出金额\n4）最后一行为统计数据\n账单示例如下：\n```\n记账时间,微信支付业务单号,资金流水单号,业务名称,业务类型,收支类型,收支金额（元）,账户结余（元）,资金变更提交申请人,备注,业务凭证号\n\n`2018-02-01 04:21:23,`50000305742018020103387128253,`1900009231201802015884652186,`退款,`退款,`支出,`0.02,`0.17,`system,`缺货,`REF4200000068201801293084726067\n\n资金流水总笔数,收入笔数,收入金额,支出笔数,支出金额\n\n`20.0,`17.0,`0.35,`3.0,`0.18\n```\n\n5）header中Digest为完整性校验信息，内容格式为：签名类型=签名\n\n举例如下：\n\nDigest: SHA=ec45d7c24492dcd62d92472b0f2816c8d9a2d773\n\n注：当前仅支持sha1签名返回\n\n### 错误码\n\n| 错误码        | 描述             | 解决方案                                                     |\n| ------------- | ---------------- | ------------------------------------------------------------ |\n| SYSTEMERROR   | 微信支付内部错误 | 请稍后重试。                                                 |\n| PARAM_ERROR   | 参数错误         | 请对照文档的请求参数说明检查参数。                           |\n| NO_BILL_EXIST | 账单不存在       | 请检查当前商户号在指定日期内是否有成功的交易。               |\n| BILL_CREATING | 账单未生成       | 请先检查当前商户号在指定日期内是否有成功的交易，如指定日期有交易则表示账单正在生成中，请在上午10点以后再下载。 |\n\n",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID",
+                    "description": "微信分配的公众账号ID（企业号corpid即为此appId）"
+                  },
+                  "bill_date": {
+                    "type": "string",
+                    "title": "资金账单日期",
+                    "description": "下载对账单的日期，格式：20140603"
+                  },
+                  "account_type": {
+                    "type": "string",
+                    "title": "资金账户类型",
+                    "description": "账单的资金来源账户：  Basic  基本账户  Operation 运营账户  Fees 手续费账户"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号"
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "签名，详见[签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，目前仅支持HMAC-SHA256"
+                  },
+                  "tar_type": {
+                    "type": "string",
+                    "title": "压缩账单",
+                    "description": "非必传参数，固定值：GZIP，返回格式为.gzip的压缩包账单。不传则默认为数据流形式。"
+                  }
+                },
+                "required": [
+                  "appid",
+                  "bill_date",
+                  "account_type",
+                  "mch_id",
+                  "nonce_str",
+                  "sign"
+                ],
+                "xml": {
+                  "name": "xml"
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "bill_date",
+                  "account_type",
+                  "mch_id",
+                  "nonce_str",
+                  "sign",
+                  "sign_type",
+                  "tar_type"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "<xml>\r\n  <appid>wx2421b1c4370ec43b</appid>\r\n  <bill_date>20141110</bill_date>\r\n  <account_type>Basic</account_type>\r\n  <mch_id>10000100</mch_id>\r\n  <nonce_str>21df7dc9cd8616b56919f20d9f679233</nonce_str>\r\n  <sign>332F17B766FC787203EBE9D6E40457A1</sign>\r\n</xml> "
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "SUCCESS/FAIL  此字段是通信标识，非交易标识，交易是否成功需要查看trade_state来判断 "
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误  请求频率过快，请稍后再试"
+                    },
+                    "result_code": {
+                      "type": "string",
+                      "title": "业务结果",
+                      "description": "FAIL 此字段是业务标识，表示业务是否成功。目前只在失败时返回这个字段，所以只会出现FAIL值 "
+                    },
+                    "err_code": {
+                      "type": "string",
+                      "title": "错误代码",
+                      "description": "见错误码列表"
+                    },
+                    "err_code_des": {
+                      "type": "string",
+                      "title": "错误代码描述",
+                      "description": "错误信息描述"
+                    }
+                  },
+                  "required": [
+                    "return_code",
+                    "return_msg",
+                    "result_code",
+                    "err_code"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "result_code",
+                    "err_code",
+                    "err_code_des"
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "异常示例 ",
+                    "value": "<xml>\r\n<return_code><![CDATA[SUCCESS]]></return_code>\r\n\r\n<return_msg><![CDATA[OK]]></return_msg>\r\n\r\n<result_code><![CDATA[FAIL]]></result_code>\r\n\r\n<err_code><![CDATA[NO_BILL_EXIST]]></err_code>\r\n\r\n<err_code_des><![CDATA[商户查询账户当日无资金账单]]></err_code_des>\r\n\r\n</xml> "
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848654-run"
+      }
+    },
+    "/notify_url": {
+      "post": {
+        "summary": "退款结果通知",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景\n\n当商户申请的退款有结果后（退款状态为：退款成功、退款关闭、退款异常），微信会把相关结果发送给商户，商户需要接收处理，并返回应答。 \n   对后台通知交互时，如果微信收到商户的应答不是成功或超时，微信认为通知失败，微信会通过一定的策略定期重新发起通知，尽可能提高通知的成功率，但微信不保证通知最终能成功（通知频率为15s/15s/30s/3m/10m/20m/30m/30m/30m/60m/3h/3h/3h/6h/6h - 总计 24h4m）。 \n  **注意：同样的通知可能会多次发送给商户系统。商户系统必须能够正确处理重复的通知。**  \n  推荐的做法是，当收到通知进行处理时，首先检查对应业务数据的状态，判断该通知是否已经处理过，如果没有处理过再进行处理，如果处理过直接返回结果成功。在对业务数据进行状态检查和处理之前，要采用数据锁进行并发控制，以避免函数重入造成的数据混乱。 \n  **特别说明：退款结果对重要的数据进行了加密，商户需要用商户密钥进行解密后才能获得结果通知的内容**   \n\n### 解密方式\n\n解密步骤如下： \n   \n\n（1）对加密串A做base64解码，得到加密串B\n      \n\n（2）对商户key做md5，得到32位小写key*   ( key设置路径：微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置 )\n\n（3）用key*对加密串B做AES-256-ECB解密（PKCS7Padding）\n\n### 接口链接\n\n在申请退款接口中上传参数“notify_url”以开通该功能\n  \n\n如果链接无法访问，商户将无法接收到微信通知。 \n  \n\n通知url必须为直接可访问的url，不能携带参数。公网域名必须为https，如果是走专线接入，使用专线NAT  IP或者私有回调域名可使用http。示例：notify_url：“https://pay.weixin.qq.com/wxpay/pay.action” \n\n",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "SUCCESS/FAIL  SUCCESS表示商户接收通知成功并校验成功 "
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "返回信息，如非空，为错误原因  参数格式校验错误 "
+                    },
+                    "appid": {
+                      "type": "string",
+                      "title": "公众账号ID",
+                      "description": "微信分配的公众账号ID（企业号corpid即为此appId）"
+                    },
+                    "mch_id": {
+                      "type": "string",
+                      "title": "退款的商户号 ",
+                      "description": "微信支付分配的商户号 "
+                    },
+                    "nonce_str": {
+                      "type": "string",
+                      "title": "随机字符串",
+                      "description": "随机字符串，不长于32位。推荐随机数生成算法 "
+                    },
+                    "req_info": {
+                      "type": "string",
+                      "title": "加密信息",
+                      "description": "加密信息请用商户密钥进行解密，详见[解密方式](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_16&index=10#menu1)"
+                    }
+                  },
+                  "required": [
+                    "return_code",
+                    "mch_id",
+                    "appid",
+                    "nonce_str",
+                    "req_info"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "appid",
+                    "mch_id",
+                    "nonce_str",
+                    "req_info"
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例 ",
+                    "value": "<xml>\r\n   <return_code>SUCCESS</return_code>\r\n   <appid><![CDATA[wx8888888888888888]]></appid>\r\n   <mch_id><![CDATA[1900000109]]></mch_id>\r\n   <nonce_str><![CDATA[5K8264ILTKCH16CQ2502SI8ZNMTM67VS]]></nonce_str>\r\n   <req_info><![CDATA[T87GAHG17TGAHG1TGHAHAHA1Y1CIOA9UGJH1GAHV871HAGAGQYQQPOOJMXNBCXBVNMNMAJAA]]></req_info>\r\n   <return_msg><![CDATA[90]]></return_msg>\r\n</xml>"
+                  }
+                }
+              }
+            }
+          },
+          "x-200:req_info解密后": {
+            "description": "req_info解密后",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "out_refund_no": {
+                      "type": "string",
+                      "description": "商户退款单号"
+                    },
+                    "out_trade_no": {
+                      "type": "string",
+                      "title": "商户订单号",
+                      "description": "商户系统内部的订单号"
+                    },
+                    "refund_account": {
+                      "type": "string",
+                      "description": "REFUND_SOURCE_RECHARGE_FUNDS 可用余额退款/基本账户 REFUND_SOURCE_UNSETTLED_FUNDS 未结算资金退款",
+                      "title": "退款资金来源"
+                    },
+                    "refund_fee": {
+                      "type": "string",
+                      "description": "退款总金额,单位为分",
+                      "title": ""
+                    },
+                    "refund_id": {
+                      "type": "string",
+                      "title": "微信退款单号"
+                    },
+                    "refund_recv_accout": {
+                      "type": "string",
+                      "description": "取当前退款单的退款入账方  1）退回银行卡：  {银行名称}{卡类型}{卡尾号}  2）退回支付用户零钱:  支付用户零钱  3）退还商户:  商户基本账户  商户结算银行账户  4）退回支付用户零钱通:  支付用户零钱通",
+                      "title": "退款入账账户"
+                    },
+                    "refund_request_source": {
+                      "type": "string",
+                      "description": " API接口 VENDOR_PLATFORM商户平台",
+                      "title": "退款发起来源"
+                    },
+                    "refund_status": {
+                      "type": "string",
+                      "description": " SUCCESS-退款成功 CHANGE-退款异常 REFUNDCLOSE—退款关闭",
+                      "title": "退款状态"
+                    },
+                    "settlement_refund_fee": {
+                      "type": "string",
+                      "description": " 退款金额=申请退款金额-非充值代金券退款金额，退款金额<=申请退款金额",
+                      "title": "退款金额"
+                    },
+                    "settlement_total_fee": {
+                      "type": "string",
+                      "description": "当该订单有使用非充值券时，返回此字段。应结订单金额=订单金额-非充值代金券金额，应结订单金额<=订单金额。",
+                      "title": "应结订单金额"
+                    },
+                    "success_time": {
+                      "type": "string",
+                      "description": "资金退款至用户账号的时间，格式2017-12-15 09:46:01",
+                      "title": "退款成功时间"
+                    },
+                    "total_fee": {
+                      "type": "string",
+                      "description": "订单总金额，单位为分，只能为整数，详见支付金额",
+                      "title": "订单金额"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "title": "微信订单号"
+                    },
+                    "cash_refund_fee": {
+                      "type": "string",
+                      "title": "用户退款金额\t",
+                      "description": "退款给用户的金额，不包含所有优惠券金额"
+                    }
+                  },
+                  "required": [
+                    "out_refund_no",
+                    "out_trade_no",
+                    "refund_account",
+                    "refund_fee",
+                    "refund_id",
+                    "refund_recv_accout",
+                    "refund_request_source",
+                    "refund_status",
+                    "settlement_total_fee",
+                    "success_time",
+                    "total_fee",
+                    "transaction_id",
+                    "cash_refund_fee"
+                  ],
+                  "xml": {
+                    "name": "root"
+                  },
+                  "x-apifox-orders": [
+                    "out_refund_no",
+                    "out_trade_no",
+                    "refund_account",
+                    "refund_fee",
+                    "refund_id",
+                    "refund_recv_accout",
+                    "refund_request_source",
+                    "refund_status",
+                    "settlement_refund_fee",
+                    "settlement_total_fee",
+                    "success_time",
+                    "total_fee",
+                    "transaction_id",
+                    "cash_refund_fee"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          },
+          "x-200:失败": {
+            "description": "失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "SUCCESS/FAIL  SUCCESS表示商户接收通知成功并校验成功 "
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "返回信息，如非空，为错误原因  参数格式校验错误 "
+                    }
+                  },
+                  "required": [
+                    "return_code"
+                  ],
+                  "xml": {
+                    "name": "xml"
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848657-run"
+      }
+    },
+    "/payitil/report": {
+      "post": {
+        "summary": "交易保障",
+        "x-apifox-folder": "API列表",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "### 应用场景\n\n商户在调用微信支付提供的相关接口时，会得到微信支付返回的相关信息以及获得整个接口的响应时间。为提高整体的服务水平，协助商户一起提高服务质量，微信支付提供了相关接口调用耗时和返回信息的主动上报接口，微信支付可以根据商户侧上报的数据进一步优化网络部署，完善服务监控，和商户更好的协作为用户提供更好的业务体验。 \n\n",
+        "tags": [
+          "API列表"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "appid": {
+                    "type": "string",
+                    "title": "公众账号ID",
+                    "description": "微信分配的公众账号ID（企业号corpid即为此appid）"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "title": "商户号",
+                    "description": "微信支付分配的商户号"
+                  },
+                  "device_info": {
+                    "type": "string",
+                    "title": "设备号",
+                    "description": "微信支付分配的终端设备号，商户自定义"
+                  },
+                  "nonce_str": {
+                    "type": "string",
+                    "title": "随机字符串",
+                    "description": "随机字符串，不长于32位。推荐[随机数生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign": {
+                    "type": "string",
+                    "title": "签名",
+                    "description": "签名，详见[签名生成算法](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3)"
+                  },
+                  "sign_type": {
+                    "type": "string",
+                    "title": "签名类型",
+                    "description": "签名类型，目前支持HMAC-SHA256和MD5，默认为MD5"
+                  },
+                  "interface_url": {
+                    "type": "string",
+                    "title": "接口URL",
+                    "description": "报对应的接口的完整URL，类似：   https://api.mch.weixin.qq.com/pay/unifiedorder  对于刷卡支付，为更好的和商户共同分析一次业务行为的整体耗时情况，对于两种接入模式，请都在门店侧对一次刷卡支付进行一次单独的整体上报，上报URL指定为：   https://api.mch.weixin.qq.com/pay/micropay/total  关于两种接入模式具体可参考本文档章节：[刷卡支付商户接入模式](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_14&index=7)  其它接口调用仍然按照调用一次，上报一次来进行。"
+                  },
+                  "execute_time_": {
+                    "type": "string",
+                    "title": "接口耗时",
+                    "description": "接口耗时情况，单位为毫秒 注意：该参数最后带有下划线“_”，参数设计如此，非文档问题。"
+                  },
+                  "return_code": {
+                    "type": "string",
+                    "title": "返回状态码",
+                    "description": "SUCCESS/FAIL  此字段是通信标识，非交易标识，交易是否成功需要查看trade_state来判断 "
+                  },
+                  "return_msg": {
+                    "type": "string",
+                    "title": "返回信息",
+                    "description": "当return_code为FAIL时返回信息为错误原因 ，例如  签名失败  参数格式校验错误"
+                  },
+                  "result_code": {
+                    "type": "string",
+                    "title": "业务结果",
+                    "description": "SUCCESS/FAIL"
+                  },
+                  "err_code": {
+                    "type": "string",
+                    "title": "错误代码",
+                    "description": "ORDERNOTEXIST—订单不存在  SYSTEMERROR—系统错误"
+                  },
+                  "err_code_des": {
+                    "type": "string",
+                    "title": "错误代码描述",
+                    "description": "结果信息描述"
+                  },
+                  "out_trade_no": {
+                    "type": "string",
+                    "title": "商户订单号",
+                    "description": "商户系统内部的订单号,商户可以在上报时提供相关商户订单号方便微信支付更好的提高服务质量。 "
+                  },
+                  "user_ip": {
+                    "type": "string",
+                    "title": "访问接口IP",
+                    "description": "发起接口调用时的机器IP "
+                  },
+                  "time": {
+                    "type": "string",
+                    "title": "商户上报时间",
+                    "description": "系统时间，格式为yyyyMMddHHmmss，如2009年12月27日9点10分10秒表示为20091227091010。其他详见[时间规则](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2)"
+                  }
+                },
+                "x-apifox-orders": [
+                  "appid",
+                  "mch_id",
+                  "device_info",
+                  "nonce_str",
+                  "sign",
+                  "sign_type",
+                  "interface_url",
+                  "execute_time_",
+                  "return_code",
+                  "return_msg",
+                  "result_code",
+                  "err_code",
+                  "err_code_des",
+                  "out_trade_no",
+                  "user_ip",
+                  "time"
+                ],
+                "required": [
+                  "appid",
+                  "mch_id",
+                  "nonce_str",
+                  "sign",
+                  "sign_type",
+                  "interface_url",
+                  "execute_time_",
+                  "return_code",
+                  "return_msg",
+                  "user_ip",
+                  "result_code"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "return_code": {
+                      "type": "string",
+                      "title": "返回状态码",
+                      "description": "SUCCESS/FAIL  此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断"
+                    },
+                    "return_msg": {
+                      "type": "string",
+                      "title": "返回信息",
+                      "description": "返回信息，如非空，为错误原因  签名失败  参数格式校验错误"
+                    },
+                    "result_code": {
+                      "type": "string",
+                      "title": "业务结果",
+                      "description": "SUCCESS/FAIL。此字段在return_code为SUCCESS的时候有返回"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "return_code",
+                    "return_msg",
+                    "result_code"
+                  ],
+                  "required": [
+                    "return_code",
+                    "result_code"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746313/apis/api-132848656-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "servers": []
+}

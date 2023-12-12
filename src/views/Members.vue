@@ -39,8 +39,8 @@
         <el-form-item label="权限" prop="auth">
           <el-select v-model="editForm.auth" placeholder="请选择">
             <el-option label="管理员" value="admin"></el-option>
-            <el-option label="编辑者" value="write"></el-option>
-            <el-option label="只读访问" value="read"></el-option>
+            <el-option label="开发人员" value="write"></el-option>
+            <el-option label="访客" value="read"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -64,8 +64,8 @@
             style="width: 100%"
           >
             <el-option label="管理员" value="admin"></el-option>
-            <el-option label="编辑者" value="write"></el-option>
-            <el-option label="只读访问" value="read"></el-option>
+            <el-option label="开发人员" value="write"></el-option>
+            <el-option label="访客" value="read"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -75,6 +75,7 @@
       </span>
     </el-dialog>
   </div>
+  <div ref="MemberEcharts" style="width: 100%; height: 400px"></div>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
@@ -96,18 +97,18 @@ const addDialogVisible = ref(false);
 const editForm = ref({});
 const authOptions = [
   { label: "管理员", value: "admin" },
-  { label: "编辑者", value: "write" },
-  { label: "只读访问", value: "read" },
+  { label: "开发人员", value: "write" },
+  { label: "访客", value: "read" },
 ];
 
 function tagType(data) {
   switch (data) {
     case "管理员":
       return "success";
-    case "只读访问":
+    case "开发人员":
+      return "info";
+    case "访客":
       return "warning";
-    case "编辑者":
-      return "primary";
     default:
       return "";
   }
@@ -122,6 +123,7 @@ const getProjectList = async () => {
         auth: authOptions.find((auth) => auth.value === item.auth).label,
       };
     });
+    getMemberNum(res.data.authCountArray);
   } catch (error) {
     console.log(error);
     ElMessage.error(error);
@@ -179,6 +181,59 @@ const handleAdd = async () => {
 onMounted(() => {
   getProjectList();
 });
+import * as echarts from "echarts/core";
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+} from "echarts/components";
+import { PieChart } from "echarts/charts";
+import { LabelLayout } from "echarts/features";
+import { CanvasRenderer } from "echarts/renderers";
+
+echarts.use([
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  PieChart,
+  CanvasRenderer,
+  LabelLayout,
+]);
+
+const MemberEcharts = ref();
+const getMemberNum = (nums) => {
+  var myChart = echarts.init(MemberEcharts.value);
+  var option = {
+    title: {
+      text: "人员类型",
+      left: "center",
+    },
+    tooltip: {
+      trigger: "item",
+    },
+    series: [
+      {
+        name: "人员类型",
+        type: "pie",
+        radius: "70%",
+
+        data: [
+          { value: nums[0], name: "管理员" },
+          { value: nums[1], name: "开发人员" },
+          { value: nums[2], name: "访客" },
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)",
+          },
+        },
+      },
+    ],
+  };
+  myChart.setOption(option);
+};
 </script>
 
 <style scoped>

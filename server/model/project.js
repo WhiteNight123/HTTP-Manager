@@ -17,7 +17,7 @@ const projectSchema = new mongoose.Schema({
   description: {
     type: String,
     minlength: 2,
-    maxlength: 200,
+    maxlength: 500,
   },
   // 项目创建者
   creator: {
@@ -73,9 +73,9 @@ function projectValidator(data) {
       "string.min": "项目名称长度不能小于2位",
       "string.max": "项目名称长度不能大于15位",
     }),
-    description: Joi.string().trim().min(2).max(200).messages({
+    description: Joi.string().trim().min(2).max(500).messages({
       "string.min": "项目描述长度不能小于2位",
-      "string.max": "项目描述长度不能大于200位",
+      "string.max": "项目描述长度不能大于500位",
     }),
     creator: Joi.objectId().messages({
       "any.required": "项目创建者不能为空",

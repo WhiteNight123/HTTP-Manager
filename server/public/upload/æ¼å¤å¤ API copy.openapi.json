@@ -1,0 +1,237 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "拼多多 API copy",
+    "description": "拼多多开放平台 API",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "订单API"
+    },
+    {
+      "name": "售后API"
+    },
+    {
+      "name": "物流API"
+    },
+    {
+      "name": "虚拟类目API"
+    }
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "summary": "虚拟类目发货通知接口",
+        "x-apifox-folder": "虚拟类目API",
+        "x-apifox-status": "released",
+        "deprecated": false,
+        "description": "- API名称：pdd.virtual.mobile.charge.notify\n- 说明：虚拟类目发货的接口【仅供话费/流量直冲商家自研对接进行话费流量发货使用】\n\n## 限流频次\n商家限流频次：4950次/1秒 \n\n## 相关权限包\n| 拥有此接口的权限包 | 可获得/可申请此权限包的应用类型 |\n|-----|-----|\n|虚拟类目权限包|虚拟商家后台系统|\n \n \n## 返回错误码说明\n| 主错误码 | 主错误描述 |子错误码 | 子错误描述 | 解决办法 | \n |-----|-----|-----|-----|-----| \n | 10000| 参数错误 | 10000  | 参数错误  | 参数值有误，按照文档要求填写请求参数 | \n | 10001| 公共参数错误 | 10001  | 公共参数错误  | 请检查请求的公共参数 | \n | 10016| client下线或者clientId不正确 | 10016  | client下线或者clientId不正确  | 请核查您的client_id是否正确 | \n | 10017| type不正确 | 10017  | type不正确  | 检查type是否正确 | \n | 10018| target_client_id下线或者target_client_id不正确 | 10018  | target_client_id下线或者target_client_id不正确  | 检查target_client_id 是否正确 | \n | 10019| access_token已过期 | 10019  | access_token已过期  | 刷新access_token或者重新授权再次获取access_token | \n | 20004| 签名sign校验失败 | 20004  | 签名sign校验失败  | 请按照接入指南第三部分指导，生成签名 | \n | 20005| ip无权访问接口，请加入ip白名单 | 20005  | ip无权访问接口，请加入ip白名单  | 把ip白名单加入白名单 | \n | 20031| 用户没有授权访问此接口 | 20031  | 用户没有授权访问此接口  | 您创建的应用中不包含此接口，请查看API文档，了解相关权限包 | \n | 20032| access_token或client_id错误 | 20032  | access_token或client_id错误  | 检查access_token或client_id | \n | 20034| 接口处于下线状态 | 20034  | 接口处于下线状态  | 检查接口状态 | \n | 20035| 接口不属于当前网关 | 20035  | 接口不属于当前网关  | 判断调用网关url 是否正确 | \n | 21001| 请求参数错误 | 21001  | 请求参数错误  | 业务参数输入错误 | \n | 21002| 请求参数不能为空 | 21002  | 请求参数不能为空  | 检查业务参数必填是否已填 | \n | 30000| 没有调用此target接口权限 | 30000  | 没有调用此target接口权限  | 检查是否获得调用此target接口权限 | \n | 30001| client_id和partner_id不匹配 | 30001  | client_id和partner_id不匹配  | 检查partner_id是否正确 | \n | 50000| 系统内部错误 | 50000  | 系统内部错误  | 系统内部错误，请加群联系相关负责人 | \n | 50002| 业务系统内部异常 | 50002  | 业务系统内部异常  | 请加群联系相关负责人 | \n | 52001| 网关业务服务错误 | 52001  | 网关业务服务错误  | 联系技术支持解决 | \n | 52002| 网关系统内部异常 | 52002  | 网关系统内部异常  | 联系技术支持解决 | \n | 52004| 请求body 太大 | 52004  | 请求body 太大  | 检查请求体是否过大 | \n | 52101| 当前接口被限流，请稍后重试 | 52101  | 当前接口被限流，请稍后重试  | 当前接口被限流，请稍后重试 | \n | 52102| 当前接口暂时不可用，请稍后重试 | 52102  | 当前接口暂时不可用，请稍后重试  | 当前接口被降级，请稍后重试 | \n | 52103| 服务暂时不可用，请稍后重试 | 52103  | 服务暂时不可用，请稍后重试  | 当前接口被降级，请稍后重试 | \n | 70031| 调用过于频繁，请调整调用频率 | 70031  | 调用过于频繁，请调整调用频率  | 调用过于频繁，请调整调用频率 | \n | 70032| 当前请求被禁止调用 | 70032  | 当前请求被禁止调用  | 当前请求被禁止调用 | \n | 70033| 当前接口因系统维护，暂时下线，请稍后再试！ | 70033  | 当前接口因系统维护，暂时下线，请稍后再试！  | 当前接口因系统维护，暂时下线，请稍后再试！ | \n | 70034| 当前用户或应用存在风险，禁止调用！ | 70034  | 当前用户或应用存在风险，禁止调用！  | 当前用户或应用存在风险，禁止调用！ | \n | 70035| 当前用户或应用存在风险，禁止调用。请联系ddjb@pinduoduo.com | 70035  | 当前用户或应用存在风险，禁止调用。请联系ddjb@pinduoduo.com  | 当前用户或应用存在风险，禁止调用。请联系ddjb@pinduoduo.com | \n | 70036| 应用处于测试状态，调用次数被限制 | 70036  | 应用处于测试状态，调用次数被限制  | 应用处于测试状态，调用次数达到上限被限制 | \n | 50001| 业务服务错误 |  |  | | \n \n ",
+        "tags": [
+          "虚拟类目API"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "id": 0,
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "API接口名称",
+                    "const": "pdd.virtual.mobile.charge.notify"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "POP分配给应用的client_id"
+                  },
+                  "access_token": {
+                    "type": "string",
+                    "description": "通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)"
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "description": "UNIX时间戳，单位秒，需要与拼多多服务器时间差值在10分钟内"
+                  },
+                  "data_type": {
+                    "type": "string",
+                    "description": "响应格式，即返回数据的格式，JSON或者XML（二选一），默认JSON，注意是大写"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "API协议版本号，默认为V1，可不填"
+                  },
+                  "sign": {
+                    "type": "string",
+                    "description": "API输入参数签名结果，签名算法参考开放平台接入指南第三部分底部"
+                  },
+                  "charge_certi": {
+                    "id": 1,
+                    "parentId": 0,
+                    "name": "charge_certi",
+                    "description": "直充附加信息对象数组",
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "charge_certi_amount": {
+                          "id": 2,
+                          "parentId": 1,
+                          "name": "charge_certi_amount",
+                          "description": "直充充值金额（单位：分）",
+                          "type": "integer"
+                        },
+                        "charge_certi_date": {
+                          "id": 3,
+                          "parentId": 1,
+                          "name": "charge_certi_date",
+                          "description": "直充充值成功时间 （yyyy-MM-dd HH:mm:ss格式）",
+                          "type": "string"
+                        },
+                        "charge_certi_mobile": {
+                          "id": 4,
+                          "parentId": 1,
+                          "name": "charge_certi_mobile",
+                          "description": "直充充值号码",
+                          "type": "string"
+                        },
+                        "charge_certi_mobile_tail": {
+                          "id": 5,
+                          "parentId": 1,
+                          "name": "charge_certi_mobile_tail",
+                          "description": "充值卡号尾号",
+                          "type": "string"
+                        },
+                        "charge_certi_order_sn": {
+                          "id": 6,
+                          "parentId": 1,
+                          "name": "charge_certi_order_sn",
+                          "description": "直充充值单号",
+                          "type": "string"
+                        },
+                        "charge_certi_text": {
+                          "id": 7,
+                          "parentId": 1,
+                          "name": "charge_certi_text",
+                          "description": "直充短信原文",
+                          "type": "string"
+                        },
+                        "merchant_outer_id": {
+                          "id": 8,
+                          "parentId": 1,
+                          "name": "merchant_outer_id",
+                          "description": "代理商(渠道)编号",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object",
+                      "x-apifox-orders": [
+                        "charge_certi_amount",
+                        "charge_certi_date",
+                        "charge_certi_mobile",
+                        "charge_certi_mobile_tail",
+                        "charge_certi_order_sn",
+                        "charge_certi_text",
+                        "merchant_outer_id"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "order_sn": {
+                    "id": 9,
+                    "parentId": 0,
+                    "name": "order_sn",
+                    "description": "拼多多订单编码",
+                    "type": "string"
+                  },
+                  "outer_order_sn": {
+                    "id": 10,
+                    "parentId": 0,
+                    "name": "outer_order_sn",
+                    "description": "11122dafa 外部系统订单编码",
+                    "type": "string"
+                  },
+                  "status": {
+                    "id": 11,
+                    "parentId": 0,
+                    "name": "status",
+                    "description": "虚拟系统充值结果，SUCCESS-充值成功，FAIL-充值失败",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "client_id",
+                  "timestamp",
+                  "sign",
+                  "order_sn",
+                  "outer_order_sn",
+                  "status"
+                ],
+                "x-apifox-orders": [
+                  "type",
+                  "client_id",
+                  "access_token",
+                  "timestamp",
+                  "data_type",
+                  "version",
+                  "sign",
+                  "charge_certi",
+                  "order_sn",
+                  "outer_order_sn",
+                  "status"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "id": 0,
+                  "type": "object",
+                  "properties": {
+                    "mobile_charge_notify_response": {
+                      "id": 1,
+                      "parentId": 0,
+                      "name": "mobile_charge_notify_response",
+                      "description": "虚拟充值回调通知响应对象",
+                      "type": "object",
+                      "properties": {
+                        "success": {
+                          "id": 2,
+                          "parentId": 1,
+                          "name": "success",
+                          "description": "回调通知结果，true-成功，false-失败",
+                          "type": "boolean"
+                        }
+                      },
+                      "x-apifox-orders": [
+                        "success"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "mobile_charge_notify_response"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3746401/apis/api-132852843-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "servers": []
+}

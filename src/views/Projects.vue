@@ -97,7 +97,7 @@ const rules = ref({
     { min: 2, max: 15, message: "项目名称在 2 到 15 个字符", trigger: "blur" },
   ],
   description: [
-    { min: 5, max: 100, message: "项目描述在 5到 100 个字符", trigger: "blur" },
+    { min: 5, max: 400, message: "项目描述在 5到 400 个字符", trigger: "blur" },
   ],
 });
 const newProject = ref({

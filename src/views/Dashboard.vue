@@ -137,6 +137,26 @@
       </span>
     </el-dialog>
   </div>
+  <div
+    ref="InterfaceEcharts"
+    style="
+      width: 500px;
+      height: 400px;
+      float: left;
+      margin-top: 32px;
+      margin-left: 128px;
+    "
+  ></div>
+  <div
+    ref="MemberEcharts"
+    style="
+      width: 400px;
+      height: 400px;
+      float: left;
+      margin-top: 32px;
+      margin-left: 200px;
+    "
+  ></div>
 </template>
 
 <script setup>
@@ -178,6 +198,8 @@ const getProjectDetail = async () => {
       memberCount: res.data.members.length,
     };
     console.log("获取项目详情成功");
+    setInterfaceEcharts(res.data.interfaceCountArray);
+    setMemberCharts(res.data.authCountArray);
   } catch (error) {
     console.log(error);
     ElMessage.error(error);
@@ -340,6 +362,96 @@ const deleteProject1 = async () => {
 onMounted(() => {
   getProjectDetail();
 });
+
+import * as echarts from "echarts/core";
+import {
+  GridComponent,
+  TooltipComponent,
+  TitleComponent,
+  LegendComponent,
+} from "echarts/components";
+import { BarChart, PieChart } from "echarts/charts";
+import { CanvasRenderer } from "echarts/renderers";
+import { LabelLayout } from "echarts/features";
+
+echarts.use([
+  GridComponent,
+  BarChart,
+  CanvasRenderer,
+  TooltipComponent,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  PieChart,
+  CanvasRenderer,
+  LabelLayout,
+]);
+
+var InterfaceEcharts = ref();
+const setInterfaceEcharts = (interfaceCountArray) => {
+  var myChart = echarts.init(InterfaceEcharts.value);
+  var option = {
+    title: {
+      text: "接口种类",
+      left: "center",
+    },
+    xAxis: {
+      type: "category",
+      data: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+    },
+    yAxis: {
+      type: "value",
+    },
+    tooltip: {
+      trigger: "item",
+    },
+    series: [
+      {
+        data: interfaceCountArray,
+        type: "bar",
+        itemStyle: {
+          borderRadius: 4,
+          color: "#EC407A",
+        },
+      },
+    ],
+  };
+  myChart.setOption(option);
+};
+
+const MemberEcharts = ref();
+const setMemberCharts = (authCountArray) => {
+  var myChart = echarts.init(MemberEcharts.value);
+  var option = {
+    title: {
+      text: "人员类型",
+      left: "center",
+    },
+    tooltip: {
+      trigger: "item",
+    },
+    series: [
+      {
+        name: "人员类型",
+        type: "pie",
+        radius: "60%",
+        data: [
+          { value: authCountArray[0], name: "管理员" },
+          { value: authCountArray[1], name: "开发人员" },
+          { value: authCountArray[2], name: "访客" },
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)",
+          },
+        },
+      },
+    ],
+  };
+  myChart.setOption(option);
+};
 </script>
 
 <style>

@@ -15,13 +15,13 @@ const interfaceSchema = new mongoose.Schema({
   // 接口描述
   description: {
     type: String,
-    maxlength: 200,
+    maxlength: 3000,
     select: false,
   },
   // 接口标签
   tag: {
     type: String,
-    maxlength: 20,
+    maxlength: 40,
   },
   // 请求方法
   requestMethod: {
@@ -40,25 +40,25 @@ const interfaceSchema = new mongoose.Schema({
   // 请求头
   requestHeaders: {
     type: String,
-    maxlength: 1000,
+    maxlength: 5000,
     select: false,
   },
   // 请求参数
   requestParams: {
     type: String,
-    maxlength: 1000,
+    maxlength: 5000,
     select: false,
   },
   // 请求体
   requestBody: {
     type: String,
-    maxlength: 1000,
+    maxlength: 5000,
     select: false,
   },
   // 响应体
   response: {
     type: String,
-    maxlength: 1000,
+    maxlength: 5000,
     select: false,
   },
   // 项目id
@@ -116,13 +116,13 @@ function interfaceValidator(data) {
       "string.min": "接口名字长度不能小于1位",
       "string.max": "接口名字长度不能大于20位",
     }),
-    description: Joi.string().allow("").max(200).messages({
+    description: Joi.string().allow("").max(3000).messages({
       "string.base": "接口描述必须是字符串",
-      "string.max": "接口描述长度不能大于200位",
+      "string.max": "接口描述长度不能大于3000位",
     }),
-    tag: Joi.string().allow("").max(20).messages({
+    tag: Joi.string().allow("").max(40).messages({
       "string.base": "接口标签必须是字符串",
-      "string.max": "接口标签长度不能大于20位",
+      "string.max": "接口标签长度不能大于40位",
     }),
     requestMethod: Joi.string()
       .valid("GET", "POST", "PUT", "DELETE", "PATCH")
@@ -139,21 +139,21 @@ function interfaceValidator(data) {
       "string.min": "请求路径长度不能小于1位",
       "string.max": "请求路径长度不能大于100位",
     }),
-    requestHeaders: Joi.string().max(1000).messages({
+    requestHeaders: Joi.string().max(5000).messages({
       "string.base": "请求头必须是字符串",
-      "string.max": "请求头长度不能大于1000位",
+      "string.max": "请求头长度不能大于5000位",
     }),
     requestParams: Joi.string().max(1000).messages({
       "string.base": "请求参数必须是字符串",
       "string.max": "请求参数长度不能大于1000位",
     }),
-    requestBody: Joi.string().max(1000).messages({
+    requestBody: Joi.string().max(5000).messages({
       "string.base": "请求体必须是字符串",
-      "string.max": "请求体长度不能大于1000位",
+      "string.max": "请求体长度不能大于5000位",
     }),
-    response: Joi.string().max(1000).messages({
+    response: Joi.string().max(5000).messages({
       "string.base": "响应体必须是字符串",
-      "string.max": "响应体长度不能大于1000位",
+      "string.max": "响应体长度不能大于5000位",
     }),
     projectId: Joi.objectId().required().messages({
       "any.required": "项目id不能为空",
@@ -184,13 +184,13 @@ function interfaceBatchValidator(data) {
             "string.min": "接口名字长度不能小于1位",
             "string.max": "接口名字长度不能大于20位",
           }),
-          description: Joi.string().allow("").max(200).messages({
+          description: Joi.string().allow("").max(3000).messages({
             "string.base": "接口描述必须是字符串",
-            "string.max": "接口描述长度不能大于200位",
+            "string.max": "接口描述长度不能大于3000位",
           }),
-          tag: Joi.string().allow("").max(20).messages({
+          tag: Joi.string().allow("").max(40).messages({
             "string.base": "接口标签必须是字符串",
-            "string.max": "接口标签长度不能大于20位",
+            "string.max": "接口标签长度不能大于40位",
           }),
           requestMethod: Joi.string()
             .valid("GET", "POST", "PUT", "DELETE", "PATCH")
