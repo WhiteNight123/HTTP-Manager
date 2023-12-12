@@ -526,6 +526,56 @@
                               }
                             ]
                           }
+                        },
+                        {
+                          "name": "批量添加接口",
+                          "description": "从上传的文件中批量导入接口",
+                          "tag": "接口",
+                          "requestMethod": "POST",
+                          "requestPath": "/api/interface/batch",
+                          "requestHeaders": [
+                            {
+                              "name": "Authorization",
+                              "description": "",
+                              "required": true,
+                              "example": "",
+                              "type": "string"
+                            }
+                          ],
+                          "requestParams": {
+                            "path": [],
+                            "query": []
+                          },
+                          "requestBody": {
+                            "contentType": "application/json",
+                            "content": [
+                              {
+                                "type": "",
+                                "projectId": "",
+                                "datas": [
+                                  {
+                                    "name": "",
+                                    "description": "",
+                                    "tag": "",
+                                    "requestMethod": "",
+                                    "requestPath": "",
+                                    "requestHeaders": "",
+                                    "requestParams": "",
+                                    "requestBody": "",
+                                    "response": ""
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "response": {
+                            "contentType": "application/json",
+                            "content": [
+                              {
+                                "code": "200"
+                              }
+                            ]
+                          }
                         }
                       ]
                     }
@@ -2953,5 +3003,10 @@
       }
     }
   },
-  "servers": []
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "开发环境"
+    }
+  ]
 }
