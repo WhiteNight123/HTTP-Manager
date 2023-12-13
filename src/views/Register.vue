@@ -27,7 +27,7 @@
         <el-input
           type="password"
           v-model="registerForm.password"
-          placeholder="Enter your password"
+          placeholder="请输入密码"
           :prefix-icon="Lock"
           show-password
         ></el-input>

@@ -1,3 +1,7 @@
+# 忽视上传的文件
+server/public/upload/*
+# 忽视mock文件
+server/mock/*
 # Logs
 logs
 *.log

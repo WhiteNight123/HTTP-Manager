@@ -10,7 +10,7 @@ const interfaceSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 1,
-    maxlength: 20,
+    maxlength: 100,
   },
   // 接口描述
   description: {
@@ -110,11 +110,11 @@ const Interface = mongoose.model("Interface", interfaceSchema);
 // 创建接口规则
 function interfaceValidator(data) {
   const schema = Joi.object({
-    name: Joi.string().min(1).max(20).required().messages({
+    name: Joi.string().min(1).max(100).required().messages({
       "any.required": "接口名字不能为空",
       "string.base": "接口名字必须是字符串",
       "string.min": "接口名字长度不能小于1位",
-      "string.max": "接口名字长度不能大于20位",
+      "string.max": "接口名字长度不能大于100位",
     }),
     description: Joi.string().allow("").max(3000).messages({
       "string.base": "接口描述必须是字符串",
@@ -178,11 +178,11 @@ function interfaceBatchValidator(data) {
     datas: Joi.array()
       .items(
         Joi.object({
-          name: Joi.string().min(1).max(20).required().messages({
+          name: Joi.string().min(1).max(100).required().messages({
             "any.required": "接口名字不能为空",
             "string.base": "接口名字必须是字符串",
             "string.min": "接口名字长度不能小于1位",
-            "string.max": "接口名字长度不能大于20位",
+            "string.max": "接口名字长度不能大于100位",
           }),
           description: Joi.string().allow("").max(3000).messages({
             "string.base": "接口描述必须是字符串",

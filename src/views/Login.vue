@@ -6,7 +6,7 @@
       class="login-form"
       :rules="loginRules"
     >
-      <h2>HTTP接口管理平台</h2>
+      <h2>API接口管理平台</h2>
       <el-form-item label="邮箱" prop="email">
         <el-input
           v-model="loginForm.email"
