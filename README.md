@@ -51,15 +51,15 @@ nodemon app.js
 
 项目功能结构图
 
-​          ![image-20231217110045146](C:\Users\WhiteNight\AppData\Roaming\Typora\typora-user-images\image-20231217110045146.png)   
+<img src="https://s2.loli.net/2023/12/17/f5aqoxCPtILg9X4.png" alt="功能模块图" width="800px"/>   
 
 用例图     
 
-![image-20231217110132003](https://s2.loli.net/2023/12/17/gdP7ltkw4ZrFSai.png)     
+<img src="https://s2.loli.net/2023/12/17/gdP7ltkw4ZrFSai.png" alt="用例图" width="600px"/>     
 
 全局类图
 
-![image-20231217110214767](https://s2.loli.net/2023/12/17/eBfM2ANKpSibxRI.png)
+<img src="https://s2.loli.net/2023/12/17/qNtAlpoG5O8BDEf.png" alt="全局类图" width="800px"/>
 
 ### 前端
 
